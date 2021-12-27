@@ -12,7 +12,7 @@ import com.ivis.service.IvisService;
 @CrossOrigin
 @RestController
 @RequestMapping("/sites")
-public class BusinessAPIController {
+public class SitesAPIController {
 	@Autowired 
 	IvisService  ivis;
 	
@@ -22,11 +22,14 @@ public class BusinessAPIController {
 		return "hello";
 		}
 	@GetMapping("/sitesList_1_0")
-	public UserEntity  getSitesdata(@RequestParam("uId") String uId)
+	public UserEntity  getSitesdata(@RequestParam("uId") String uId,@RequestParam("calling_user_details") String calling_user_details)
 	{
-		
+		if(calling_user_details.equals("IVISUSA")) {
 		UserEntity  userlist = ivis.getImMatrixAvailability(uId);
 		return userlist;
+		}
+		else
+			return null;
 		
 	}
 //	@GetMapping("/CamesList")

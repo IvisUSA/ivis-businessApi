@@ -21,11 +21,15 @@ public class ClientServicesController {
 	
 	
 	@GetMapping("/clientServices_1_0")
-	private Object getData2(@RequestParam("accountId") String accountId,@RequestParam("Request_type") String Request_type) {
+	private Object getData2(@RequestParam("accountId") String accountId,@RequestParam("Request_type") String Request_type,@RequestParam("calling_user_details") String calling_user_details) {
 		
+		
+		if(calling_user_details.equals("IVISUSA")) {
 	    String url = "http://smstaging.iviscloud.net:8090/cpus/clientServices_1_0/accountId="+accountId;
 	    
 	    return ivis.mapServices2(url,Request_type);
-		
+		}
+		else 
+			return null;
 	}
 }

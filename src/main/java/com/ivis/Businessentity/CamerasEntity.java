@@ -1,6 +1,7 @@
 package com.ivis.Businessentity;
 
 import java.time.LocalDateTime;
+import java.util.Calendar;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -57,7 +58,7 @@ public class CamerasEntity {
 	public String status;
 	
 	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	public LocalDateTime timestamp;
+	public Calendar timestamp;
 	public String getStatus() {
 		return status;
 	}
@@ -66,10 +67,10 @@ public class CamerasEntity {
 	}
 
 	
-	public LocalDateTime getTimestamp() {
+	public Calendar getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(LocalDateTime timestamp) {
+	public void setTimestamp(Calendar timestamp) {
 		this.timestamp = timestamp;
 	}
 	public int getId() {

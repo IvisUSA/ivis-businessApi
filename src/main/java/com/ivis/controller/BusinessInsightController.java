@@ -1,11 +1,14 @@
 package com.ivis.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,10 +28,25 @@ public class BusinessInsightController {
 	IvisService  ivis;
 	
 	@GetMapping("/getAnalyticsListforSite_1_0")
-	public List<BIAnalyticsEntity> getBusinessInsights(@RequestParam int client_id){
+	public List<BIAnalyticsEntity> getBusinessInsights(@RequestParam( "SiteId") int client_id,@RequestParam( "calling_user_details") String calling_user_details,@RequestParam(value = "date", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date date  ){
 		
-		List<BIAnalyticsEntity> bIAnalytics=this.ivis.getBusinessAnalystics(client_id);
+		
+		if(calling_user_details.equals("IVISUSA")) {
+		List<BIAnalyticsEntity> bIAnalytics=this.ivis.getBusinessAnalystics(client_id,date);
 		
 		return bIAnalytics;
+		}
+		else
+			return null;
+	}
+	
+	@GetMapping(path = "/biAnalyticsReport_1_0", produces=MediaType.APPLICATION_JSON_VALUE)
+	public Object biAnalyticsReport(@RequestParam( "SiteId") int SiteId,@RequestParam(value = "fromDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date FromDate ,@RequestParam(value = "toDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date ToDate ){
+		
+		Object bIAnalytics=this.ivis.getbiAnalyticsReport(SiteId,FromDate,ToDate);
+		
+		return bIAnalytics;
+		
+
 	}
 }

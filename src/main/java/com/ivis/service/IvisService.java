@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 //import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -184,7 +185,7 @@ public class IvisService {
 
 	}
 
-	public List<BIAnalyticsEntity> getBusinessAnalystics(int accountId) {
+	public List<BIAnalyticsEntity> getBusinessAnalystics(int accountId, Date date) {
 		List<BIAnalyticsEntity> bIAnalytics = new ArrayList<BIAnalyticsEntity>();
 
 		String sitesUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/getBICustomerSiteId_1_0?accId=";
@@ -197,6 +198,11 @@ public class IvisService {
 		List<NameValuePair> urlParameters = new ArrayList<>();
 		urlParameters.add(new BasicNameValuePair("client_id", client_id));
 
+		if(!(date==null))
+		{
+			urlParameters.add(new BasicNameValuePair("date", date.toString()));
+
+		}
 		try {
 			post.setEntity(new UrlEncodedFormEntity(urlParameters));
 		} catch (UnsupportedEncodingException e) {
@@ -337,6 +343,42 @@ public class IvisService {
 			return null;
 		}
 
+	}
+
+	public Object getbiAnalyticsReport(int siteId, Date fromDate, Date toDate) {
+		// TODO Auto-generated method stub
+
+		String sitesUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/getBICustomerSiteId_1_0?accId=";
+		sitesUrl = sitesUrl + siteId;
+
+		String client_id = util.readUrlData(sitesUrl);
+		
+		HttpPost post = new HttpPost("http://ivisbi.com/v2/api/analyticsReport");
+
+		// add request parameter, form parameters
+		List<NameValuePair> urlParameters = new ArrayList<>();
+		urlParameters.add(new BasicNameValuePair("client_id", "8"));
+		urlParameters.add(new BasicNameValuePair("fromDate", fromDate.toString()));
+		urlParameters.add(new BasicNameValuePair("toDate", toDate.toString()));
+
+		try {
+			post.setEntity(new UrlEncodedFormEntity(urlParameters));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try (CloseableHttpClient httpClient = HttpClients.createDefault();CloseableHttpResponse response = httpClient.execute(post)) {
+
+			String input = EntityUtils.toString(response.getEntity());
+			System.out.println(input);
+			JSONObject json = new JSONObject(input);
+			//System.out.println(json);
+			return input;
+		} catch (Exception e) {
+			System.err.println(e);
+			return null;
+		}
 	}
 
 }

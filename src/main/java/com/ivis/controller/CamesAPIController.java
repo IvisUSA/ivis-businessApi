@@ -19,11 +19,15 @@ public class CamesAPIController {
 	IvisService  ivis;
 	
 	@GetMapping("/CamerasList_1_0")
-	public List<BusinessCamesEntity> getCamesdata(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId)
+	public List<BusinessCamesEntity> getCamesdata(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId,@RequestParam("calling_user_details") String calling_user_details)
 	{
+		if(calling_user_details.equals("IVISUSA")) {
 		List<BusinessCamesEntity>camesList =null;
 		
 		camesList = ivis.getCamerasList(uId,accountId);
 		return camesList;
+		}
+		else
+			return null;
 	}
 }
