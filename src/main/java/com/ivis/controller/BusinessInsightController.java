@@ -41,12 +41,14 @@ public class BusinessInsightController {
 	}
 	
 	@GetMapping(path = "/biAnalyticsReport_1_0", produces=MediaType.APPLICATION_JSON_VALUE)
-	public Object biAnalyticsReport(@RequestParam( "SiteId") int SiteId,@RequestParam(value = "fromDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date FromDate ,@RequestParam(value = "toDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date ToDate ){
+	public Object biAnalyticsReport(@RequestParam( "SiteId") int SiteId,@RequestParam(value = "fromDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date FromDate ,@RequestParam(value = "toDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date ToDate,@RequestParam( "calling_user_details") String calling_user_details ){
 		
-		Object bIAnalytics=this.ivis.getbiAnalyticsReport(SiteId,FromDate,ToDate);
+		if(calling_user_details.equals("IVISUSA")) {
+		Object bIAnalytics=this.ivis.getbiAnalyticsReport2(SiteId,FromDate,ToDate);
 		
 		return bIAnalytics;
-		
+		}
+		else return null;
 
 	}
 }

@@ -42,6 +42,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -99,7 +100,6 @@ public class IvisService {
 
 	}
 
-	// Cameras API
 	public List<BusinessCamesEntity> getCamerasList(String uId, String accountId) {
 		String camerasUrl = "http://smstaging.iviscloud.net:8090/cpus/cameras/CameraListforSiteId_1_0?uId=";
 		camerasUrl = camerasUrl + uId + "&accountId=" + accountId;
@@ -254,7 +254,7 @@ public class IvisService {
 		return bIAnalytics;
 	}
 
-	public Object mapServices2(String url,String Request_type ) {
+	public Object mapServices2(String url,String Request_type, String accountId ) {
 
 		ReadJson reader = new ReadJson();
 		HashMap<Object, Object> mappeddata = new HashMap<Object, Object>();
@@ -286,30 +286,32 @@ public class IvisService {
 			mappeddata.put("Ads", data);
 			}
 			if(Request_type!=null && Request_type.equals("Analytics")) {
-			mappeddata.put("Analytics", this.getAnalyticsdata());
+			mappeddata.put("Analytics", this.getBusinessAnalystics((Integer.parseInt(accountId)),null));
 			}
 		} catch (IOException | JSONException e) {
 			e.printStackTrace();
 		}
-//		catch (org.json.JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+
 		return mappeddata;
 
 	}
 
-	public Object getAnalyticsdata() {
+	public Object getAnalyticsdata(String accountId) {
+		
 		ArrayList<Object> data = new ArrayList<Object>();
-		ArrayList<Object> data2 = new ArrayList<Object>();
-		HashMap<Object, Object> m = new HashMap<Object, Object>();
+		
+		String sitesUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/getBICustomerSiteId_1_0?accId=";
+		sitesUrl = sitesUrl + accountId;
+
+		String client_id = util.readUrlData(sitesUrl);
+
 
 		HttpPost post = new HttpPost("https://ivisbi.com/v2/api/analytics");
 
 		// add request parameter, form parameters
 		List<NameValuePair> urlParameters = new ArrayList<>();
-		urlParameters.add(new BasicNameValuePair("client_id", "6"));
-		urlParameters.add(new BasicNameValuePair("parameter", "12"));
+		urlParameters.add(new BasicNameValuePair("client_id", client_id));
+		urlParameters.add(new BasicNameValuePair("parameter", "13"));
 
 		try {
 			post.setEntity(new UrlEncodedFormEntity(urlParameters));
@@ -323,20 +325,8 @@ public class IvisService {
 
 			String input = EntityUtils.toString(response.getEntity());
 			JSONObject json = new JSONObject(input);
-			//System.out.println(json);
-			HashMap<Object, Object> temp = new HashMap<Object, Object>();
-			temp.put("Variance", "3");
-			temp.put("count", "134");
-			temp.put("status", "raise");
-			HashMap<Object, Object> temp2 = new HashMap<Object, Object>();
-			temp2.put("day", temp);
-			temp2.put("week", temp);
-			temp2.put("month", temp);
-			m.put("Customer Count", temp2);
-			data.add(m);
-			m = new HashMap<Object, Object>();
-			m.put("Average Waiting time", temp2);
-			data.add(m);
+			data.add(json.toMap());
+			
 			return data;
 		} catch (Exception e) {
 			System.err.println(e);
@@ -357,14 +347,13 @@ public class IvisService {
 
 		// add request parameter, form parameters
 		List<NameValuePair> urlParameters = new ArrayList<>();
-		urlParameters.add(new BasicNameValuePair("client_id", "8"));
+		urlParameters.add(new BasicNameValuePair("client_id", client_id));
 		urlParameters.add(new BasicNameValuePair("fromDate", fromDate.toString()));
 		urlParameters.add(new BasicNameValuePair("toDate", toDate.toString()));
 
 		try {
 			post.setEntity(new UrlEncodedFormEntity(urlParameters));
 		} catch (UnsupportedEncodingException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -379,6 +368,93 @@ public class IvisService {
 			System.err.println(e);
 			return null;
 		}
+	}
+	
+	public Object getbiAnalyticsReport2(int siteId, Date fromDate, Date toDate) {
+		// TODO Auto-generated method stub
+
+		String sitesUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/getBICustomerSiteId_1_0?accId=";
+		sitesUrl = sitesUrl + siteId;
+
+		String client_id = util.readUrlData(sitesUrl);
+		
+		HttpPost post = new HttpPost("http://ivisbi.com/v2/api/analyticsReport");
+
+		// add request parameter, form parameters
+		List<NameValuePair> urlParameters = new ArrayList<>();
+		urlParameters.add(new BasicNameValuePair("client_id", client_id));
+		urlParameters.add(new BasicNameValuePair("fromDate", fromDate.toString()));
+		urlParameters.add(new BasicNameValuePair("toDate", toDate.toString()));
+
+		try {
+			post.setEntity(new UrlEncodedFormEntity(urlParameters));
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+
+		try (CloseableHttpClient httpClient = HttpClients.createDefault();CloseableHttpResponse response = httpClient.execute(post)) {
+
+			String input = EntityUtils.toString(response.getEntity());
+			JSONObject json = new JSONObject(input);
+			System.out.println(json.keySet().toArray()[0]);
+			ArrayList<Object> data = new ArrayList<Object>();
+			for(int i=0;i< json.keySet().toArray().length;i++)
+			{
+				System.out.println(json.keySet().toArray()[i]);
+				HashMap<Object,Object> hashData = new HashMap<Object,Object>();
+				
+				
+				
+				
+				
+				JSONArray dataObject = json.getJSONArray(json.keySet().toArray()[i].toString());
+				 
+				hashData.put("data", dataObject.toList());
+				hashData.put("name", json.keySet().toArray()[i]);
+				data.add(hashData);
+			}
+			
+			return data;
+		} catch (Exception e) {
+			System.err.println(e);
+			return null;
+		}
+	}
+
+	public Object getMonitoringDetails(String deviceId) {
+
+//		String cameraUrl = "http://usmgmt.iviscloud.net:777/ivigil-crm/Camera?action=get&deviceId="+deviceId+"&version=1.0";
+//		String camdata = util.readUrlData(cameraUrl);
+//		JSONArray camdatajson = new JSONArray(camdata);
+//		
+//		String kernalUrl1 = "http://kernel.iviscloud.net:8182/ivis-kernel-server/CameraMonitoringHours?action=get&deviceId="+deviceId;
+//		String kernal1data = util.readUrlData(kernalUrl1);
+//		JSONArray kernal1datajson = new JSONArray(kernal1data);
+//		
+//		
+//		
+//		System.out.println(camdatajson.getJSONObject(0).get("cameraId"));
+//		System.out.println(camdatajson.getJSONObject(0).get("name"));
+//		System.out.println(camdatajson.getJSONObject(0).get("index"));
+//		HashMap<Object,Object> camIndex = new HashMap<Object,Object>();
+//		for(int i=0;i<camdatajson.length();i++) {
+//		
+//		HashMap<Object,Object> camDetails = new HashMap<Object,Object>();
+//		camDetails.put("name", camdatajson.getJSONObject(i).get("name"));
+//		camDetails.put("index", camdatajson.getJSONObject(i).get("index"));
+//		
+//		camIndex.put(camdatajson.getJSONObject(i).get("cameraId"), camDetails);
+//		}
+//		
+//		
+//		String kernalUrl2 = "http://kernel.iviscloud.net:8182/ivis-kernel-server/MonitoringHours?action=getbyIndex&index=5&deviceId="+deviceId;
+//
+//		
+//		return camIndex;
+		return null;
+		
+		
+		
 	}
 
 }
