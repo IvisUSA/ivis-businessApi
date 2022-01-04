@@ -48,6 +48,7 @@ import org.json.JSONObject;
 
 import com.ivis.ApplicationModels.Analysis;
 import com.ivis.ApplicationModels.Services;
+import com.ivis.ApplicationModels.UserLogin;
 
 @Service
 public class IvisService {
@@ -456,5 +457,41 @@ public class IvisService {
 		
 		
 	}
+	public Map<String, String> userLogin(UserLogin user) {
+		String url="http://smstaging.iviscloud.net:8080/auth/realms/"+user.getRealm()+"/protocol/openid-connect/token";
+		HttpPost post = new HttpPost(url);
+		Map<String,String> access_token=new HashMap<String,String>();
+		
+		// add request parameter, form parameters
+        List<NameValuePair> urlParameters = new ArrayList<>();
+        urlParameters.add(new BasicNameValuePair("grant_type", user.getGrant_type()));
+        urlParameters.add(new BasicNameValuePair("client_id", user.getClient_id()));
+        urlParameters.add(new BasicNameValuePair("client_secret", user.getClient_secret()));
+        urlParameters.add(new BasicNameValuePair("username", user.getUsername()));
+        urlParameters.add(new BasicNameValuePair("password", user.getPassword()));
+        
+        
+        try {
+			post.setEntity(new UrlEncodedFormEntity(urlParameters));
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        try (CloseableHttpClient httpClient = HttpClients.createDefault();
+	             CloseableHttpResponse response = httpClient.execute(post)) {
 
+	        	String input = EntityUtils.toString(response.getEntity());
+	        	JSONObject json = new JSONObject(input);
+	            //System.out.println(json.get("access_token"));
+	            access_token.put("access_token", json.getString("access_token"));
+        }
+        catch (Exception e) {
+        	System.err.println(e);
+		} 
+		
+		return access_token;
+	}
 }
+
+
