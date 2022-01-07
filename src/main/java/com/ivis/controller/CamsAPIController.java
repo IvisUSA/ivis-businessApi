@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ivis.Businessentity.BusinessCamesEntity;
+import com.ivis.Businessentity.BusinessCamesStreamEntity;
 import com.ivis.service.IvisService;
 @CrossOrigin
 @Controller
@@ -28,10 +29,10 @@ public class CamsAPIController {
 	}
 	
 	@GetMapping("/CamerasList_1_0")
-	public List<BusinessCamesEntity> getCamesdata(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId,@RequestParam("calling_user_details") String calling_user_details)
+	public List<BusinessCamesStreamEntity> getCamesdata(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId,@RequestParam("calling_user_details") String calling_user_details)
 	{
 		if(calling_user_details.equals("IVISUSA")) {
-		List<BusinessCamesEntity>camesList =null;
+		List<BusinessCamesStreamEntity>camesList =null;
 		
 		camesList = ivis.getCamerasList(uId,accountId);
 		return camesList;
@@ -41,10 +42,10 @@ public class CamsAPIController {
 	}
 	
 	@GetMapping("/CameraStreamList_1_0")
-	public List<BusinessCamesEntity> getCameraStreamList_1_0(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId,@RequestParam("calling_user_details") String calling_user_details)
+	public List<BusinessCamesStreamEntity> getCameraStreamList_1_0(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId,@RequestParam("calling_user_details") String calling_user_details)
 	{
 		if(calling_user_details.equals("IVISUSA")) {
-		List<BusinessCamesEntity>camesList =null;
+		List<BusinessCamesStreamEntity>camesList =null;
 		
 		camesList = ivis.getCamerasStreamList(uId,accountId);
 		return camesList;

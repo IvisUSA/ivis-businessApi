@@ -27,8 +27,10 @@ import com.google.gson.reflect.TypeToken;
 import com.ivis.ApplicationModels.account;
 import com.ivis.Businessentity.BIAnalyticsEntity;
 import com.ivis.Businessentity.BusinessCamesEntity;
+import com.ivis.Businessentity.BusinessCamesStreamEntity;
 import com.ivis.Businessentity.BusinessEntity;
 import com.ivis.Businessentity.CamerasEntity;
+import com.ivis.Businessentity.CamerasStreamEntity;
 import com.ivis.Businessentity.SitesEntity;
 import com.ivis.Businessentity.UserEntity;
 import com.ivis.util.ReadJson;
@@ -101,18 +103,36 @@ public class IvisService {
 
 	}
 
-	public List<BusinessCamesEntity> getCamerasList(String uId, String accountId) {
+	public List<BusinessCamesStreamEntity> getCamerasList(String uId, String accountId) {
+		String camerasUrl2 = "http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?uId=";
+		camerasUrl2 = camerasUrl2 + uId + "&accountId=" + accountId;
+		String response2 = util.readUrlData(camerasUrl2);
+
+		Type collectionType2 = new TypeToken<Collection<CamerasStreamEntity>>() {
+		}.getType();
+		List<CamerasStreamEntity> camesData2 = (List<CamerasStreamEntity>) new Gson().fromJson(response2, collectionType2);
 		String camerasUrl = "http://smstaging.iviscloud.net:8090/cpus/cameras/CameraListforSiteId_1_0?uId=";
 		camerasUrl = camerasUrl + uId + "&accountId=" + accountId;
 		String response = util.readUrlData(camerasUrl);
 
 		Gson gson = new Gson();
-		Type collectionType = new TypeToken<Collection<CamerasEntity>>() {
+		Type collectionType = new TypeToken<Collection<CamerasStreamEntity>>() {
 		}.getType();
-		List<CamerasEntity> camesData = (List<CamerasEntity>) new Gson().fromJson(response, collectionType);
-		List<BusinessCamesEntity> camesList = new ArrayList<BusinessCamesEntity>();
-		for (CamerasEntity c : camesData) {
-			BusinessCamesEntity cames = new BusinessCamesEntity();
+		List<CamerasStreamEntity> camesData = (List<CamerasStreamEntity>) new Gson().fromJson(response, collectionType);
+		List<BusinessCamesStreamEntity> camesList = new ArrayList<BusinessCamesStreamEntity>();
+		for (CamerasStreamEntity c : camesData) {
+			BusinessCamesStreamEntity cames = new BusinessCamesStreamEntity();
+			CamerasStreamEntity camsDataSecondAPI = new CamerasStreamEntity();
+			for(CamerasStreamEntity c2 : camesData2)
+			{
+				if(c2.getCameraId().equals(c.getCameraId()))
+				{
+					camsDataSecondAPI.setStreamingUrl(c2.getStreamingUrl());
+					camsDataSecondAPI.setStreamingType(c2.getStreamingType());
+					camsDataSecondAPI.setHlsEnabled(c2.getHlsEnabled());
+				}
+			}
+			
 			cames.setCameraIndex(c.getId());
 			cames.setIndexNo(c.getIndexNo());
 			cames.setDeviceInternalId(c.getPotentialId());
@@ -157,13 +177,19 @@ public class IvisService {
 			cames.setDisplayName(c.getDisplayName());
 			cames.setEventPushRetryCount(c.getEventPushRetryCount());
 			cames.setCategory(c.getCategory());
-			camesList.add(cames);
-			String serverHost = c.getServerHost();
+			
 			String c1StatusUrl = "http://usvs1.iviscloud.net:7888/Command?action=";
 			c1StatusUrl = c1StatusUrl + "status" + "&cameraId=" + c.getCameraId();
-
-			boolean cam_status = false;
+			
 			String resp = util.readUrlData(c1StatusUrl);
+			JSONArray camsjson = new JSONArray(resp);
+			cames.setCameraStatus(camsjson.getJSONObject(0).get("status").toString());		
+			
+			
+			cames.setStreamingUrl(camsDataSecondAPI.getStreamingUrl());
+			cames.setStreamingType(camsDataSecondAPI.getStreamingType());
+			cames.setHlsEnabled(camsDataSecondAPI.getHlsEnabled());
+			camesList.add(cames);
 			// JSONArray respArray = new JSONArray(resp);
 			// JSONObject ob = respArray.getJSONObject(0);
 			// String cId = ob.getString("cameraId");
@@ -493,23 +519,28 @@ public class IvisService {
 		return access_token;
 	}
 
-	public List<BusinessCamesEntity> getCamerasStreamList(String uId, String accountId) {
-		String camerasUrl = "http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?uId=";
-		camerasUrl = camerasUrl + uId + "&accountId=" + accountId;
-		String response = util.readUrlData(camerasUrl);
+	public List<BusinessCamesStreamEntity> getCamerasStreamList(String uId, String accountId) {
+		String camerasUrl2 = "http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?uId=";
+		camerasUrl2 = camerasUrl2 + uId + "&accountId=" + accountId;
+		String response = util.readUrlData(camerasUrl2);
 
-		Gson gson = new Gson();
-		Type collectionType = new TypeToken<Collection<CamerasEntity>>() {
+		Type collectionType2 = new TypeToken<Collection<CamerasStreamEntity>>() {
 		}.getType();
-		List<CamerasEntity> camesData = (List<CamerasEntity>) new Gson().fromJson(response, collectionType);
-		List<BusinessCamesEntity> camesList = new ArrayList<BusinessCamesEntity>();
-		for (CamerasEntity c : camesData) {
-			BusinessCamesEntity cames = new BusinessCamesEntity();
+		List<CamerasStreamEntity> camesData = (List<CamerasStreamEntity>) new Gson().fromJson(response, collectionType2);
+		List<BusinessCamesStreamEntity> camesList = new ArrayList<BusinessCamesStreamEntity>();
+		for (CamerasStreamEntity c : camesData) {
+			BusinessCamesStreamEntity cames = new BusinessCamesStreamEntity();
+			cames.setStreamingType(c.getStreamingType());
+			cames.setHlsEnabled(c.getHlsEnabled());
 			cames.setCameraIndex(c.getId());
 			cames.setIndexNo(c.getIndexNo());
 			cames.setDeviceInternalId(c.getPotentialId());
 			cames.setCameraId(c.getCameraId());
-			cames.setDeviceExternalId(c.getDeviceId());
+			
+
+			
+			
+			cames.setDeviceExternalId(camesData.get(0).getCameraId().substring(0,c.getCameraId().lastIndexOf("C")));
 			cames.setCameraName(c.getName());
 			cames.setServerHost(c.getServerHost());
 			cames.setServerPort(c.getServerPort());
@@ -549,29 +580,16 @@ public class IvisService {
 			cames.setDisplayName(c.getDisplayName());
 			cames.setEventPushRetryCount(c.getEventPushRetryCount());
 			cames.setCategory(c.getCategory());
-			camesList.add(cames);
-			String serverHost = c.getServerHost();
+			cames.setStreamingUrl(c.getStreamingUrl());
 			String c1StatusUrl = "http://usvs1.iviscloud.net:7888/Command?action=";
 			c1StatusUrl = c1StatusUrl + "status" + "&cameraId=" + c.getCameraId();
-
+			
 			boolean cam_status = false;
 			String resp = util.readUrlData(c1StatusUrl);
-			// JSONArray respArray = new JSONArray(resp);
-			// JSONObject ob = respArray.getJSONObject(0);
-			// String cId = ob.getString("cameraId");
+			JSONArray camsjson = new JSONArray(resp);
+			cames.setCameraStatus(camsjson.getJSONObject(0).get("status").toString());			
+			camesList.add(cames);
 
-			/*
-			 * if (cId != null && cId.equalsIgnoreCase(c.getCameraId())) { String time = "";
-			 * String camera_status = ob.getString("status");
-			 * 
-			 * if (camera_status != null && camera_status.equalsIgnoreCase("Connected")) {
-			 * time = ob.getString("timeStamp"); cam_status = true; } else if (camera_status
-			 * != null && camera_status.equalsIgnoreCase("Disconnected")) { cam_status =
-			 * false; }
-			 * 
-			 * cames.setCameraStatus(camera_status); cames.setTimeStamp(time);
-			 * camesList.add(cames); }
-			 */
 		}
 
 		return camesList;
