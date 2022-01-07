@@ -30,6 +30,15 @@ public class BusinessInsightController {
 	@Autowired 
 	IvisService  ivis;
 	
+	
+	
+	@GetMapping("/")
+	public String test()
+	{
+		return "it works";
+	}
+	
+	
 	@GetMapping("/getAnalyticsListforSite_1_0")
 	public List<BIAnalyticsEntity> getBusinessInsights(@RequestParam( "SiteId") int client_id,@RequestParam( "calling_user_details") String calling_user_details,@RequestParam(value = "date", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date date  ){
 		

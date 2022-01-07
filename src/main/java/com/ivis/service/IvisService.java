@@ -492,6 +492,91 @@ public class IvisService {
 		
 		return access_token;
 	}
+
+	public List<BusinessCamesEntity> getCamerasStreamList(String uId, String accountId) {
+		String camerasUrl = "http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?uId=";
+		camerasUrl = camerasUrl + uId + "&accountId=" + accountId;
+		String response = util.readUrlData(camerasUrl);
+
+		Gson gson = new Gson();
+		Type collectionType = new TypeToken<Collection<CamerasEntity>>() {
+		}.getType();
+		List<CamerasEntity> camesData = (List<CamerasEntity>) new Gson().fromJson(response, collectionType);
+		List<BusinessCamesEntity> camesList = new ArrayList<BusinessCamesEntity>();
+		for (CamerasEntity c : camesData) {
+			BusinessCamesEntity cames = new BusinessCamesEntity();
+			cames.setCameraIndex(c.getId());
+			cames.setIndexNo(c.getIndexNo());
+			cames.setDeviceInternalId(c.getPotentialId());
+			cames.setCameraId(c.getCameraId());
+			cames.setDeviceExternalId(c.getDeviceId());
+			cames.setCameraName(c.getName());
+			cames.setServerHost(c.getServerHost());
+			cames.setServerPort(c.getServerPort());
+			cames.setServerCameraId(c.getServerCameraId());
+			cames.setRtspUrl(c.getRtspUrl());
+			cames.setUserName(c.getUserName());
+			cames.setPassword(c.getPassword());
+			cames.setWidth(c.getWidth());
+			cames.setHeight(c.getHeight());
+			cames.setFps(c.getFps());
+			cames.setOnvifUrl(c.getOnvifUrl());
+			cames.setPtz(c.getPtz());
+			cames.setActive(c.getActive());
+			cames.sethTTPTunnel(c.gethTTPTunnel());
+			cames.setPushType(c.getPushType());
+			cames.setServerHttpPort(c.getServerHttpPort());
+			cames.setEventDuration(c.getEventDuration());
+			cames.setEventFrames(c.getEventFrames());
+			cames.setEventPushUrl(c.getEventPushUrl());
+			cames.setMotionDetectionType(c.getMotionDetectionType());
+			cames.setMotionDetectionLevel(c.getMotionDetectionLevel());
+			cames.setGprsEventDuration(c.getGprsEventDuration());
+			cames.setArchiveType(c.getArchiveType());
+			cames.setArchiveLocation(c.getArchiveLocation());
+			cames.setArchiveDays(c.getArchiveDays());
+			cames.setTranscode(c.getTranscode());
+			cames.setSpf(c.getSpf());
+			cames.setBitrate(c.getBitrate());
+			cames.setSnapshotDuration(c.getSnapshotDuration());
+			cames.setEventOnSms(c.getEventOnSms());
+			cames.setMotiondetectionId(c.getMotiondetectionId());
+			cames.setEventPushType(c.getEventPushType());
+			cames.setMotionAnalytics(c.getMotionAnalytics());
+			cames.setCameraType(c.getCameraType());
+			cames.setGtEnabled(c.getGtEnabled());
+			cames.setHbCheck(c.getHbCheck());
+			cames.setDisplayName(c.getDisplayName());
+			cames.setEventPushRetryCount(c.getEventPushRetryCount());
+			cames.setCategory(c.getCategory());
+			camesList.add(cames);
+			String serverHost = c.getServerHost();
+			String c1StatusUrl = "http://usvs1.iviscloud.net:7888/Command?action=";
+			c1StatusUrl = c1StatusUrl + "status" + "&cameraId=" + c.getCameraId();
+
+			boolean cam_status = false;
+			String resp = util.readUrlData(c1StatusUrl);
+			// JSONArray respArray = new JSONArray(resp);
+			// JSONObject ob = respArray.getJSONObject(0);
+			// String cId = ob.getString("cameraId");
+
+			/*
+			 * if (cId != null && cId.equalsIgnoreCase(c.getCameraId())) { String time = "";
+			 * String camera_status = ob.getString("status");
+			 * 
+			 * if (camera_status != null && camera_status.equalsIgnoreCase("Connected")) {
+			 * time = ob.getString("timeStamp"); cam_status = true; } else if (camera_status
+			 * != null && camera_status.equalsIgnoreCase("Disconnected")) { cam_status =
+			 * false; }
+			 * 
+			 * cames.setCameraStatus(camera_status); cames.setTimeStamp(time);
+			 * camesList.add(cames); }
+			 */
+		}
+
+		return camesList;
+
+	}
 }
 
 

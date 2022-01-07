@@ -20,6 +20,13 @@ public class CamsAPIController {
 	@Autowired 
 	IvisService  ivis;
 	
+	
+	@GetMapping("/")
+	public String test()
+	{
+		return "it works";
+	}
+	
 	@GetMapping("/CamerasList_1_0")
 	public List<BusinessCamesEntity> getCamesdata(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId,@RequestParam("calling_user_details") String calling_user_details)
 	{
@@ -27,6 +34,19 @@ public class CamsAPIController {
 		List<BusinessCamesEntity>camesList =null;
 		
 		camesList = ivis.getCamerasList(uId,accountId);
+		return camesList;
+		}
+		else
+			return null;
+	}
+	
+	@GetMapping("/CameraStreamList_1_0")
+	public List<BusinessCamesEntity> getCameraStreamList_1_0(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId,@RequestParam("calling_user_details") String calling_user_details)
+	{
+		if(calling_user_details.equals("IVISUSA")) {
+		List<BusinessCamesEntity>camesList =null;
+		
+		camesList = ivis.getCamerasStreamList(uId,accountId);
 		return camesList;
 		}
 		else
