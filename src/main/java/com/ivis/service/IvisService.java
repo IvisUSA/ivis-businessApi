@@ -3,8 +3,6 @@ package com.ivis.service;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.URISyntaxException;
 //import java.net.http.HttpClient;
 //import java.net.http.HttpRequest;
 //import java.net.http.HttpResponse;
@@ -14,27 +12,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutionException;
-
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
-import com.ivis.ApplicationModels.account;
-import com.ivis.Businessentity.BIAnalyticsEntity;
-import com.ivis.Businessentity.BusinessCamesEntity;
-import com.ivis.Businessentity.BusinessCamesStreamEntity;
-import com.ivis.Businessentity.BusinessEntity;
-import com.ivis.Businessentity.CamerasEntity;
-import com.ivis.Businessentity.CamerasStreamEntity;
-import com.ivis.Businessentity.SitesEntity;
-import com.ivis.Businessentity.UserEntity;
-import com.ivis.util.ReadJson;
-import com.ivis.util.util;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -47,10 +24,24 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.ivis.ApplicationModels.Analysis;
 import com.ivis.ApplicationModels.Services;
 import com.ivis.ApplicationModels.UserLogin;
+import com.ivis.ApplicationModels.account;
+import com.ivis.Businessentity.BIAnalyticsEntity;
+import com.ivis.Businessentity.BusinessCamesStreamEntity;
+import com.ivis.Businessentity.BusinessEntity;
+import com.ivis.Businessentity.CamerasStreamEntity;
+import com.ivis.Businessentity.SitesEntity;
+import com.ivis.Businessentity.UserEntity;
+import com.ivis.util.ReadJson;
+import com.ivis.util.util;
 
 @Service
 public class IvisService {
@@ -390,6 +381,8 @@ public class IvisService {
 			System.out.println(input);
 			JSONObject json = new JSONObject(input);
 			//System.out.println(json);
+			
+			
 			return input;
 		} catch (Exception e) {
 			System.err.println(e);
@@ -511,6 +504,7 @@ public class IvisService {
 	        	JSONObject json = new JSONObject(input);
 	            //System.out.println(json.get("access_token"));
 	            access_token.put("access_token", json.getString("access_token"));
+	            
         }
         catch (Exception e) {
         	System.err.println(e);
@@ -594,6 +588,14 @@ public class IvisService {
 
 		return camesList;
 
+	}
+
+	public Object biAnalyticRepThandTd_1_0(int siteId, Date fromDate, Date toDate) {
+		// TODO Auto-generated method stub
+		
+		
+		
+		return null;
 	}
 }
 
