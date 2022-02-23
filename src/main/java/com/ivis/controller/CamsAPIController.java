@@ -45,16 +45,14 @@ public class CamsAPIController {
 	}
 	
 	@GetMapping("/CameraStreamList_1_0")
-	public List<BusinessCamesStreamEntity> getCameraStreamList_1_0(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId,@RequestParam("calling_user_details") String calling_user_details)
+	public List<Object> getCameraStreamList_1_0(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId)
 	{
-		if(calling_user_details.equals("IVISUSA")) {
-		List<BusinessCamesStreamEntity>camesList =null;
 		
-		camesList = ivis.getCamerasStreamList(uId,accountId);
+		List<Object> camesList =null;
+		
+		camesList = ivis.getCamerasStreamList2(uId,accountId);
 		return camesList;
-		}
-		else
-			return null;
+
 	}
 	
 	@PostMapping("/CameraStreamList_2_0")

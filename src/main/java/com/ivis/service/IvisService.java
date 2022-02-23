@@ -1,8 +1,11 @@
 package com.ivis.service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.HttpURLConnection;
+import java.net.URL;
 //import java.net.http.HttpClient;
 //import java.net.http.HttpRequest;
 //import java.net.http.HttpResponse;
@@ -516,6 +519,39 @@ public class IvisService {
 		return access_token;
 	}
 
+	
+	public List<Object> getCamerasStreamList2(String uId, String accountId) {
+		
+		JSONArray json = new JSONArray();
+		
+		try {
+		URL url = new URL("http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?uId="+uId+"&accountId="+accountId);
+		HttpURLConnection http = (HttpURLConnection)url.openConnection();
+		http.setRequestProperty("Accept", "application/json");
+		InputStream resp = http.getInputStream();
+		
+		StringBuilder sb = new StringBuilder();
+		for (int ch; (ch = resp.read()) != -1; ) {
+		    sb.append((char) ch);
+		}
+		
+		 json = new JSONArray(sb.toString());
+		http.disconnect();
+		
+		return json.toList();
+		
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return json.toList();
+		
+		
+		
+		// TODO Auto-generated constructor stub
+	}
 	public List<BusinessCamesStreamEntity> getCamerasStreamList(String uId, String accountId) {
 		String camerasUrl2 = "http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?uId=";
 		camerasUrl2 = camerasUrl2 + uId + "&accountId=" + accountId;

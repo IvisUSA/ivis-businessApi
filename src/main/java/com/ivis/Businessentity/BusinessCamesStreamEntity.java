@@ -53,10 +53,16 @@ public class BusinessCamesStreamEntity {
 	public String hlsEnabled;
 	
 	
+	public String snapShotUrl;
 	
 	
 	
-	
+	public String getSnapShotUrl() {
+		return snapShotUrl;
+	}
+	public void setSnapShotUrl(String snapShotUrl) {
+		this.snapShotUrl = snapShotUrl;
+	}
 	public String getStreamingType() {
 		return streamingType;
 	}
