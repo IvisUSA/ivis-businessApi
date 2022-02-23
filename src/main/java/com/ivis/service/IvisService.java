@@ -272,6 +272,7 @@ public class IvisService {
 		return bIAnalytics;
 	}
 
+	// TODO WE need to change this
 	public Object mapServices2(String url,String Request_type, String accountId ) {
 
 		ReadJson reader = new ReadJson();
@@ -314,6 +315,8 @@ public class IvisService {
 
 	}
 
+	
+	// TODO WE need to change this
 	public Object getAnalyticsdata(String accountId) {
 		
 		ArrayList<Object> data = new ArrayList<Object>();

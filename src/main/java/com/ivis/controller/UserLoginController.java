@@ -47,7 +47,7 @@ public class UserLoginController {
 	}
 //	String data = "{\"password\": \""+userdata.get("password")+"\",\"userName\": \""+userdata.get("userName")+"\",\"calling_System_Detail\":\""+userdata.get("calling_System_Detail")+"\"}";
 
-	@PostMapping(value = "/login")
+	@PostMapping(value = "/login_2_0")
 	public Object userLogin2(@RequestBody HashMap<String, String> userdata) {
 		JSONObject json = new JSONObject();
 		try {
