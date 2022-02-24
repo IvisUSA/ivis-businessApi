@@ -6,6 +6,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ivis.Businessentity.UserEntity;
 import com.ivis.service.IvisService;
+import com.ivis.util.KeycloakUtils;
 @CrossOrigin
 @Controller
 @RestController
@@ -54,40 +56,24 @@ public class SitesAPIController {
 //	}
 	
 	@PostMapping("/sitesList_2_0")
-	public Object  getSitesdata(@RequestBody HashMap<String, String> userdata)
+	public Object  getSitesdata(@RequestBody HashMap<String, String> inputData)
 	{
-		JSONObject json = new JSONObject();
-		try {
-			URL url = new URL("http://smstaging.iviscloud.net:8090/keycloakApp/siteList");
-			HttpURLConnection http = (HttpURLConnection) url.openConnection();
-			http.setRequestMethod("POST");
-			http.setDoOutput(true);
-			http.setRequestProperty("Accept", "application/json");
-			http.setRequestProperty("Authorization", "Bearer {token}");
-			http.setRequestProperty("Content-Type", "application/json");
+		String userName = inputData.get("userName");
+		String accesstoken = inputData.get("accessToken");
 
-			String data = "{\n    \"userName\" : \""+userdata.get("userName")+"\",\n\n    \"accessToken\" : \""+userdata.get("accessToken")+"\"\n\n}";
+		
+		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accesstoken);
+		
+		if(accessCheck) {
 
-			byte[] out = data.getBytes(StandardCharsets.UTF_8);
-
-			OutputStream stream = http.getOutputStream();
-			stream.write(out);
-			InputStream resp = http.getInputStream();
-			StringBuilder sb = new StringBuilder();
-			for (int ch; (ch = resp.read()) != -1;) {
-				sb.append((char) ch);
-			}
-			json = new JSONObject(sb.toString());
-
-			http.disconnect();
-
-			return json.toMap();
-
-		} catch (Exception e) {
-			System.err.println(e);
-
-			return null;
+			
+			return ivis.getImMatrixAvailability(userName);
+		
+		
 		}
+		else 
+			return null;
+		
 		
 	}
 	

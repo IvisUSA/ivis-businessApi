@@ -34,6 +34,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.ivis.ApplicationModels.Analysis;
+import com.ivis.ApplicationModels.CamStreamListModel;
+import com.ivis.ApplicationModels.CamStreamListModelWithActiveCams;
 import com.ivis.ApplicationModels.Services;
 import com.ivis.ApplicationModels.UserLogin;
 import com.ivis.ApplicationModels.account;
@@ -52,7 +54,7 @@ public class IvisService {
 	public UserEntity getImMatrixAvailability(String uId) {
 
 		UserEntity u = new UserEntity();
-		String sitesUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/GetSitesListForUser_1_0?uId=";
+		String sitesUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/GetSitesListForUser_1_0?userName=";
 		sitesUrl = sitesUrl + uId;
 
 		String response = util.readUrlData(sitesUrl);
@@ -284,7 +286,12 @@ public class IvisService {
 		org.json.JSONObject json;
 		try {
 			json = reader.readJsonFromUrl(url);
-
+			if(!json.get("bgImagePath").equals(null))
+			mappeddata.put("background", json.get("bgImagePath"));
+			else
+				mappeddata.put("background", null);
+			
+			
 			mappeddata.put("SiteId", json.get("accountId"));
 
 			mappeddata.put("SiteName", json.get("siteName"));
@@ -306,11 +313,13 @@ public class IvisService {
 			}
 			data.put("screens", data2);
 			mappeddata.put("Ads", data);
+			
 			}
 			if(Request_type!=null && Request_type.equals("Analytics")) {
 			mappeddata.put("Analytics", this.getBusinessAnalystics((Integer.parseInt(accountId)),null));
 			}
 		} catch (IOException | JSONException e) {
+			System.out.println(e);
 			e.printStackTrace();
 		}
 
@@ -520,12 +529,16 @@ public class IvisService {
 	}
 
 	
-	public List<Object> getCamerasStreamList2(String uId, String accountId) {
+	public ArrayList<CamStreamListModelWithActiveCams> getCamerasStreamList2(String userName, String accountId) {
 		
 		JSONArray json = new JSONArray();
-		
+		Gson gson = new Gson();
 		try {
-		URL url = new URL("http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?uId="+uId+"&accountId="+accountId);
+			URL url = null;
+			if(accountId!=null)
+		 url = new URL("http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?userName="+userName+"&accountId="+accountId);
+			else
+		 url = new URL("http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?userName="+userName);	
 		HttpURLConnection http = (HttpURLConnection)url.openConnection();
 		http.setRequestProperty("Accept", "application/json");
 		InputStream resp = http.getInputStream();
@@ -537,21 +550,51 @@ public class IvisService {
 		
 		 json = new JSONArray(sb.toString());
 		http.disconnect();
+
+		ArrayList<CamStreamListModelWithActiveCams> camsData2 = new ArrayList<>();
 		
-		return json.toList();
+		for(Object i:json)
+		{
+			CamStreamListModelWithActiveCams camstream = gson.fromJson(i.toString(), CamStreamListModelWithActiveCams.class);
+			
+			
+			url = new URL("http://usvs1.iviscloud.net:7888/Command?action=status&cameraId="+camstream.getCameraId());
+			 http = (HttpURLConnection)url.openConnection();
+			 resp = http.getInputStream();
+			
+			 sb = new StringBuilder();
+			for (int ch; (ch = resp.read()) != -1; ) {
+			    sb.append((char) ch);
+			}
+			
+			 json = new JSONArray(sb.toString());
+			http.disconnect();
+			
+			camstream.setCameraStatus(json.getJSONObject(0).get("status").toString());
+			camsData2.add(camstream);
+		}
+		
+		
+		
+		
+		
+		
+		return camsData2;
 		
 			
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return json.toList();
+		return null;
 		
 		
 		
 		// TODO Auto-generated constructor stub
 	}
+	
+
+	
 	public List<BusinessCamesStreamEntity> getCamerasStreamList(String uId, String accountId) {
 		String camerasUrl2 = "http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?uId=";
 		camerasUrl2 = camerasUrl2 + uId + "&accountId=" + accountId;
