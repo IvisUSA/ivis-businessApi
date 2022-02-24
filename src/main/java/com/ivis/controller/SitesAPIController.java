@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,8 +59,20 @@ public class SitesAPIController {
 	@PostMapping("/sitesList_2_0")
 	public Object  getSitesdata(@RequestBody HashMap<String, String> inputData)
 	{
+		
+		if(!inputData.keySet().containsAll(new ArrayList<String>() {{add("userName");add("accessToken");add("calling_System_Detail");}} ))
+		{
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Insufficient details");
+				
+			}};
+		}
+		
+		
 		String userName = inputData.get("userName");
 		String accesstoken = inputData.get("accessToken");
+		String callingSystemDetail = inputData.get("calling_System_Detail");
 
 		
 		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accesstoken);
@@ -67,12 +80,16 @@ public class SitesAPIController {
 		if(accessCheck) {
 
 			
-			return ivis.getImMatrixAvailability(userName);
+			return ivis.getSiteListByUserName(userName);
 		
 		
 		}
 		else 
-			return null;
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Invalid user details");
+				
+			}};
 		
 		
 	}

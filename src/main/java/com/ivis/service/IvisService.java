@@ -37,6 +37,7 @@ import com.ivis.ApplicationModels.Analysis;
 import com.ivis.ApplicationModels.CamStreamListModel;
 import com.ivis.ApplicationModels.CamStreamListModelWithActiveCams;
 import com.ivis.ApplicationModels.Services;
+import com.ivis.ApplicationModels.SiteList;
 import com.ivis.ApplicationModels.UserLogin;
 import com.ivis.ApplicationModels.account;
 import com.ivis.Businessentity.BIAnalyticsEntity;
@@ -672,12 +673,28 @@ public class IvisService {
 
 	}
 
-	public Object biAnalyticRepThandTd_1_0(int siteId, Date fromDate, Date toDate) {
-		// TODO Auto-generated method stub
+
+	public Object getSiteListByUserName(String username)
+	{
+		String siteUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/GetSitesListForUser_1_0?userName="+username;
+		String response = util.readUrlData(siteUrl);
+		
+		Gson gson = new Gson();
+		
+		SiteList sitesListData = gson.fromJson(response, SiteList.class);
+		
+		if(sitesListData.getSiteList().size()>0) {
+		sitesListData.setStatus("Success");
+		sitesListData.setMessage("Site data is valid");
+		}
+		else
+		{
+			sitesListData.setStatus("Failed");
+			sitesListData.setMessage("Data not available");
+		}
 		
 		
-		
-		return null;
+		return sitesListData;
 	}
 }
 

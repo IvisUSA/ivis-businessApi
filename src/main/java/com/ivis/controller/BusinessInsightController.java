@@ -59,15 +59,5 @@ public class BusinessInsightController {
 		else return null;
 
 	}
-	@GetMapping(path = "/biAnalyticRepThandTd_1_0", produces=MediaType.APPLICATION_JSON_VALUE)
-	public Object biAnalyticRepThandTd_1_0(@RequestParam( "SiteId") int SiteId,@RequestParam(value = "fromDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date FromDate ,@RequestParam(value = "toDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date ToDate,@RequestParam( "calling_user_details") String calling_user_details ){
-		
-		if(calling_user_details.equals("IVISUSA")) {
-		Object bIAnalytics=this.ivis.biAnalyticRepThandTd_1_0(SiteId,FromDate,ToDate);
-		
-		return bIAnalytics;
-		}
-		else return null;
 
-	}
 }

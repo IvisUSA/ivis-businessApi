@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,8 +49,20 @@ public class CamsAPIController {
 	}
 	
 	@PostMapping("/CameraStreamList_1_0")
-	public List<CamStreamListModelWithActiveCams> getCameraStreamList_1_0(@RequestBody HashMap<String,String> data)
-	{String accountId = null;
+	public Object getCameraStreamList_1_0(@RequestBody HashMap<String,String> data)
+	{
+		if(!data.keySet().containsAll(new ArrayList<String>() {{add("userName");add("accessToken");add("calling_System_Detail");}} ))
+		{
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Insufficient details");
+				
+			}};
+		}
+		
+		
+		
+		String accountId = null;
 		
 		String userName = data.get("userName");
 		if(data.containsKey("SiteId"))
