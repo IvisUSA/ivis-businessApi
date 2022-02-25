@@ -31,6 +31,7 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.ivis.ApplicationModels.Analysis;
@@ -676,6 +677,9 @@ public class IvisService {
 
 	public Object getSiteListByUserName(String username)
 	{
+		JSONObject outobj = new JSONObject();
+		
+		
 		String siteUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/GetSitesListForUser_1_0?userName="+username;
 		String response = util.readUrlData(siteUrl);
 		
@@ -683,18 +687,69 @@ public class IvisService {
 		
 		SiteList sitesListData = gson.fromJson(response, SiteList.class);
 		
+		
+		
+		
 		if(sitesListData.getSiteList().size()>0) {
+			
 		sitesListData.setStatus("Success");
 		sitesListData.setMessage("Site data is valid");
 		}
 		else
 		{
+			
 			sitesListData.setStatus("Failed");
 			sitesListData.setMessage("Data not available");
 		}
 		
 		
-		return sitesListData;
+		
+		String jsondata = gson.toJson(sitesListData);
+
+		System.out.println(jsondata);
+		
+		JSONObject jsonobj = new JSONObject(jsondata);
+		
+		JSONArray jsonarr = new JSONArray(jsonobj.getJSONArray("siteList"));
+		
+		
+		outobj.put("Status", sitesListData.getStatus());
+		outobj.put("Message", sitesListData.getMessage());
+		JSONArray outarr = new JSONArray();
+		
+		
+		for(int i =0;i<jsonarr.length();i++)
+		{
+			JSONObject outarrobj = new JSONObject();
+			
+			JSONObject jsonarrobj = new JSONObject(jsonarr.getJSONObject(i).toString());
+
+			outarrobj.put("siteid",jsonarrobj.get("accountId"));
+					outarrobj.put("sitename",jsonarrobj.get("accountName"));
+					outarrobj.put("project",jsonarrobj.get("facility"));
+					outarrobj.put("atmid",jsonarrobj.get("customerSiteId"));
+					outarrobj.put("state",jsonarrobj.get("state"));
+					outarrobj.put("City",jsonarrobj.get("city"));
+					outarrobj.put("zone",jsonarrobj.get("zone"));
+					outarrobj.put("business_vertical",jsonarrobj.get("industry"));
+					outarrobj.put("phase",jsonarrobj.get("batchNo"));
+					outarrobj.put("deviceInternalId",jsonarrobj.get("potentialId"));
+					outarrobj.put("deviceExternalId",jsonarrobj.get("unitId"));
+					outarrobj.put("LocationType",jsonarrobj.get("siteType"));
+					outarrobj.put("latitude",jsonarrobj.get("latitude"));
+					outarrobj.put("longitude",jsonarrobj.get("longitude"));
+			outarr.put(outarrobj);
+		}
+
+
+		
+		outobj.put("siteList", outarr);
+
+		
+
+		
+		
+		return outobj.toMap();
 	}
 }
 
