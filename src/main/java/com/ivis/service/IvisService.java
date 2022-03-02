@@ -280,14 +280,47 @@ public class IvisService {
 	}
 
 	// TODO WE need to change this
-	public Object mapServices2(String url,String Request_type, String accountId ) {
+	public Object mapServices2(String url2,String Request_type, String accountId ) {
 
-		ReadJson reader = new ReadJson();
-		HashMap<Object, Object> mappeddata = new HashMap<Object, Object>();
-		HashMap<Object, Object> data = new HashMap<Object, Object>();
-		org.json.JSONObject json;
+
 		try {
-			json = reader.readJsonFromUrl(url);
+			
+			URL url = new URL(url2);
+			HttpURLConnection http = (HttpURLConnection)url.openConnection();
+			http.setRequestProperty("Accept", "application/json");
+
+			System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
+			InputStream resp = http.getInputStream();
+			
+			StringBuilder sb = new StringBuilder();
+			for (int ch; (ch = resp.read()) != -1; ) {
+			    sb.append((char) ch);
+			}
+			System.out.println("sb	:	"+sb);
+			if(sb.toString().equals(null))
+			{
+				return new HashMap<String,String>(){{
+					put("Status","Failed");	
+					}
+					};
+			}
+			
+
+			JSONObject json = new JSONObject(sb.toString());
+			http.disconnect();
+			
+			HashMap<Object, Object> mappeddata = new HashMap<Object, Object>();
+			HashMap<Object, Object> data = new HashMap<Object, Object>();
+			if(json.equals(null))
+			{
+				return new HashMap<String,String>(){{
+					put("Status","Failed");	
+					}
+					};
+			}
+			else
+				mappeddata.put("Status","Success");	
+			
 			if(!json.get("bgImagePath").equals(null))
 			mappeddata.put("background", json.get("bgImagePath"));
 			else
@@ -320,13 +353,18 @@ public class IvisService {
 			if(Request_type!=null && Request_type.equals("Analytics")) {
 			mappeddata.put("Analytics", this.getBusinessAnalystics((Integer.parseInt(accountId)),null));
 			}
+			return mappeddata;
+
 		} catch (IOException | JSONException e) {
 			System.out.println(e);
 			e.printStackTrace();
+			return new HashMap<String,String>(){{
+			put("Status","Failed");	
+			}
+			};
 		}
 
-		return mappeddata;
-
+		
 	}
 
 	
@@ -532,8 +570,8 @@ public class IvisService {
 
 	
 	public ArrayList<CamStreamListModelWithActiveCams> getCamerasStreamList2(String userName, String accountId) {
-		
 		JSONArray json = new JSONArray();
+		
 		Gson gson = new Gson();
 		try {
 			URL url = null;
@@ -549,50 +587,33 @@ public class IvisService {
 		for (int ch; (ch = resp.read()) != -1; ) {
 		    sb.append((char) ch);
 		}
-		
 		 json = new JSONArray(sb.toString());
 		http.disconnect();
-
 		ArrayList<CamStreamListModelWithActiveCams> camsData2 = new ArrayList<>();
-		
 		for(Object i:json)
 		{
+			String dataString = gson.toJson(i);
+			JSONObject datajson = new JSONObject(dataString);
 			CamStreamListModelWithActiveCams camstream = gson.fromJson(i.toString(), CamStreamListModelWithActiveCams.class);
-			
-			
 			url = new URL("http://usvs1.iviscloud.net:7888/Command?action=status&cameraId="+camstream.getCameraId());
 			 http = (HttpURLConnection)url.openConnection();
 			 resp = http.getInputStream();
-			
 			 sb = new StringBuilder();
 			for (int ch; (ch = resp.read()) != -1; ) {
 			    sb.append((char) ch);
 			}
-			
 			 json = new JSONArray(sb.toString());
 			http.disconnect();
-			
 			camstream.setCameraStatus(json.getJSONObject(0).get("status").toString());
+			camstream.setDeviceInternalId(datajson.getJSONObject("map").getInt("potentialId"));
+			camstream.setCameraname(datajson.getJSONObject("map").getString("name"));
 			camsData2.add(camstream);
 		}
-		
-		
-		
-		
-		
-		
 		return camsData2;
-		
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		return null;
-		
-		
-		
-		// TODO Auto-generated constructor stub
 	}
 	
 
@@ -677,53 +698,30 @@ public class IvisService {
 
 	public Object getSiteListByUserName(String username)
 	{
-		JSONObject outobj = new JSONObject();
-		
-		
+		JSONObject outobj = new JSONObject();		
 		String siteUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/GetSitesListForUser_1_0?userName="+username;
 		String response = util.readUrlData(siteUrl);
-		
 		Gson gson = new Gson();
-		
 		SiteList sitesListData = gson.fromJson(response, SiteList.class);
-		
-		
-		
-		
 		if(sitesListData.getSiteList().size()>0) {
-			
 		sitesListData.setStatus("Success");
 		sitesListData.setMessage("Site data is valid");
 		}
 		else
 		{
-			
 			sitesListData.setStatus("Failed");
 			sitesListData.setMessage("Data not available");
-		}
-		
-		
-		
+		}		
 		String jsondata = gson.toJson(sitesListData);
-
-		System.out.println(jsondata);
-		
 		JSONObject jsonobj = new JSONObject(jsondata);
-		
 		JSONArray jsonarr = new JSONArray(jsonobj.getJSONArray("siteList"));
-		
-		
 		outobj.put("Status", sitesListData.getStatus());
 		outobj.put("Message", sitesListData.getMessage());
 		JSONArray outarr = new JSONArray();
-		
-		
 		for(int i =0;i<jsonarr.length();i++)
 		{
 			JSONObject outarrobj = new JSONObject();
-			
 			JSONObject jsonarrobj = new JSONObject(jsonarr.getJSONObject(i).toString());
-
 			outarrobj.put("siteid",jsonarrobj.get("accountId"));
 					outarrobj.put("sitename",jsonarrobj.get("accountName"));
 					outarrobj.put("project",jsonarrobj.get("facility"));
@@ -740,15 +738,7 @@ public class IvisService {
 					outarrobj.put("longitude",jsonarrobj.get("longitude"));
 			outarr.put(outarrobj);
 		}
-
-
-		
 		outobj.put("siteList", outarr);
-
-		
-
-		
-		
 		return outobj.toMap();
 	}
 }

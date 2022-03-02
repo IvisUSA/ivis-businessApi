@@ -5,7 +5,7 @@ public class CamStreamListModelWithActiveCams {
 	
 	
 	
-	String authkey;  
+//	String authkey;  
 	 int refreshInterval  ;
 	 String displayName  ;
 	 String snapShotUrl   ;
@@ -13,7 +13,8 @@ public class CamStreamListModelWithActiveCams {
 	 String description  ;
 	 String  active  ;
 	 String streamingUrl ;
-	 int  potentialId  ;
+	 int deviceInternalId;
+//	 int  potentialId  ;
 	 String motionEnabled  ;
 	 String streamingType  ;
 	 String rtspUrl    ;
@@ -21,7 +22,8 @@ public class CamStreamListModelWithActiveCams {
 	 String cameraId   ;
 	 String hlsEnabled  ;
 	 String ptz   ;
-	 String name  ;
+//	 String name  ;
+	 String cameraname;
 	 int  width  ;
 	 int  id  ;
 	 String  reportMailIds ;
@@ -38,12 +40,12 @@ public class CamStreamListModelWithActiveCams {
 	public void setCameraStatus(String cameraStatus) {
 		this.cameraStatus = cameraStatus;
 	}
-	public String getAuthkey() {
-		return authkey;
-	}
-	public void setAuthkey(String authkey) {
-		this.authkey = authkey;
-	}
+//	public String getAuthkey() {
+//		return authkey;
+//	}
+//	public void setAuthkey(String authkey) {
+//		this.authkey = authkey;
+//	}
 	public int getRefreshInterval() {
 		return refreshInterval;
 	}
@@ -86,14 +88,22 @@ public class CamStreamListModelWithActiveCams {
 	public void setStreamingUrl(String streamingUrl) {
 		this.streamingUrl = streamingUrl;
 	}
-	public int getPotentialId() {
-		return potentialId;
-	}
-	public void setPotentialId(int potentialId) {
-		this.potentialId = potentialId;
-	}
+//	public int getPotentialId() {
+//		return potentialId;
+//	}
+//	public void setPotentialId(int potentialId) {
+//		this.potentialId = potentialId;
+//	}
+	
 	public String getMotionEnabled() {
 		return motionEnabled;
+	}
+
+	public int getDeviceInternalId() {
+		return deviceInternalId;
+	}
+	public void setDeviceInternalId(int deviceInternalId) {
+		this.deviceInternalId = deviceInternalId;
 	}
 	public void setMotionEnabled(String motionEnabled) {
 		this.motionEnabled = motionEnabled;
@@ -134,14 +144,22 @@ public class CamStreamListModelWithActiveCams {
 	public void setPtz(String ptz) {
 		this.ptz = ptz;
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
+//	public String getName() {
+//		return name;
+//	}
+//	public void setName(String name) {
+//		this.name = name;
+//	}
+	
+	
 	public int getWidth() {
 		return width;
+	}
+	public String getCameraname() {
+		return cameraname;
+	}
+	public void setCameraname(String cameraname) {
+		this.cameraname = cameraname;
 	}
 	public void setWidth(int width) {
 		this.width = width;
