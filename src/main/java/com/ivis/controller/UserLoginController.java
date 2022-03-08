@@ -5,6 +5,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -159,5 +160,25 @@ public class UserLoginController {
 		}
 	}
 	
-
+	@PostMapping("/resetPassword_1_0")
+	public Object resetPassword1_0(@RequestBody HashMap<String,String> input)
+	{
+		
+		
+		if(!input.keySet().containsAll(new ArrayList<String>() {{add("calling_System_Detail");add("userName");}} ))
+		{
+			System.out.println(input);
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Insufficient details");
+				
+			}};
+		}
+		
+		return ivis.resetPasswordSendEmailByUserName(input.get("userName"));
+		
+	}
+	
+	
+	
 }

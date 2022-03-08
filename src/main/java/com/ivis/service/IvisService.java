@@ -2,10 +2,12 @@ package com.ivis.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 //import java.net.http.HttpClient;
 //import java.net.http.HttpRequest;
 //import java.net.http.HttpResponse;
@@ -37,6 +39,9 @@ import com.google.gson.reflect.TypeToken;
 import com.ivis.ApplicationModels.Analysis;
 import com.ivis.ApplicationModels.CamStreamListModel;
 import com.ivis.ApplicationModels.CamStreamListModelWithActiveCams;
+import com.ivis.ApplicationModels.MonitoringDetailsInput;
+import com.ivis.ApplicationModels.MonitoringDetailsOutput;
+import com.ivis.ApplicationModels.MonitoringHoursListModel;
 import com.ivis.ApplicationModels.Services;
 import com.ivis.ApplicationModels.SiteList;
 import com.ivis.ApplicationModels.UserLogin;
@@ -496,37 +501,27 @@ public class IvisService {
 		}
 	}
 
-	public Object getMonitoringDetails(String deviceId) {
+	public Object getMonitoringDetails(String accountId) {
 
-//		String cameraUrl = "http://usmgmt.iviscloud.net:777/ivigil-crm/Camera?action=get&deviceId="+deviceId+"&version=1.0";
-//		String camdata = util.readUrlData(cameraUrl);
-//		JSONArray camdatajson = new JSONArray(camdata);
-//		
-//		String kernalUrl1 = "http://kernel.iviscloud.net:8182/ivis-kernel-server/CameraMonitoringHours?action=get&deviceId="+deviceId;
-//		String kernal1data = util.readUrlData(kernalUrl1);
-//		JSONArray kernal1datajson = new JSONArray(kernal1data);
-//		
-//		
-//		
-//		System.out.println(camdatajson.getJSONObject(0).get("cameraId"));
-//		System.out.println(camdatajson.getJSONObject(0).get("name"));
-//		System.out.println(camdatajson.getJSONObject(0).get("index"));
-//		HashMap<Object,Object> camIndex = new HashMap<Object,Object>();
-//		for(int i=0;i<camdatajson.length();i++) {
-//		
-//		HashMap<Object,Object> camDetails = new HashMap<Object,Object>();
-//		camDetails.put("name", camdatajson.getJSONObject(i).get("name"));
-//		camDetails.put("index", camdatajson.getJSONObject(i).get("index"));
-//		
-//		camIndex.put(camdatajson.getJSONObject(i).get("cameraId"), camDetails);
-//		}
-//		
-//		
-//		String kernalUrl2 = "http://kernel.iviscloud.net:8182/ivis-kernel-server/MonitoringHours?action=getbyIndex&index=5&deviceId="+deviceId;
-//
-//		
-//		return camIndex;
-		return null;
+		String data = util.readUrlData("http://smstaging.iviscloud.net:8090/cpus/Monitoring/monitoringHours?accountId="+accountId);
+		
+		MonitoringDetailsInput input = new Gson().fromJson(data, MonitoringDetailsInput.class);
+		
+		MonitoringDetailsOutput output = new MonitoringDetailsOutput();
+		
+		output.setSiteId(input.getPotentailId());
+		
+		if(input.getMonitoringHours().size()>0)
+			output.setStatus("Enabled");
+		else
+			output.setStatus("Disabled");
+		
+
+		output.setMonitoringHours(input.getMonitoringHours());
+		
+		
+		
+		return output;
 		
 		
 		
@@ -559,6 +554,7 @@ public class IvisService {
 	        	JSONObject json = new JSONObject(input);
 	            //System.out.println(json.get("access_token"));
 	            access_token.put("access_token", json.getString("access_token"));
+	            httpClient.close();
 	            
         }
         catch (Exception e) {
@@ -740,6 +736,51 @@ public class IvisService {
 		}
 		outobj.put("siteList", outarr);
 		return outobj.toMap();
+	}
+
+	public Object resetPasswordSendEmailByUserName(String userName) {
+		try {
+			URL url = new URL("http://smstaging.iviscloud.net:8090/keycloakApp/resetPasswordUsingEmail");
+			HttpURLConnection http = (HttpURLConnection)url.openConnection();
+			http.setRequestMethod("PUT");
+			http.setDoOutput(true);
+			http.setRequestProperty("Accept", "application/json");
+			http.setRequestProperty("Authorization", "Bearer {token}");
+			http.setRequestProperty("Content-Type", "application/json");
+
+			String data = "{\n    \"userName\" : \""+userName+"\"\n}";
+
+			byte[] out = data.getBytes(StandardCharsets.UTF_8);
+
+			OutputStream stream = http.getOutputStream();
+			stream.write(out);
+
+//			System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
+			
+
+			
+			InputStream resp = http.getInputStream();
+			
+			StringBuilder sb = new StringBuilder();
+			for (int ch; (ch = resp.read()) != -1; ) {
+			    sb.append((char) ch);
+			}
+//			System.out.println(sb);
+			 JSONObject json = new JSONObject(sb.toString());
+			
+			http.disconnect();
+			return json.toMap();
+		}
+		catch(Exception e)
+		{
+			System.err.println(e);
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Invalid username");
+				
+			}};
+		}
+		
 	}
 }
 
