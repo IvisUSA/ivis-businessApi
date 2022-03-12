@@ -69,7 +69,7 @@ public class HeartBeatApiController {
 			return new HashMap<String,Object>(){{
 				put("Status","Success");
 				put("Message","Valid data");
-				put("SiteId","1009");
+				put("SiteId",inputData.get("SiteId"));
 				
 				
 				put("Devices",new HashMap<String,Object>() {{

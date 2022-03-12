@@ -15,8 +15,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -519,8 +521,18 @@ public class IvisService {
 		else
 			output.setStatus("Disabled");
 		
+		ArrayList<MonitoringHoursListModel> lis = new ArrayList<MonitoringHoursListModel>();
+		
+		
+		  Set<MonitoringHoursListModel> s= new HashSet<MonitoringHoursListModel>();
+		  
+		  s.addAll(input.getMonitoringHours());
+		
 
-		output.setMonitoringHours(input.getMonitoringHours());
+		  System.out.println(s);
+		  lis.addAll(s);
+		
+		output.setMonitoringHours(lis);
 		
 		
 		
