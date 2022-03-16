@@ -760,7 +760,6 @@ public class IvisService {
 			http.setRequestMethod("PUT");
 			http.setDoOutput(true);
 			http.setRequestProperty("Accept", "application/json");
-			http.setRequestProperty("Authorization", "Bearer {token}");
 			http.setRequestProperty("Content-Type", "application/json");
 
 			String data = "{\n    \"userName\" : \""+userName+"\"\n}";
