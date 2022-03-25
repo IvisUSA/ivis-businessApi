@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -76,7 +77,7 @@ public class SitesAPIController {
 
 		
 		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accesstoken);
-		
+		System.out.println(accessCheck);
 		if(accessCheck) {
 
 			
@@ -92,6 +93,70 @@ public class SitesAPIController {
 			}};
 		
 		
+	}
+	@PostMapping("/SnapshotListForSite_1_0")
+	public Object camListAlongWithSitesUsingSiteId(@RequestBody HashMap<String, Object> data)
+	{
+		if(!data.keySet().containsAll(new ArrayList<String>() {{add("sitesList");add("accessToken");add("calling_System_Detail");add("userName");}} ))
+		{
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Insufficient details");
+				
+			}};
+		}
+		String userName = (String) data.get("userName");
+		String accessToken = (String) data.get("accessToken");
+		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accessToken);
+		
+		if(accessCheck) {
+			
+			JSONObject json = new JSONObject();
+			
+			JSONArray jarray = new JSONArray();
+			List<Integer> sitelists = (List<Integer>) data.get("sitesList");
+			for(Integer i : sitelists)
+			{
+				String site = "{\r\n"
+						+ "			\"siteid\": "+i+",\r\n"
+						+ "			\"sitename\" :\"\",\r\n"
+						+ "			\"CameraList\": [ \r\n"
+						+ "				{\r\n"
+						+ "					\"displayName\": \""+i+" image\",\r\n"
+						+ "					\"snapShotUrl\":\"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSA1004C2\",\r\n"
+						+ "					\"displayOrder\":2,\r\n"
+						+ "					\"cameraStatus\":\"Connected\"\r\n"
+						+ "				},\r\n"
+						+ "				{\r\n"
+						+ "					\"displayName\":\"One Stop-Odessa-IVISUSA1004 Cam3\",\r\n"
+						+ "					\"snapShotUrl\":\"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSA1004C3\",\r\n"
+						+ "					\"displayOrder\":3,\r\n"
+						+ "					\"cameraStatus\":\"Connected\"\r\n"
+						+ "				},\r\n"
+						+ "				{\r\n"
+						+ "					\"displayName\":\"One Stop-Odessa-IVISUSA1004 Cam3\",\r\n"
+						+ "					\"snapShotUrl\":\"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSA1004C1\",\r\n"
+						+ "					\"displayOrder\":1,\r\n"
+						+ "					\"cameraStatus\":\"Connected\"\r\n"
+						+ "				}\r\n"
+						+ "			]\r\n"
+						+ "		}";
+				JSONObject siteJson = new JSONObject(site);
+				jarray.put(siteJson);
+			}
+			json.put("Status", "Success");
+			json.put("Message", "Valid");
+			json.put("siteList", jarray);
+			return json.toMap();
+		}
+		 else
+				return new HashMap<String, String>() {
+					{
+						put("Status", "Failed");
+						put("Message", "Invalid user details");
+
+					}
+				};
 	}
 	
 

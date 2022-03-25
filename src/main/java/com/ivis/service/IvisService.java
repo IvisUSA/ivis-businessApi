@@ -60,10 +60,14 @@ import com.ivis.util.util;
 @Service
 public class IvisService {
 
+	public static String cpusApi = "http://smstaging.iviscloud.net:8090/cpus";
+	public static String keycloakApi = "http://smstaging.iviscloud.net:8090/keycloakApp";
+	
+	
 	public UserEntity getImMatrixAvailability(String uId) {
 
 		UserEntity u = new UserEntity();
-		String sitesUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/GetSitesListForUser_1_0?userName=";
+		String sitesUrl = cpusApi+"/sites/GetSitesListForUser_1_0?userName=";
 		sitesUrl = sitesUrl + uId;
 
 		String response = util.readUrlData(sitesUrl);
@@ -109,14 +113,15 @@ public class IvisService {
 	}
 
 	public List<BusinessCamesStreamEntity> getCamerasList(String uId, String accountId) {
-		String camerasUrl2 = "http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?uId=";
+		String camerasUrl2 = cpusApi+"/cameras/CameraStreamList_1_0?uId=";
 		camerasUrl2 = camerasUrl2 + uId + "&accountId=" + accountId;
 		String response2 = util.readUrlData(camerasUrl2);
 
 		Type collectionType2 = new TypeToken<Collection<CamerasStreamEntity>>() {
 		}.getType();
-		List<CamerasStreamEntity> camesData2 = (List<CamerasStreamEntity>) new Gson().fromJson(response2, collectionType2);
-		String camerasUrl = "http://smstaging.iviscloud.net:8090/cpus/cameras/CameraListforSiteId_1_0?uId=";
+		List<CamerasStreamEntity> camesData2 = (List<CamerasStreamEntity>) new Gson().fromJson(response2,
+				collectionType2);
+		String camerasUrl = cpusApi+"/cameras/CameraListforSiteId_1_0?uId=";
 		camerasUrl = camerasUrl + uId + "&accountId=" + accountId;
 		String response = util.readUrlData(camerasUrl);
 
@@ -128,16 +133,14 @@ public class IvisService {
 		for (CamerasStreamEntity c : camesData) {
 			BusinessCamesStreamEntity cames = new BusinessCamesStreamEntity();
 			CamerasStreamEntity camsDataSecondAPI = new CamerasStreamEntity();
-			for(CamerasStreamEntity c2 : camesData2)
-			{
-				if(c2.getCameraId().equals(c.getCameraId()))
-				{
+			for (CamerasStreamEntity c2 : camesData2) {
+				if (c2.getCameraId().equals(c.getCameraId())) {
 					camsDataSecondAPI.setStreamingUrl(c2.getStreamingUrl());
 					camsDataSecondAPI.setStreamingType(c2.getStreamingType());
 					camsDataSecondAPI.setHlsEnabled(c2.getHlsEnabled());
 				}
 			}
-			
+
 			cames.setCameraIndex(c.getId());
 			cames.setIndexNo(c.getIndexNo());
 			cames.setDeviceInternalId(c.getPotentialId());
@@ -182,15 +185,14 @@ public class IvisService {
 			cames.setDisplayName(c.getDisplayName());
 			cames.setEventPushRetryCount(c.getEventPushRetryCount());
 			cames.setCategory(c.getCategory());
-			
+
 			String c1StatusUrl = "http://usvs1.iviscloud.net:7888/Command?action=";
 			c1StatusUrl = c1StatusUrl + "status" + "&cameraId=" + c.getCameraId();
-			
+
 			String resp = util.readUrlData(c1StatusUrl);
 			JSONArray camsjson = new JSONArray(resp);
-			cames.setCameraStatus(camsjson.getJSONObject(0).get("status").toString());		
-			
-			
+			cames.setCameraStatus(camsjson.getJSONObject(0).get("status").toString());
+
 			cames.setStreamingUrl(camsDataSecondAPI.getStreamingUrl());
 			cames.setStreamingType(camsDataSecondAPI.getStreamingType());
 			cames.setHlsEnabled(camsDataSecondAPI.getHlsEnabled());
@@ -220,7 +222,7 @@ public class IvisService {
 	public List<BIAnalyticsEntity> getBusinessAnalystics(int accountId, Date date) {
 		List<BIAnalyticsEntity> bIAnalytics = new ArrayList<BIAnalyticsEntity>();
 
-		String sitesUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/getBICustomerSiteId_1_0?accId=";
+		String sitesUrl = cpusApi+"/sites/getBICustomerSiteId_1_0?accId=";
 		sitesUrl = sitesUrl + accountId;
 
 		String client_id = util.readUrlData(sitesUrl);
@@ -230,8 +232,7 @@ public class IvisService {
 		List<NameValuePair> urlParameters = new ArrayList<>();
 		urlParameters.add(new BasicNameValuePair("client_id", client_id));
 
-		if(!(date==null))
-		{
+		if (!(date == null)) {
 			urlParameters.add(new BasicNameValuePair("date", date.toString()));
 
 		}
@@ -287,104 +288,100 @@ public class IvisService {
 	}
 
 	// TODO WE need to change this
-	public Object mapServices2(String url2,String Request_type, String accountId ) {
-
+	public Object mapServices2(String url2, String Request_type, String accountId) {
 
 		try {
-			
+
 			URL url = new URL(url2);
-			HttpURLConnection http = (HttpURLConnection)url.openConnection();
+			HttpURLConnection http = (HttpURLConnection) url.openConnection();
 			http.setRequestProperty("Accept", "application/json");
 
 			System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
 			InputStream resp = http.getInputStream();
-			
+
 			StringBuilder sb = new StringBuilder();
-			for (int ch; (ch = resp.read()) != -1; ) {
-			    sb.append((char) ch);
+			for (int ch; (ch = resp.read()) != -1;) {
+				sb.append((char) ch);
 			}
-			System.out.println("sb	:	"+sb);
-			if(sb.toString().equals(null))
-			{
-				return new HashMap<String,String>(){{
-					put("Status","Failed");	
+			System.out.println("sb	:	" + sb);
+			if (sb.toString().equals(null)) {
+				return new HashMap<String, String>() {
+					{
+						put("Status", "Failed");
 					}
-					};
+				};
 			}
-			
 
 			JSONObject json = new JSONObject(sb.toString());
 			http.disconnect();
-			
+
 			HashMap<Object, Object> mappeddata = new HashMap<Object, Object>();
 			HashMap<Object, Object> data = new HashMap<Object, Object>();
-			if(json.equals(null))
-			{
-				return new HashMap<String,String>(){{
-					put("Status","Failed");	
+			if (json.equals(null)) {
+				return new HashMap<String, String>() {
+					{
+						put("Status", "Failed");
 					}
-					};
-			}
-			else
-				mappeddata.put("Status","Success");	
-			
-			if(!json.get("bgImagePath").equals(null))
-			mappeddata.put("background", json.get("bgImagePath"));
+				};
+			} else
+				mappeddata.put("Status", "Success");
+
+			if (!json.get("bgImagePath").equals(null))
+				mappeddata.put("background", json.get("bgImagePath"));
 			else
 				mappeddata.put("background", null);
-			
-			
+
 			mappeddata.put("SiteId", json.get("accountId"));
 
 			mappeddata.put("SiteName", json.get("siteName"));
 
-			if(Request_type.equals("Services")) {
-			data.put("alarms", json.get("monitoring"));
-			data.put("safety_escort", json.get("safety_escort"));
-			data.put("LiveView", (((json.getInt("noOfCamerasLivePortal")) > 0) ? "T" : "F"));
-			data.put("advertising", json.get("advertising"));
-			data.put("business_intelligence", json.get("business_intelligence"));
-			mappeddata.put("Services", data);
+			if (Request_type.equals("Services"))
+
+			{
+				data.put("alarms", json.get("monitoring"));
+				data.put("safety_escort", json.get("safety_escort"));
+				data.put("LiveView", (((json.getInt("noOfCamerasLivePortal")) > 0) ? "T" : "F"));
+				data.put("advertising", json.get("advertising"));
+				data.put("business_intelligence", json.get("business_intelligence"));
+				mappeddata.put("Services", data);
 			}
-			if(Request_type!=null && Request_type.equals("Ads")) {
-			data = new HashMap<Object, Object>();
-			HashMap<Object, Object> data2 = new HashMap<Object, Object>();
-			data2.put("screen0", "Connected");
-			for (int i = 0; i <= json.getInt("noOfScreensAtSite"); i++) {
-				data2.put("screen" + i, "Connected");
+			if (Request_type != null && Request_type.equals("Ads")) {
+				data = new HashMap<Object, Object>();
+				HashMap<Object, Object> data2 = new HashMap<Object, Object>();
+				data2.put("screen0", "Connected");
+				for (int i = 0; i <= json.getInt("noOfScreensAtSite"); i++) {
+					data2.put("screen" + i, "Connected");
+				}
+				data.put("screens", data2);
+				mappeddata.put("Ads", data);
+
 			}
-			data.put("screens", data2);
-			mappeddata.put("Ads", data);
-			
-			}
-			if(Request_type!=null && Request_type.equals("Analytics")) {
-			mappeddata.put("Analytics", this.getBusinessAnalystics((Integer.parseInt(accountId)),null));
+			if (Request_type != null && Request_type.equals("Analytics")) {
+				mappeddata.put("Analytics", this.getBusinessAnalystics((Integer.parseInt(accountId)), null));
 			}
 			return mappeddata;
 
 		} catch (IOException | JSONException e) {
 			System.out.println(e);
 			e.printStackTrace();
-			return new HashMap<String,String>(){{
-			put("Status","Failed");	
-			}
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+				}
 			};
 		}
 
-		
 	}
 
-	
 	// TODO WE need to change this
 	public Object getAnalyticsdata(String accountId) {
-		
+
 		ArrayList<Object> data = new ArrayList<Object>();
-		
-		String sitesUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/getBICustomerSiteId_1_0?accId=";
+
+		String sitesUrl = cpusApi+"/sites/getBICustomerSiteId_1_0?accId=";
 		sitesUrl = sitesUrl + accountId;
 
 		String client_id = util.readUrlData(sitesUrl);
-
 
 		HttpPost post = new HttpPost("https://ivisbi.com/v2/api/analytics");
 
@@ -406,7 +403,7 @@ public class IvisService {
 			String input = EntityUtils.toString(response.getEntity());
 			JSONObject json = new JSONObject(input);
 			data.add(json.toMap());
-			
+
 			return data;
 		} catch (Exception e) {
 			System.err.println(e);
@@ -418,11 +415,11 @@ public class IvisService {
 	public Object getbiAnalyticsReport(int siteId, Date fromDate, Date toDate) {
 		// TODO Auto-generated method stub
 
-		String sitesUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/getBICustomerSiteId_1_0?accId=";
+		String sitesUrl = cpusApi+"/sites/getBICustomerSiteId_1_0?accId=";
 		sitesUrl = sitesUrl + siteId;
 
 		String client_id = util.readUrlData(sitesUrl);
-		
+
 		HttpPost post = new HttpPost("http://ivisbi.com/v2/api/analyticsReport");
 
 		// add request parameter, form parameters
@@ -437,29 +434,29 @@ public class IvisService {
 			e.printStackTrace();
 		}
 
-		try (CloseableHttpClient httpClient = HttpClients.createDefault();CloseableHttpResponse response = httpClient.execute(post)) {
+		try (CloseableHttpClient httpClient = HttpClients.createDefault();
+				CloseableHttpResponse response = httpClient.execute(post)) {
 
 			String input = EntityUtils.toString(response.getEntity());
 			System.out.println(input);
 			JSONObject json = new JSONObject(input);
-			//System.out.println(json);
-			
-			
+			// System.out.println(json);
+
 			return input;
 		} catch (Exception e) {
 			System.err.println(e);
 			return null;
 		}
 	}
-	
+
 	public Object getbiAnalyticsReport2(int siteId, Date fromDate, Date toDate) {
 		// TODO Auto-generated method stub
 
-		String sitesUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/getBICustomerSiteId_1_0?accId=";
+		String sitesUrl = cpusApi+"/sites/getBICustomerSiteId_1_0?accId=";
 		sitesUrl = sitesUrl + siteId;
 
 		String client_id = util.readUrlData(sitesUrl);
-		
+
 		HttpPost post = new HttpPost("http://ivisbi.com/v2/api/analyticsReport");
 
 		// add request parameter, form parameters
@@ -474,31 +471,26 @@ public class IvisService {
 			e.printStackTrace();
 		}
 
-		try (CloseableHttpClient httpClient = HttpClients.createDefault();CloseableHttpResponse response = httpClient.execute(post)) {
+		try (CloseableHttpClient httpClient = HttpClients.createDefault();
+				CloseableHttpResponse response = httpClient.execute(post)) {
 
 			String input = EntityUtils.toString(response.getEntity());
 			JSONObject json = new JSONObject(input);
 			System.out.println(json.keySet().toArray()[0]);
 			ArrayList<Object> data = new ArrayList<Object>();
-			for(int i=0;i< json.keySet().toArray().length;i++)
-			{
+			for (int i = 0; i < json.keySet().toArray().length; i++) {
 				System.out.println(json.keySet().toArray()[i]);
-				HashMap<Object,Object> hashData = new HashMap<Object,Object>();
-				
-				
-				
-				
-				
+				HashMap<Object, Object> hashData = new HashMap<Object, Object>();
+
 				JSONArray dataObject = json.getJSONArray(json.keySet().toArray()[i].toString());
-				 
+
 				hashData.put("data", dataObject.toList());
 				hashData.put("name", json.keySet().toArray()[i]);
 				data.add(hashData);
 			}
-			
-			
-			//TODO  Put Status
-			
+
+			// TODO Put Status
+
 			return data;
 		} catch (Exception e) {
 			System.err.println(e);
@@ -508,135 +500,131 @@ public class IvisService {
 
 	public Object getMonitoringDetails(String accountId) {
 
-		String data = util.readUrlData("http://smstaging.iviscloud.net:8090/cpus/Monitoring/monitoringHours?accountId="+accountId);
-		
+		String data = util.readUrlData(
+				cpusApi+"/Monitoring/monitoringHours?accountId=" + accountId);
+
 		MonitoringDetailsInput input = new Gson().fromJson(data, MonitoringDetailsInput.class);
-		
+
 		MonitoringDetailsOutput output = new MonitoringDetailsOutput();
-		
+
 		output.setSiteId(input.getPotentailId());
-		
-		if(input.getMonitoringHours().size()>0)
+
+		if (input.getMonitoringHours().size() > 0)
 			output.setStatus("Enabled");
 		else
 			output.setStatus("Disabled");
-		
-		ArrayList<MonitoringHoursListModel> lis = new ArrayList<MonitoringHoursListModel>();
-		
-		
-		  Set<MonitoringHoursListModel> s= new HashSet<MonitoringHoursListModel>();
-		  
-		  s.addAll(input.getMonitoringHours());
-		
 
-		  System.out.println(s);
-		  lis.addAll(s);
-		
+		ArrayList<MonitoringHoursListModel> lis = new ArrayList<MonitoringHoursListModel>();
+
+		Set<MonitoringHoursListModel> s = new HashSet<MonitoringHoursListModel>();
+
+		s.addAll(input.getMonitoringHours());
+
+		System.out.println(s);
+		lis.addAll(s);
+
 		output.setMonitoringHours(lis);
-		
-		
-		
+
 		return output;
-		
-		
-		
+
 	}
+
 	public Map<String, String> userLogin(UserLogin user) {
-		String url="http://smstaging.iviscloud.net:8080/auth/realms/"+user.getRealm()+"/protocol/openid-connect/token";
+		String url = keycloakApi+"/realms/" + user.getRealm()
+				+ "/protocol/openid-connect/token";
 		HttpPost post = new HttpPost(url);
-		Map<String,String> access_token=new HashMap<String,String>();
-		
+		Map<String, String> access_token = new HashMap<String, String>();
+
 		// add request parameter, form parameters
-        List<NameValuePair> urlParameters = new ArrayList<>();
-        urlParameters.add(new BasicNameValuePair("grant_type", user.getGrant_type()));
-        urlParameters.add(new BasicNameValuePair("client_id", user.getClient_id()));
-        urlParameters.add(new BasicNameValuePair("client_secret", user.getClient_secret()));
-        urlParameters.add(new BasicNameValuePair("username", user.getUsername()));
-        urlParameters.add(new BasicNameValuePair("password", user.getPassword()));
-        
-        
-        try {
+		List<NameValuePair> urlParameters = new ArrayList<>();
+		urlParameters.add(new BasicNameValuePair("grant_type", user.getGrant_type()));
+		urlParameters.add(new BasicNameValuePair("client_id", user.getClient_id()));
+		urlParameters.add(new BasicNameValuePair("client_secret", user.getClient_secret()));
+		urlParameters.add(new BasicNameValuePair("username", user.getUsername()));
+		urlParameters.add(new BasicNameValuePair("password", user.getPassword()));
+
+		try {
 			post.setEntity(new UrlEncodedFormEntity(urlParameters));
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        
-        try (CloseableHttpClient httpClient = HttpClients.createDefault();
-	             CloseableHttpResponse response = httpClient.execute(post)) {
 
-	        	String input = EntityUtils.toString(response.getEntity());
-	        	JSONObject json = new JSONObject(input);
-	            //System.out.println(json.get("access_token"));
-	            access_token.put("access_token", json.getString("access_token"));
-	            httpClient.close();
-	            
-        }
-        catch (Exception e) {
-        	System.err.println(e);
-		} 
-		
+		try (CloseableHttpClient httpClient = HttpClients.createDefault();
+				CloseableHttpResponse response = httpClient.execute(post)) {
+
+			String input = EntityUtils.toString(response.getEntity());
+			JSONObject json = new JSONObject(input);
+			// System.out.println(json.get("access_token"));
+			access_token.put("access_token", json.getString("access_token"));
+			httpClient.close();
+
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+
 		return access_token;
 	}
 
-	
 	public ArrayList<CamStreamListModelWithActiveCams> getCamerasStreamList2(String userName, String accountId) {
 		JSONArray json = new JSONArray();
-		
+
 		Gson gson = new Gson();
 		try {
 			URL url = null;
-			if(accountId!=null)
-		 url = new URL("http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?userName="+userName+"&accountId="+accountId);
+			if (accountId != null)
+				url = new URL(cpusApi+"/cameras/CameraStreamList_1_0?userName="
+						+ userName + "&accountId=" + accountId);
 			else
-		 url = new URL("http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?userName="+userName);	
-		HttpURLConnection http = (HttpURLConnection)url.openConnection();
-		http.setRequestProperty("Accept", "application/json");
-		InputStream resp = http.getInputStream();
-		
-		StringBuilder sb = new StringBuilder();
-		for (int ch; (ch = resp.read()) != -1; ) {
-		    sb.append((char) ch);
-		}
-		 json = new JSONArray(sb.toString());
-		http.disconnect();
-		ArrayList<CamStreamListModelWithActiveCams> camsData2 = new ArrayList<>();
-		for(Object i:json)
-		{
-			String dataString = gson.toJson(i);
-			JSONObject datajson = new JSONObject(dataString);
-			CamStreamListModelWithActiveCams camstream = gson.fromJson(i.toString(), CamStreamListModelWithActiveCams.class);
-			url = new URL("http://usvs1.iviscloud.net:7888/Command?action=status&cameraId="+camstream.getCameraId());
-			 http = (HttpURLConnection)url.openConnection();
-			 resp = http.getInputStream();
-			 sb = new StringBuilder();
-			for (int ch; (ch = resp.read()) != -1; ) {
-			    sb.append((char) ch);
+				url = new URL(
+						cpusApi+"/cameras/CameraStreamList_1_0?userName=" + userName);
+			HttpURLConnection http = (HttpURLConnection) url.openConnection();
+			http.setRequestProperty("Accept", "application/json");
+			InputStream resp = http.getInputStream();
+
+			StringBuilder sb = new StringBuilder();
+			for (int ch; (ch = resp.read()) != -1;) {
+				sb.append((char) ch);
 			}
-			 json = new JSONArray(sb.toString());
+			json = new JSONArray(sb.toString());
 			http.disconnect();
-			camstream.setCameraStatus(json.getJSONObject(0).get("status").toString());
-			camstream.setDeviceInternalId(datajson.getJSONObject("map").getInt("potentialId"));
-			camstream.setCameraname(datajson.getJSONObject("map").getString("name"));
-			camsData2.add(camstream);
-		}
-		return camsData2;
+			ArrayList<CamStreamListModelWithActiveCams> camsData2 = new ArrayList<>();
+			for (Object i : json) {
+				String dataString = gson.toJson(i);
+				JSONObject datajson = new JSONObject(dataString);
+				CamStreamListModelWithActiveCams camstream = gson.fromJson(i.toString(),
+						CamStreamListModelWithActiveCams.class);
+				url = new URL(
+						"http://usvs1.iviscloud.net:7888/Command?action=status&cameraId=" + camstream.getCameraId());
+				http = (HttpURLConnection) url.openConnection();
+				resp = http.getInputStream();
+				sb = new StringBuilder();
+				for (int ch; (ch = resp.read()) != -1;) {
+					sb.append((char) ch);
+				}
+				json = new JSONArray(sb.toString());
+				http.disconnect();
+				camstream.setCameraStatus(json.getJSONObject(0).get("status").toString());
+				camstream.setDeviceInternalId(datajson.getJSONObject("map").getInt("potentialId"));
+				camstream.setCameraname(datajson.getJSONObject("map").getString("name"));
+				camsData2.add(camstream);
+			}
+			return camsData2;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
 
-	
 	public List<BusinessCamesStreamEntity> getCamerasStreamList(String uId, String accountId) {
-		String camerasUrl2 = "http://smstaging.iviscloud.net:8090/cpus/cameras/CameraStreamList_1_0?uId=";
+		String camerasUrl2 = cpusApi+"/cameras/CameraStreamList_1_0?uId=";
 		camerasUrl2 = camerasUrl2 + uId + "&accountId=" + accountId;
 		String response = util.readUrlData(camerasUrl2);
 
 		Type collectionType2 = new TypeToken<Collection<CamerasStreamEntity>>() {
 		}.getType();
-		List<CamerasStreamEntity> camesData = (List<CamerasStreamEntity>) new Gson().fromJson(response, collectionType2);
+		List<CamerasStreamEntity> camesData = (List<CamerasStreamEntity>) new Gson().fromJson(response,
+				collectionType2);
 		List<BusinessCamesStreamEntity> camesList = new ArrayList<BusinessCamesStreamEntity>();
 		for (CamerasStreamEntity c : camesData) {
 			BusinessCamesStreamEntity cames = new BusinessCamesStreamEntity();
@@ -646,11 +634,8 @@ public class IvisService {
 			cames.setIndexNo(c.getIndexNo());
 			cames.setDeviceInternalId(c.getPotentialId());
 			cames.setCameraId(c.getCameraId());
-			
 
-			
-			
-			cames.setDeviceExternalId(camesData.get(0).getCameraId().substring(0,c.getCameraId().lastIndexOf("C")));
+			cames.setDeviceExternalId(camesData.get(0).getCameraId().substring(0, c.getCameraId().lastIndexOf("C")));
 			cames.setCameraName(c.getName());
 			cames.setServerHost(c.getServerHost());
 			cames.setServerPort(c.getServerPort());
@@ -693,11 +678,11 @@ public class IvisService {
 			cames.setStreamingUrl(c.getStreamingUrl());
 			String c1StatusUrl = "http://usvs1.iviscloud.net:7888/Command?action=";
 			c1StatusUrl = c1StatusUrl + "status" + "&cameraId=" + c.getCameraId();
-			
+
 			boolean cam_status = false;
 			String resp = util.readUrlData(c1StatusUrl);
 			JSONArray camsjson = new JSONArray(resp);
-			cames.setCameraStatus(camsjson.getJSONObject(0).get("status").toString());			
+			cames.setCameraStatus(camsjson.getJSONObject(0).get("status").toString());
 			camesList.add(cames);
 
 		}
@@ -706,47 +691,42 @@ public class IvisService {
 
 	}
 
-
-	public Object getSiteListByUserName(String username)
-	{
-		JSONObject outobj = new JSONObject();		
-		String siteUrl = "http://smstaging.iviscloud.net:8090/cpus/sites/GetSitesListForUser_1_0?userName="+username;
+	public Object getSiteListByUserName(String username) {
+		JSONObject outobj = new JSONObject();
+		String siteUrl = cpusApi+"/sites/GetSitesListForUser_1_0?userName=" + username;
 		String response = util.readUrlData(siteUrl);
 		Gson gson = new Gson();
 		SiteList sitesListData = gson.fromJson(response, SiteList.class);
-		if(sitesListData.getSiteList().size()>0) {
-		sitesListData.setStatus("Success");
-		sitesListData.setMessage("Site data is valid");
-		}
-		else
-		{
+		if (sitesListData.getSiteList().size() > 0) {
+			sitesListData.setStatus("Success");
+			sitesListData.setMessage("Site data is valid");
+		} else {
 			sitesListData.setStatus("Failed");
 			sitesListData.setMessage("Data not available");
-		}		
+		}
 		String jsondata = gson.toJson(sitesListData);
 		JSONObject jsonobj = new JSONObject(jsondata);
 		JSONArray jsonarr = new JSONArray(jsonobj.getJSONArray("siteList"));
 		outobj.put("Status", sitesListData.getStatus());
 		outobj.put("Message", sitesListData.getMessage());
 		JSONArray outarr = new JSONArray();
-		for(int i =0;i<jsonarr.length();i++)
-		{
+		for (int i = 0; i < jsonarr.length(); i++) {
 			JSONObject outarrobj = new JSONObject();
 			JSONObject jsonarrobj = new JSONObject(jsonarr.getJSONObject(i).toString());
-			outarrobj.put("siteid",jsonarrobj.get("accountId"));
-					outarrobj.put("sitename",jsonarrobj.get("accountName"));
-					outarrobj.put("project",jsonarrobj.get("facility"));
-					outarrobj.put("atmid",jsonarrobj.get("customerSiteId"));
-					outarrobj.put("state",jsonarrobj.get("state"));
-					outarrobj.put("City",jsonarrobj.get("city"));
-					outarrobj.put("zone",jsonarrobj.get("zone"));
-					outarrobj.put("business_vertical",jsonarrobj.get("industry"));
-					outarrobj.put("phase",jsonarrobj.get("batchNo"));
-					outarrobj.put("deviceInternalId",jsonarrobj.get("potentialId"));
-					outarrobj.put("deviceExternalId",jsonarrobj.get("unitId"));
-					outarrobj.put("LocationType",jsonarrobj.get("siteType"));
-					outarrobj.put("latitude",jsonarrobj.get("latitude"));
-					outarrobj.put("longitude",jsonarrobj.get("longitude"));
+			outarrobj.put("siteid", jsonarrobj.get("accountId"));
+			outarrobj.put("sitename", jsonarrobj.get("accountName"));
+			outarrobj.put("project", jsonarrobj.get("facility"));
+			outarrobj.put("atmid", jsonarrobj.get("customerSiteId"));
+			outarrobj.put("state", jsonarrobj.get("state"));
+			outarrobj.put("City", jsonarrobj.get("city"));
+			outarrobj.put("zone", jsonarrobj.get("zone"));
+			outarrobj.put("business_vertical", jsonarrobj.get("industry"));
+			outarrobj.put("phase", jsonarrobj.get("batchNo"));
+			outarrobj.put("deviceInternalId", jsonarrobj.get("potentialId"));
+			outarrobj.put("deviceExternalId", jsonarrobj.get("unitId"));
+			outarrobj.put("LocationType", jsonarrobj.get("siteType"));
+			outarrobj.put("latitude", jsonarrobj.get("latitude"));
+			outarrobj.put("longitude", jsonarrobj.get("longitude"));
 			outarr.put(outarrobj);
 		}
 		outobj.put("siteList", outarr);
@@ -755,14 +735,14 @@ public class IvisService {
 
 	public Object resetPasswordSendEmailByUserName(String userName) {
 		try {
-			URL url = new URL("http://smstaging.iviscloud.net:8090/keycloakApp/resetPasswordUsingEmail");
-			HttpURLConnection http = (HttpURLConnection)url.openConnection();
+			URL url = new URL(keycloakApi+"/resetPasswordUsingEmail");
+			HttpURLConnection http = (HttpURLConnection) url.openConnection();
 			http.setRequestMethod("PUT");
 			http.setDoOutput(true);
 			http.setRequestProperty("Accept", "application/json");
 			http.setRequestProperty("Content-Type", "application/json");
 
-			String data = "{\n    \"userName\" : \""+userName+"\"\n}";
+			String data = "{\n    \"userName\" : \"" + userName + "\"\n}";
 
 			byte[] out = data.getBytes(StandardCharsets.UTF_8);
 
@@ -770,32 +750,134 @@ public class IvisService {
 			stream.write(out);
 
 //			System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
-			
 
-			
 			InputStream resp = http.getInputStream();
-			
+
 			StringBuilder sb = new StringBuilder();
-			for (int ch; (ch = resp.read()) != -1; ) {
-			    sb.append((char) ch);
+			for (int ch; (ch = resp.read()) != -1;) {
+				sb.append((char) ch);
 			}
 //			System.out.println(sb);
-			 JSONObject json = new JSONObject(sb.toString());
-			
+			JSONObject json = new JSONObject(sb.toString());
+
 			http.disconnect();
 			return json.toMap();
+		} catch (Exception e) {
+			System.err.println(e);
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Invalid username");
+
+				}
+			};
+		}
+
+	}
+
+	public Object getServiceRequests(HashMap<String, String> inputData) {
+		try {
+			String link = "";
+			if (inputData.containsKey("serviceId"))
+				link = cpusApi+"/serviceRequest/getServiceReq_1_0?accountId="
+						+ inputData.get("SiteId") + "&serviceId=" + inputData.get("serviceId");
+			else
+				link = cpusApi+"/serviceRequest/getServiceReq_1_0?accountId="
+						+ inputData.get("SiteId");
+			String jsonstring = util.readUrlData(link);
+			JSONObject json = new JSONObject(jsonstring);
+			return json.toMap();
+		} catch (Exception e) {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Failed processing request");
+
+				}
+			};
+		}
+	}
+
+	public Object addServiceRequest(HashMap<Object, Object> inputData) {
+		try
+		{
+			String urlForAddRequest = cpusApi+"/serviceRequest/addServiceReq_1_0";
+
+			URL url = new URL(urlForAddRequest);
+			HttpURLConnection http = (HttpURLConnection) url.openConnection();
+			http.setRequestMethod("POST");
+			http.setDoOutput(true);
+			http.setRequestProperty("Accept", "application/json");
+			http.setRequestProperty("Content-Type", "application/json");
+
+			JSONObject datajson = new JSONObject();
+			
+			
+			
+			
+			datajson.put("accountId", 1);
+			datajson.put("userName", "us1");
+			datajson.put("serviceName", "Test");
+			datajson.put("serviceSubCategory", "Test");
+			datajson.put("calling_system", "Test");
+			datajson.put("description", "Test");
+			
+//			datajson.put("accountId", inputData.get("SiteId"));
+//			datajson.put("userName", inputData.get("userName"));
+//			datajson.put("serviceName", inputData.get("ServiceName"));
+//			datajson.put("serviceSubCategory", inputData.get("ServiceSubCategory"));
+//			datajson.put("calling_system", inputData.get("calling_System_Detail"));
+//			datajson.put("description", inputData.get("description"));
+			
+			if(inputData.containsKey("requestType"))
+				datajson.put("requestType", inputData.get("requestType"));
+			
+			if(inputData.containsKey("preferredTimeToCall"))
+				datajson.put("preferredTimeToCall", inputData.get("preferredTimeToCall"));
+			
+			if(inputData.containsKey("project"))
+				datajson.put("project", inputData.get("project"));
+			
+			if(inputData.containsKey("priority"))
+				datajson.put("priority", inputData.get("priority"));
+			
+			if(inputData.containsKey("remarks"))
+				datajson.put("remarks", inputData.get("remarks"));
+			
+			System.out.println(datajson.toString());
+
+
+			byte[] out = datajson.toString().getBytes(StandardCharsets.UTF_8);
+
+			OutputStream stream = http.getOutputStream();
+			stream.write(out);
+
+			InputStream resp = http.getInputStream();
+
+			StringBuilder sb = new StringBuilder();
+			for (int ch; (ch = resp.read()) != -1;) {
+				sb.append((char) ch);
+			}
+//			System.out.println(sb);
+			JSONObject json = new JSONObject(sb.toString());
+
+			http.disconnect();
+			return json.toMap();
+			
+			
 		}
 		catch(Exception e)
 		{
 			System.err.println(e);
 			return new HashMap<String,String>() {{
 				put("Status","Failed");
-				put("Message","Invalid username");
+				put("Message","Failed processing request");
 				
 			}};
+
+
 		}
 		
 	}
+
 }
-
-
