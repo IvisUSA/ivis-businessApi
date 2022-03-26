@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ivis.ApplicationModels.UserLogin;
 import com.ivis.service.IvisService;
+import com.ivis.service.ServerConfig;
 
 @Controller
 @CrossOrigin
@@ -52,7 +53,7 @@ public class UserLoginController {
 	public Object userLogin2(@RequestBody HashMap<String, String> userdata) {
 		JSONObject json = new JSONObject();
 		try {
-			URL url = new URL("http://smstaging.iviscloud.net:8090/keycloakApp/login");
+			URL url = new URL(ServerConfig.keycloakapi+"/login");
 			HttpURLConnection http = (HttpURLConnection) url.openConnection();
 			http.setRequestMethod("POST");
 			http.setDoOutput(true);
@@ -90,7 +91,7 @@ public class UserLoginController {
 	public Object userLogout2(@RequestBody HashMap<String, String> userdata) {
 		JSONObject json = new JSONObject();
 		try {
-			URL url = new URL("http://smstaging.iviscloud.net:8090/keycloakApp/logout");
+			URL url = new URL(ServerConfig.keycloakapi+"/logout");
 			HttpURLConnection http = (HttpURLConnection) url.openConnection();
 			http.setRequestMethod("POST");
 			http.setDoOutput(true);
@@ -126,7 +127,7 @@ public class UserLoginController {
 	public Object userRefreshToken2(@RequestBody HashMap<String, String> userdata) {
 		JSONObject json = new JSONObject();
 		try {
-			URL url = new URL("http://smstaging.iviscloud.net:8090/keycloakApp/refreshToken");
+			URL url = new URL(ServerConfig.keycloakapi+"/refreshToken");
 			HttpURLConnection http = (HttpURLConnection) url.openConnection();
 			http.setRequestMethod("POST");
 			http.setDoOutput(true);

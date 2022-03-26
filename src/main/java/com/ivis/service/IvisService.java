@@ -46,6 +46,8 @@ import com.ivis.ApplicationModels.MonitoringDetailsOutput;
 import com.ivis.ApplicationModels.MonitoringHoursListModel;
 import com.ivis.ApplicationModels.Services;
 import com.ivis.ApplicationModels.SiteList;
+import com.ivis.ApplicationModels.SnapshortUrlsForAccountModel;
+import com.ivis.ApplicationModels.SnapshortUrlsForAccountModel.Camera;
 import com.ivis.ApplicationModels.UserLogin;
 import com.ivis.ApplicationModels.account;
 import com.ivis.Businessentity.BIAnalyticsEntity;
@@ -57,11 +59,13 @@ import com.ivis.Businessentity.UserEntity;
 import com.ivis.util.ReadJson;
 import com.ivis.util.util;
 
+import threads.SnapShotUrlsForAccountUsingThread;
+
 @Service
 public class IvisService {
 
-	public static String cpusApi = "http://smstaging.iviscloud.net:8090/cpus";
-	public static String keycloakApi = "http://smstaging.iviscloud.net:8090/keycloakApp";
+	public static String cpusApi = ServerConfig.cpusapi;
+	public static String keycloakApi = ServerConfig.keycloakapi;
 	
 	
 	public UserEntity getImMatrixAvailability(String uId) {
@@ -727,6 +731,8 @@ public class IvisService {
 			outarrobj.put("LocationType", jsonarrobj.get("siteType"));
 			outarrobj.put("latitude", jsonarrobj.get("latitude"));
 			outarrobj.put("longitude", jsonarrobj.get("longitude"));
+			if(jsonarrobj.keySet().contains("accountShortName"))
+			outarrobj.put("siteShortName",jsonarrobj.get("accountShortName"));
 			outarr.put(outarrobj);
 		}
 		outobj.put("siteList", outarr);
@@ -878,6 +884,67 @@ public class IvisService {
 
 		}
 		
+	}
+
+	public Object getsnapshotUrlsForSitesList_1_0(ArrayList siteList) {
+		
+		try {
+		ArrayList<SnapshortUrlsForAccountModel> siteDataList = new ArrayList<>();
+
+		
+		JSONObject output = new JSONObject();
+		
+		for(Object i:siteList)
+		{
+			String data = util.readUrlData(cpusApi+"/cameras/SnapshortUrlsForAccount_1_0?accountId="+i);
+			SnapshortUrlsForAccountModel siteListData = new Gson().fromJson(data, SnapshortUrlsForAccountModel.class);
+			siteDataList.add(siteListData);
+		}
+		
+		JSONArray siteListOut = new JSONArray();
+		
+		for(SnapshortUrlsForAccountModel i : siteDataList)
+		{
+			JSONObject site = new JSONObject();
+			site.put("siteid", i.getAccountId());
+			JSONArray camlist = new JSONArray();
+			for( SnapshortUrlsForAccountModel.Camera j : i.getCamList())
+			{
+				JSONObject cam = new JSONObject();
+				cam.put("displayName",j.getDisplayName());
+				cam.put("snapShotUrl", "http://"+j.getHost()+":"+j.getHttpPort()+"/SnapShot?cameraId="+j.getCameraId());
+
+				cam.put("displayOrder", j.getDisplayOrder());
+				String camStatus = util.readUrlData("http://usvs1.iviscloud.net:7888/Command?action=status&cameraId="+j.getCameraId());
+				
+				JSONArray camsjson = new JSONArray(camStatus);
+				cam.put("cameraStatus", camsjson.getJSONObject(0).get("status").toString());
+
+
+				camlist.put(cam);
+
+				
+				
+				
+			}
+			site.put("CameraList", camlist);
+			siteListOut.put(site);
+		}
+		output.put("Status", "Success");
+		output.put("Message", "Success");
+		output.put("siteList", siteListOut);
+		
+		return output.toMap();
+		}
+		catch(Exception e)
+		{
+			System.err.println(e);
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Failed processing request");
+				
+			}};
+		}
 	}
 
 }

@@ -8,13 +8,15 @@ import java.nio.charset.StandardCharsets;
 
 import org.json.JSONObject;
 
+import com.ivis.service.ServerConfig;
+
 public class KeycloakUtils {
 
 	
 	public static boolean verifyaccesstoken(String username,String accessToken)
 	{
 		try {
-			URL url = new URL("http://smstaging.iviscloud.net:8090/keycloakApp/verifyAccessToken");
+			URL url = new URL(ServerConfig.keycloakapi+"/verifyAccessToken");
 			HttpURLConnection http = (HttpURLConnection)url.openConnection();
 			http.setRequestMethod("POST");
 			http.setDoOutput(true);
