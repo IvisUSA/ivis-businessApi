@@ -731,8 +731,11 @@ public class IvisService {
 			outarrobj.put("LocationType", jsonarrobj.get("siteType"));
 			outarrobj.put("latitude", jsonarrobj.get("latitude"));
 			outarrobj.put("longitude", jsonarrobj.get("longitude"));
-			if(jsonarrobj.keySet().contains("accountShortName"))
+			if(jsonarrobj.keySet().contains("accountShortName")) {
 			outarrobj.put("siteShortName",jsonarrobj.get("accountShortName"));
+			}
+			else
+				outarrobj.put("siteShortName","");
 			outarr.put(outarrobj);
 		}
 		outobj.put("siteList", outarr);

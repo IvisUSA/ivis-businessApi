@@ -40,6 +40,14 @@ public class SiteList {
 			String siteType;
 			String latitude;
 			String longitude;
+			String accountShortName;
+			
+			public String getAccountShortName() {
+				return accountShortName;
+			}
+			public void setAccountShortName(String accountShortName) {
+				this.accountShortName = accountShortName;
+			}
 			public int getAccountId() {
 				return accountId;
 			}
