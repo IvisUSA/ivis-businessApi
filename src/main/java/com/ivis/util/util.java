@@ -44,6 +44,7 @@ public class util {
 	    catch(Exception e)
 	    {
 	      e.printStackTrace();
+	      return null;
 	    }
 	    return content.toString();
 	  

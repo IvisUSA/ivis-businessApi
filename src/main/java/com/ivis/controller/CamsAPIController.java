@@ -88,8 +88,8 @@ public class CamsAPIController {
 				camesList = ivis.getCamerasStreamList2(userName,null);
 
 
-
-			if(camesList.equals(null) || camesList == null) {
+			System.out.println(camesList == null);
+			if(camesList == null) {
 				return new HashMap<String, String>() {
 					{
 						put("Status", "Failed");

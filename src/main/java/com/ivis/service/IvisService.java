@@ -66,8 +66,8 @@ public class IvisService {
 
 	public static String cpusApi = ServerConfig.cpusapi;
 	public static String keycloakApi = ServerConfig.keycloakapi;
-	
-	
+
+
 	public UserEntity getImMatrixAvailability(String uId) {
 
 		UserEntity u = new UserEntity();
@@ -330,7 +330,7 @@ public class IvisService {
 			} else {
 				mappeddata.put("Status", "Success");
 				mappeddata.put("Message", "Success");
-				
+
 			}
 
 			if (!json.get("bgImagePath").equals(null))
@@ -539,7 +539,7 @@ public class IvisService {
 
 	public Map<String, String> userLogin(UserLogin user) {
 		String url = keycloakApi+"/realms/" + user.getRealm()
-				+ "/protocol/openid-connect/token";
+		+ "/protocol/openid-connect/token";
 		HttpPost post = new HttpPost(url);
 		Map<String, String> access_token = new HashMap<String, String>();
 
@@ -620,7 +620,7 @@ public class IvisService {
 			}
 			return camsData2;
 		} catch (IOException e) {
-			e.printStackTrace();
+			//			e.printStackTrace();
 		}
 		return null;
 	}
@@ -737,7 +737,7 @@ public class IvisService {
 			outarrobj.put("latitude", jsonarrobj.get("latitude"));
 			outarrobj.put("longitude", jsonarrobj.get("longitude"));
 			if(jsonarrobj.keySet().contains("accountShortName")) {
-			outarrobj.put("siteShortName",jsonarrobj.get("accountShortName"));
+				outarrobj.put("siteShortName",jsonarrobj.get("accountShortName"));
 			}
 			else
 				outarrobj.put("siteShortName","");
@@ -763,7 +763,7 @@ public class IvisService {
 			OutputStream stream = http.getOutputStream();
 			stream.write(out);
 
-//			System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
+			//			System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
 
 			InputStream resp = http.getInputStream();
 
@@ -771,7 +771,7 @@ public class IvisService {
 			for (int ch; (ch = resp.read()) != -1;) {
 				sb.append((char) ch);
 			}
-//			System.out.println(sb);
+			//			System.out.println(sb);
 			JSONObject json = new JSONObject(sb.toString());
 
 			http.disconnect();
@@ -825,39 +825,39 @@ public class IvisService {
 			http.setRequestProperty("Content-Type", "application/json");
 
 			JSONObject datajson = new JSONObject();
-			
-			
-			
-			
+
+
+
+
 			datajson.put("accountId", 1);
 			datajson.put("userName", "us1");
 			datajson.put("serviceName", "Test");
 			datajson.put("serviceSubCategory", "Test");
 			datajson.put("calling_system", "Test");
 			datajson.put("description", "Test");
-			
-//			datajson.put("accountId", inputData.get("SiteId"));
-//			datajson.put("userName", inputData.get("userName"));
-//			datajson.put("serviceName", inputData.get("ServiceName"));
-//			datajson.put("serviceSubCategory", inputData.get("ServiceSubCategory"));
-//			datajson.put("calling_system", inputData.get("calling_System_Detail"));
-//			datajson.put("description", inputData.get("description"));
-			
+
+			//			datajson.put("accountId", inputData.get("SiteId"));
+			//			datajson.put("userName", inputData.get("userName"));
+			//			datajson.put("serviceName", inputData.get("ServiceName"));
+			//			datajson.put("serviceSubCategory", inputData.get("ServiceSubCategory"));
+			//			datajson.put("calling_system", inputData.get("calling_System_Detail"));
+			//			datajson.put("description", inputData.get("description"));
+
 			if(inputData.containsKey("requestType"))
 				datajson.put("requestType", inputData.get("requestType"));
-			
+
 			if(inputData.containsKey("preferredTimeToCall"))
 				datajson.put("preferredTimeToCall", inputData.get("preferredTimeToCall"));
-			
+
 			if(inputData.containsKey("project"))
 				datajson.put("project", inputData.get("project"));
-			
+
 			if(inputData.containsKey("priority"))
 				datajson.put("priority", inputData.get("priority"));
-			
+
 			if(inputData.containsKey("remarks"))
 				datajson.put("remarks", inputData.get("remarks"));
-			
+
 			System.out.println(datajson.toString());
 
 
@@ -872,13 +872,13 @@ public class IvisService {
 			for (int ch; (ch = resp.read()) != -1;) {
 				sb.append((char) ch);
 			}
-//			System.out.println(sb);
+			//			System.out.println(sb);
 			JSONObject json = new JSONObject(sb.toString());
 
 			http.disconnect();
 			return json.toMap();
-			
-			
+
+
 		}
 		catch(Exception e)
 		{
@@ -886,63 +886,73 @@ public class IvisService {
 			return new HashMap<String,String>() {{
 				put("Status","Failed");
 				put("Message","Failed processing request");
-				
+
 			}};
 
 
 		}
-		
+
 	}
 
 	public Object getsnapshotUrlsForSitesList_1_0(ArrayList siteList) {
-		
+
 		try {
-		ArrayList<SnapshortUrlsForAccountModel> siteDataList = new ArrayList<>();
+			ArrayList<SnapshortUrlsForAccountModel> siteDataList = new ArrayList<>();
 
-		
-		JSONObject output = new JSONObject();
-		
-		for(Object i:siteList)
-		{
-			String data = util.readUrlData(cpusApi+"/cameras/SnapshortUrlsForAccount_1_0?accountId="+i);
-			SnapshortUrlsForAccountModel siteListData = new Gson().fromJson(data, SnapshortUrlsForAccountModel.class);
-			siteDataList.add(siteListData);
-		}
-		
-		JSONArray siteListOut = new JSONArray();
-		
-		for(SnapshortUrlsForAccountModel i : siteDataList)
-		{
-			JSONObject site = new JSONObject();
-			site.put("siteid", i.getAccountId());
-			JSONArray camlist = new JSONArray();
-			for( SnapshortUrlsForAccountModel.Camera j : i.getCamList())
+
+			JSONObject output = new JSONObject();
+
+			for(Object i:siteList)
 			{
-				JSONObject cam = new JSONObject();
-				cam.put("displayName",j.getDisplayName());
-				cam.put("snapShotUrl", "http://"+j.getHost()+":"+j.getHttpPort()+"/SnapShot?cameraId="+j.getCameraId());
-				cam.put("cameraId", j.getCameraId());
-				cam.put("displayOrder", j.getDisplayOrder());
-				String camStatus = util.readUrlData("http://usvs1.iviscloud.net:7888/Command?action=status&cameraId="+j.getCameraId());
-				
-				JSONArray camsjson = new JSONArray(camStatus);
-				cam.put("cameraStatus", camsjson.getJSONObject(0).get("status").toString());
-
-
-				camlist.put(cam);
-
-				
-				
-				
+				String data = util.readUrlData(cpusApi+"/cameras/SnapshortUrlsForAccount_1_0?accountId="+i);
+				SnapshortUrlsForAccountModel siteListData = new Gson().fromJson(data, SnapshortUrlsForAccountModel.class);
+				siteDataList.add(siteListData);
 			}
-			site.put("CameraList", camlist);
-			siteListOut.put(site);
-		}
-		output.put("Status", "Success");
-		output.put("Message", "Success");
-		output.put("siteList", siteListOut);
-		
-		return output.toMap();
+
+			JSONArray siteListOut = new JSONArray();
+
+			for(SnapshortUrlsForAccountModel i : siteDataList)
+			{
+				JSONObject site = new JSONObject();
+				site.put("siteid", i.getAccountId());
+				JSONArray camlist = new JSONArray();
+				String camsStatusList = util.readUrlData("http://"+i.getCamList().get(0).getHost()+":"+i.getCamList().get(0).getHttpPort()+"/Command?action=status");
+				JSONArray camsStatusListjson = new JSONArray(camsStatusList);
+				HashMap<String,String> camStatusMap = new HashMap<String, String>();
+				for(int j = 0 ;j<camsStatusListjson.toList().size();j++) {
+					camStatusMap.put(camsStatusListjson.getJSONObject(j).getString("cameraId"), "status");
+				}
+				
+				for( SnapshortUrlsForAccountModel.Camera j : i.getCamList())
+				{
+					JSONObject cam = new JSONObject();
+					cam.put("displayName",j.getDisplayName());
+					cam.put("snapShotUrl", "http://"+j.getHost()+":"+j.getHttpPort()+"/SnapShot?cameraId="+j.getCameraId());
+					cam.put("cameraId", j.getCameraId());
+					cam.put("displayOrder", j.getDisplayOrder());
+//					String camStatus = util.readUrlData("http://"+j.getHost()+":"+j.getHttpPort()+"/Command?action=status&cameraId="+j.getCameraId());
+					
+//					if(camStatus!=null) {
+//						JSONArray camsjson = new JSONArray(camStatus);
+//						cam.put("cameraStatus", camsjson.getJSONObject(0).get("status").toString());
+//					}
+//					else
+//						cam.put("cameraStatus", "Disconnected");
+					cam.put("cameraStatus", camStatusMap.get(j.getCameraId()));
+					camlist.put(cam);
+
+
+
+
+				}
+				site.put("CameraList", camlist);
+				siteListOut.put(site);
+			}
+			output.put("Status", "Success");
+			output.put("Message", "Success");
+			output.put("siteList", siteListOut);
+
+			return output.toMap();
 		}
 		catch(Exception e)
 		{
@@ -950,7 +960,7 @@ public class IvisService {
 			return new HashMap<String,String>() {{
 				put("Status","Failed");
 				put("Message","Failed processing request");
-				
+
 			}};
 		}
 	}

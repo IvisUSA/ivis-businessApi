@@ -121,8 +121,8 @@ public class UserLoginController {
 			}
 			else
 			{
-				response.put("Status", "Failed");
-				response.put("Message", json.toMap().get("Failed"));
+				response.put("Status", "Success");
+				response.put("Message", "User logged out successfully");
 			}
 
 			return response;
