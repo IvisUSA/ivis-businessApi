@@ -44,7 +44,9 @@ public class MonitoringController {
 		String siteId = data.get("SiteId");
 		String accessToken = data.get("accessToken");
 		String calling_System_Detail = data.get("calling_System_Detail");
+		
 		String userName = data.get("userName");
+		System.out.println(userName);
 		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accessToken);
 		
 		if(accessCheck) {

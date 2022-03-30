@@ -1,5 +1,7 @@
 package com.ivis.controller;
 
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,6 +32,11 @@ public class ClientServicesController {
 	    return ivis.mapServices2(url,Request_type,accountId);
 		}
 		else 
-			return null;
+			return new HashMap<String, String>() {
+			{
+				put("Status", "Failed");
+				put("Message", "calling_user_details error");
+			}
+		};
 	}
 }

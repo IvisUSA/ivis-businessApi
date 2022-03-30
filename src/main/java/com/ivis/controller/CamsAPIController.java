@@ -33,22 +33,22 @@ import com.ivis.util.KeycloakUtils;
 public class CamsAPIController {
 	@Autowired 
 	IvisService  ivis;
-	
-	
-	
+
+
+
 	@GetMapping("/CamerasList_1_0")
 	public List<BusinessCamesStreamEntity> getCamesdata(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId,@RequestParam("calling_user_details") String calling_user_details)
 	{
 		if(calling_user_details.equals("IVISUSA")) {
-		List<BusinessCamesStreamEntity>camesList =null;
-		
-		camesList = ivis.getCamerasList(uId,accountId);
-		return camesList;
+			List<BusinessCamesStreamEntity>camesList =null;
+
+			camesList = ivis.getCamerasList(uId,accountId);
+			return camesList;
 		}
 		else
 			return null;
 	}
-	
+
 	@PostMapping("/CameraStreamList_1_0")
 	public Object getCameraStreamList_1_0(@RequestBody HashMap<String,String> data)
 	{
@@ -57,46 +57,67 @@ public class CamsAPIController {
 			return new HashMap<String,String>() {{
 				put("Status","Failed");
 				put("Message","Insufficient details");
-				
+
 			}};
 		}
-		
-		
-		
+
+
+
 		String accountId = null;
-		
+
 		String userName = data.get("userName");
 		if(data.containsKey("SiteId"))
-		   accountId = data.get("SiteId");
-		
-		
+			accountId = data.get("SiteId");
+
+
 		String accessToken = data.get("accessToken");
-		
-		
-		
+
+
+
 		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accessToken);
 		
 		if(accessCheck) {
-		
-		List<CamStreamListModelWithActiveCams> camesList =null;
-		
-		if(data.containsKey("SiteId"))
-		camesList = ivis.getCamerasStreamList2(userName,accountId);
-		
-		
-		else
-			camesList = ivis.getCamerasStreamList2(userName,null);
-			
-		
-		return camesList;}
-		else 
-			return null;
+
+			List<CamStreamListModelWithActiveCams> camesList =null;
+
+			if(data.containsKey("SiteId"))
+				camesList = ivis.getCamerasStreamList2(userName,accountId);
+
+
+			else
+				camesList = ivis.getCamerasStreamList2(userName,null);
+
+
+
+			if(camesList.equals(null) || camesList == null) {
+				return new HashMap<String, String>() {
+					{
+						put("Status", "Failed");
+						put("Message", "Sorry no cameras found. Try again later.");
+
+					}
+				};}
+			else {
+				HashMap<String,Object> resp = new HashMap<String, Object>();
+				resp.put("Status", "Success");
+				resp.put("Message", "Valid Data");
+				resp.put("CameraList",camesList);
+				return resp;
+			}
+
+
+		}
+		return new HashMap<String, String>() {
+			{
+				put("Status", "Failed");
+				put("Message", "Invalid accessToken");
+
+			}
+		};
+
+
 
 	}
-	
-	
-	
-	
-	
-	
+
+
 }

@@ -300,18 +300,17 @@ public class IvisService {
 			HttpURLConnection http = (HttpURLConnection) url.openConnection();
 			http.setRequestProperty("Accept", "application/json");
 
-			System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
 			InputStream resp = http.getInputStream();
 
 			StringBuilder sb = new StringBuilder();
 			for (int ch; (ch = resp.read()) != -1;) {
 				sb.append((char) ch);
 			}
-			System.out.println("sb	:	" + sb);
 			if (sb.toString().equals(null)) {
 				return new HashMap<String, String>() {
 					{
 						put("Status", "Failed");
+						put("Message", "Sorry no data");
 					}
 				};
 			}
@@ -325,10 +324,14 @@ public class IvisService {
 				return new HashMap<String, String>() {
 					{
 						put("Status", "Failed");
+						put("Message", "Sorry no data");
 					}
 				};
-			} else
+			} else {
 				mappeddata.put("Status", "Success");
+				mappeddata.put("Message", "Success");
+				
+			}
 
 			if (!json.get("bgImagePath").equals(null))
 				mappeddata.put("background", json.get("bgImagePath"));
@@ -514,9 +517,9 @@ public class IvisService {
 		output.setSiteId(input.getPotentailId());
 
 		if (input.getMonitoringHours().size() > 0)
-			output.setStatus("Enabled");
+			output.setMonitoringStatus("Enabled");
 		else
-			output.setStatus("Disabled");
+			output.setMonitoringStatus("Disabled");
 
 		ArrayList<MonitoringHoursListModel> lis = new ArrayList<MonitoringHoursListModel>();
 
@@ -528,7 +531,8 @@ public class IvisService {
 		lis.addAll(s);
 
 		output.setMonitoringHours(lis);
-
+		output.setStatus("Success");
+		output.setMessage("Valid details");
 		return output;
 
 	}
@@ -599,7 +603,7 @@ public class IvisService {
 				CamStreamListModelWithActiveCams camstream = gson.fromJson(i.toString(),
 						CamStreamListModelWithActiveCams.class);
 				url = new URL(
-						"http://usvs1.iviscloud.net:7888/Command?action=status&cameraId=" + camstream.getCameraId());
+						"http://"+camstream.getHost()+":"+camstream.getHttpPort()+"/Command?action=status&cameraId=" + camstream.getCameraId());
 				http = (HttpURLConnection) url.openConnection();
 				resp = http.getInputStream();
 				sb = new StringBuilder();
@@ -611,6 +615,7 @@ public class IvisService {
 				camstream.setCameraStatus(json.getJSONObject(0).get("status").toString());
 				camstream.setDeviceInternalId(datajson.getJSONObject("map").getInt("potentialId"));
 				camstream.setCameraname(datajson.getJSONObject("map").getString("name"));
+				camstream.setSnapShotUrl("http://"+camstream.getHost()+":"+camstream.getHttpPort()+"/SnapShot?cameraId=" + camstream.getCameraId());
 				camsData2.add(camstream);
 			}
 			return camsData2;
@@ -916,7 +921,7 @@ public class IvisService {
 				JSONObject cam = new JSONObject();
 				cam.put("displayName",j.getDisplayName());
 				cam.put("snapShotUrl", "http://"+j.getHost()+":"+j.getHttpPort()+"/SnapShot?cameraId="+j.getCameraId());
-
+				cam.put("cameraId", j.getCameraId());
 				cam.put("displayOrder", j.getDisplayOrder());
 				String camStatus = util.readUrlData("http://usvs1.iviscloud.net:7888/Command?action=status&cameraId="+j.getCameraId());
 				

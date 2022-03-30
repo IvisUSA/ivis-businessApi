@@ -9,10 +9,33 @@ public class MonitoringDetailsOutput {
 	
 	int SiteId;
 	
-	String status;
+	String monitoringStatus;
 	
 	ArrayList<MonitoringHoursListModel> MonitoringHours; 
-	
+	 String Status;
+	 
+	 String Message;
+
+	 
+	public String getStatus() {
+		return Status;
+	}
+
+
+	public void setStatus(String status) {
+		Status = status;
+	}
+
+
+	public String getMessage() {
+		return Message;
+	}
+
+
+	public void setMessage(String message) {
+		Message = message;
+	}
+
 
 	public int getSiteId() {
 		return SiteId;
@@ -24,13 +47,13 @@ public class MonitoringDetailsOutput {
 	}
 
 
-	public String getStatus() {
-		return status;
+	public String getMonitoringStatus() {
+		return monitoringStatus;
 	}
 
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setMonitoringStatus(String monitoringStatus) {
+		this.monitoringStatus = monitoringStatus;
 	}
 
 

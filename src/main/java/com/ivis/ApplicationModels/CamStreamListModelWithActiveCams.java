@@ -8,7 +8,6 @@ public class CamStreamListModelWithActiveCams {
 //	String authkey;  
 	 int refreshInterval  ;
 	 String displayName  ;
-	 String snapShotUrl   ;
 	 int displayOrder  ;
 	 String description  ;
 	 String  active  ;
@@ -32,8 +31,29 @@ public class CamStreamListModelWithActiveCams {
 	 String  thumbnailUrl    ;
 	 
 	 String cameraStatus;
+	 String host;
+	 int httpPort;
+	 String snapShotUrl;
 	 
 	 
+	public String getSnapShotUrl() {
+		return snapShotUrl;
+	}
+	public void setSnapShotUrl(String snapShotUrl) {
+		this.snapShotUrl = snapShotUrl;
+	}
+	public String getHost() {
+		return host;
+	}
+	public void setHost(String host) {
+		this.host = host;
+	}
+	public int getHttpPort() {
+		return httpPort;
+	}
+	public void setHttpPort(int httpPort) {
+		this.httpPort = httpPort;
+	}
 	public String getCameraStatus() {
 		return cameraStatus;
 	}
@@ -58,12 +78,7 @@ public class CamStreamListModelWithActiveCams {
 	public void setDisplayName(String displayName) {
 		this.displayName = displayName;
 	}
-	public String getSnapShotUrl() {
-		return snapShotUrl;
-	}
-	public void setSnapShotUrl(String snapShotUrl) {
-		this.snapShotUrl = snapShotUrl;
-	}
+
 	public int getDisplayOrder() {
 		return displayOrder;
 	}

@@ -90,6 +90,7 @@ public class UserLoginController {
 	@PostMapping(value = "/logout")
 	public Object userLogout2(@RequestBody HashMap<String, String> userdata) {
 		JSONObject json = new JSONObject();
+		HashMap<Object,Object> response = new HashMap<Object, Object>();
 		try {
 			URL url = new URL(ServerConfig.keycloakapi+"/logout");
 			HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -114,13 +115,24 @@ public class UserLoginController {
 			json = new JSONObject(sb.toString());
 
 			http.disconnect();
+			if(json.toMap().containsKey("Success")) {
+				response.put("Status", "Success");
+				response.put("Message",json.toMap().get("Success"));
+			}
+			else
+			{
+				response.put("Status", "Failed");
+				response.put("Message", json.toMap().get("Failed"));
+			}
 
-			return json.toMap();
+			return response;
 
 		} catch (Exception e) {
 			System.err.println(e);
 
-			return null;
+			response.put("Status", "Failed");
+			response.put("Message", "Log out failed");
+			return response;
 		}
 	}
 	@PostMapping(value = "/refreshtoken")
