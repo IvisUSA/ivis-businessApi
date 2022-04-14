@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 //import java.net.http.HttpClient;
@@ -66,7 +67,7 @@ public class IvisService {
 
 	public static String cpusApi = ServerConfig.cpusapi;
 	public static String keycloakApi = ServerConfig.keycloakapi;
-
+	public static String IvisBiApi = ServerConfig.ivisBiApi;
 
 	public UserEntity getImMatrixAvailability(String uId) {
 
@@ -290,7 +291,7 @@ public class IvisService {
 
 		return bIAnalytics;
 	}
-
+	
 	// TODO WE need to change this
 	public Object mapServices2(String url2, String Request_type, String accountId) {
 
@@ -504,7 +505,71 @@ public class IvisService {
 			return null;
 		}
 	}
+	public Object getbiAnalyticsReport3(int siteId, String fromDate, String toDate) {
+		// TODO Auto-generated method stub
 
+		String sitesUrl = cpusApi+"/sites/getBICustomerSiteId_1_0?accId=";
+		sitesUrl = sitesUrl + siteId;
+
+		String client_id = util.readUrlData(sitesUrl);
+
+		try
+		{
+			String urlForAddRequest = "http://smstaging.iviscloud.net:8090/BusinessIntelligence/getReports";
+
+			URL url = new URL(urlForAddRequest);
+			HttpURLConnection http = (HttpURLConnection) url.openConnection();
+			http.setRequestMethod("POST");
+			http.setDoOutput(true);
+			http.setRequestProperty("Accept", "application/json");
+			http.setRequestProperty("Content-Type", "application/json");
+
+			JSONObject datajson = new JSONObject();
+
+
+
+
+			datajson.put("id", client_id);
+//if(!fromDate.equals(null)) {
+			datajson.put("startdate", fromDate);
+			datajson.put("enddate", toDate);
+//			}
+
+
+			
+
+
+			byte[] out = datajson.toString().getBytes(StandardCharsets.UTF_8);
+
+			OutputStream stream = http.getOutputStream();
+			stream.write(out);
+
+			InputStream resp = http.getInputStream();
+
+			StringBuilder sb = new StringBuilder();
+			for (int ch; (ch = resp.read()) != -1;) {
+				sb.append((char) ch);
+			}
+			//			System.out.println(sb);
+			JSONArray json = new JSONArray(sb.toString());
+
+			http.disconnect();
+			return json.toList();
+
+
+		}
+		catch(Exception e)
+		{
+			System.err.println(e);
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Failed processing request");
+
+			}};
+
+
+		}
+}
 	public Object getMonitoringDetails(String accountId) {
 
 		String data = util.readUrlData(

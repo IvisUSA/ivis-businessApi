@@ -7,4 +7,8 @@ public class ServerConfig {
 	
 	public static String keycloakapi = "http://smstaging.iviscloud.net:8090/keycloakApp";
 	public static String cpusapi = "http://smstaging.iviscloud.net:8090/cpus";
+	
+	
+	public static String ivisBiApi = "http://smstaging.iviscloud.net:8090/bireportsApi";
+	
 }
