@@ -1,5 +1,7 @@
 package com.ivis.service;
 
+import java.io.*;
+import okhttp3.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 //import java.net.http.HttpRequest;
 //import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -33,6 +37,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -291,7 +296,7 @@ public class IvisService {
 
 		return bIAnalytics;
 	}
-	
+
 	// TODO WE need to change this
 	public Object mapServices2(String url2, String Request_type, String accountId) {
 
@@ -515,7 +520,7 @@ public class IvisService {
 
 		try
 		{
-			String urlForAddRequest = "http://smstaging.iviscloud.net:8090/BusinessIntelligence/getReports";
+			String urlForAddRequest = IvisBiApi+"/getReports";
 
 			URL url = new URL(urlForAddRequest);
 			HttpURLConnection http = (HttpURLConnection) url.openConnection();
@@ -530,13 +535,13 @@ public class IvisService {
 
 
 			datajson.put("id", client_id);
-//if(!fromDate.equals(null)) {
+			//if(!fromDate.equals(null)) {
 			datajson.put("startdate", fromDate);
 			datajson.put("enddate", toDate);
-//			}
+			//			}
 
 
-			
+
 
 
 			byte[] out = datajson.toString().getBytes(StandardCharsets.UTF_8);
@@ -569,7 +574,7 @@ public class IvisService {
 
 
 		}
-}
+	}
 	public Object getMonitoringDetails(String accountId) {
 
 		String data = util.readUrlData(
@@ -667,6 +672,7 @@ public class IvisService {
 				JSONObject datajson = new JSONObject(dataString);
 				CamStreamListModelWithActiveCams camstream = gson.fromJson(i.toString(),
 						CamStreamListModelWithActiveCams.class);
+				System.out.println("http://"+camstream.getHost()+":"+camstream.getHttpPort()+"/Command?action=status&cameraId=" + camstream.getCameraId());
 				url = new URL(
 						"http://"+camstream.getHost()+":"+camstream.getHttpPort()+"/Command?action=status&cameraId=" + camstream.getCameraId());
 				http = (HttpURLConnection) url.openConnection();
@@ -685,7 +691,7 @@ public class IvisService {
 			}
 			return camsData2;
 		} catch (IOException e) {
-			//			e.printStackTrace();
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -859,16 +865,20 @@ public class IvisService {
 			String link = "";
 			if (inputData.containsKey("serviceId"))
 				link = cpusApi+"/serviceRequest/getServiceReq_1_0?accountId="
-						+ inputData.get("SiteId") + "&serviceId=" + inputData.get("serviceId");
+						+ inputData.get("siteId") + "&serviceId=" + inputData.get("serviceId");
 			else
 				link = cpusApi+"/serviceRequest/getServiceReq_1_0?accountId="
-						+ inputData.get("SiteId");
+						+ inputData.get("siteId");
 			String jsonstring = util.readUrlData(link);
 			JSONObject json = new JSONObject(jsonstring);
 			return json.toMap();
 		} catch (Exception e) {
 			return new HashMap<String, String>() {
 				{
+					System.err.print("***********	Error	*************");
+					System.err.println("getservicerequest : "+e);
+					e.printStackTrace();
+					System.err.print("***********	End	*************");
 					put("Status", "Failed");
 					put("Message", "Failed processing request");
 
@@ -877,84 +887,82 @@ public class IvisService {
 		}
 	}
 
-	public Object addServiceRequest(HashMap<Object, Object> inputData) {
-		try
-		{
-			String urlForAddRequest = cpusApi+"/serviceRequest/addServiceReq_1_0";
-
-			URL url = new URL(urlForAddRequest);
-			HttpURLConnection http = (HttpURLConnection) url.openConnection();
-			http.setRequestMethod("POST");
-			http.setDoOutput(true);
-			http.setRequestProperty("Accept", "application/json");
-			http.setRequestProperty("Content-Type", "application/json");
-
-			JSONObject datajson = new JSONObject();
+	public Object addOrUpdateServiceRequest(Integer accountId, Integer serviceId, String serviceCategoryName, String serviceSubCategoryName, String userName, String calling_System_Detail, MultipartFile[] attachements, String description, String preferredTimeToCall, String priority, String remarks) {
 
 
 
+		try{
+			List<String> fileNames = new ArrayList<String>();
+			List<String> files = new ArrayList<String>();
+			if(!(attachements==null))
+				for(MultipartFile i : attachements)
+				{
+					System.out.println(i.getOriginalFilename());
+					fileNames.add(i.getOriginalFilename());
+					files.add(i.getBytes().toString());
+				}
+			Map<String,Object> bodyMap = new HashMap<>();
 
-			datajson.put("accountId", 1);
-			datajson.put("userName", "us1");
-			datajson.put("serviceName", "Test");
-			datajson.put("serviceSubCategory", "Test");
-			datajson.put("calling_system", "Test");
-			datajson.put("description", "Test");
+			String url = cpusApi+"/serviceRequest/addServiceReq_1_0";
+			String requestType = "POST";
+			bodyMap.put("accountId", accountId);
 
-			//			datajson.put("accountId", inputData.get("SiteId"));
-			//			datajson.put("userName", inputData.get("userName"));
-			//			datajson.put("serviceName", inputData.get("ServiceName"));
-			//			datajson.put("serviceSubCategory", inputData.get("ServiceSubCategory"));
-			//			datajson.put("calling_system", inputData.get("calling_System_Detail"));
-			//			datajson.put("description", inputData.get("description"));
-
-			if(inputData.containsKey("requestType"))
-				datajson.put("requestType", inputData.get("requestType"));
-
-			if(inputData.containsKey("preferredTimeToCall"))
-				datajson.put("preferredTimeToCall", inputData.get("preferredTimeToCall"));
-
-			if(inputData.containsKey("project"))
-				datajson.put("project", inputData.get("project"));
-
-			if(inputData.containsKey("priority"))
-				datajson.put("priority", inputData.get("priority"));
-
-			if(inputData.containsKey("remarks"))
-				datajson.put("remarks", inputData.get("remarks"));
-
-			System.out.println(datajson.toString());
-
-
-			byte[] out = datajson.toString().getBytes(StandardCharsets.UTF_8);
-
-			OutputStream stream = http.getOutputStream();
-			stream.write(out);
-
-			InputStream resp = http.getInputStream();
-
-			StringBuilder sb = new StringBuilder();
-			for (int ch; (ch = resp.read()) != -1;) {
-				sb.append((char) ch);
+			if(!(serviceId==null)) {
+				bodyMap.put("serviceId", serviceId);
+				url = cpusApi+"/serviceRequest/updateServiceReq_1_0";
+				requestType = "PUT";
 			}
-			//			System.out.println(sb);
-			JSONObject json = new JSONObject(sb.toString());
+			bodyMap.put("serviceCategoryName", serviceCategoryName);
+			bodyMap.put("serviceSubCategoryName", serviceSubCategoryName);
+			bodyMap.put("createdBy", userName);
+			bodyMap.put("requestType", calling_System_Detail);
+			if(fileNames.size()>0) {
+				bodyMap.put("imageName", fileNames.get(0));
+				bodyMap.put("file", files.get(0));
+				System.out.println(bodyMap.get(bodyMap));
+			}
+			bodyMap.put("description", accountId);
+			if(!(preferredTimeToCall==null))
+				bodyMap.put("preferredTimeToCall", preferredTimeToCall);
+			if(!(priority==null))
+				bodyMap.put("priority", priority);
+			if(!(remarks==null))
+				bodyMap.put("remarks", remarks);
 
-			http.disconnect();
-			return json.toMap();
+			System.out.println(bodyMap.toString());
+			OkHttpClient client = new OkHttpClient().newBuilder()
+					.build();
+			MediaType mediaType = MediaType.parse("application/json");
+			RequestBody body = RequestBody.create(mediaType, new Gson().toJson(bodyMap));
+
+			//		    RequestBody body = RequestBody.create(mediaType, "{\r\n\"accountId\":1007,\r\n\"userName\" : \"us1\",\r\n\"serviceName\":\"Forty One ten IVISUSA1007\",\r\n\"serviceSubCategory\":\"Test\",\r\n\"calling_system\":\"Test\",\r\n\"imageName\":\"\",\r\n\"file\":\"\",\r\n\"requestType\":\"Test\",\r\n\"preferredTimeToCall\":\"02:00:00\",\r\n\"description\":\"TEST\",\r\n\"remarks\":\"Test\",\r\n\"priority\":\"Test\",\r\n\"project\":\"Test\"\r\n\r\n}");
+			Request request = new Request.Builder()
+					.url(url)
+					.method(requestType, body)
+					.addHeader("Content-Type", "application/json")
+					.build();
+			Response response = client.newCall(request).execute();
+			String responseString = response.body().string();
+			System.out.println("Response from addservicerequest  :"+responseString);
+			JSONObject hashMap = new JSONObject(responseString);
 
 
+
+			return hashMap.toMap();
 		}
 		catch(Exception e)
 		{
-			System.err.println(e);
-			return new HashMap<String,String>() {{
-				put("Status","Failed");
-				put("Message","Failed processing request");
+			System.err.print("***********	Error	*************");
+			System.err.println("addservicerequest : "+e);
+			e.printStackTrace();
+			System.err.print("***********	End	*************");
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Request Cannot be processed");
 
-			}};
-
-
+				}
+			};
 		}
 
 	}
@@ -987,7 +995,7 @@ public class IvisService {
 				for(int j = 0 ;j<camsStatusListjson.toList().size();j++) {
 					camStatusMap.put(camsStatusListjson.getJSONObject(j).getString("cameraId"), "status");
 				}
-				
+
 				for( SnapshortUrlsForAccountModel.Camera j : i.getCamList())
 				{
 					JSONObject cam = new JSONObject();
@@ -995,14 +1003,14 @@ public class IvisService {
 					cam.put("snapShotUrl", "http://"+j.getHost()+":"+j.getHttpPort()+"/SnapShot?cameraId="+j.getCameraId());
 					cam.put("cameraId", j.getCameraId());
 					cam.put("displayOrder", j.getDisplayOrder());
-//					String camStatus = util.readUrlData("http://"+j.getHost()+":"+j.getHttpPort()+"/Command?action=status&cameraId="+j.getCameraId());
-					
-//					if(camStatus!=null) {
-//						JSONArray camsjson = new JSONArray(camStatus);
-//						cam.put("cameraStatus", camsjson.getJSONObject(0).get("status").toString());
-//					}
-//					else
-//						cam.put("cameraStatus", "Disconnected");
+					//					String camStatus = util.readUrlData("http://"+j.getHost()+":"+j.getHttpPort()+"/Command?action=status&cameraId="+j.getCameraId());
+
+					//					if(camStatus!=null) {
+					//						JSONArray camsjson = new JSONArray(camStatus);
+					//						cam.put("cameraStatus", camsjson.getJSONObject(0).get("status").toString());
+					//					}
+					//					else
+					//						cam.put("cameraStatus", "Disconnected");
 					cam.put("cameraStatus", camStatusMap.get(j.getCameraId()));
 					camlist.put(cam);
 
@@ -1026,6 +1034,53 @@ public class IvisService {
 				put("Status","Failed");
 				put("Message","Failed processing request");
 
+			}};
+		}
+	}
+
+	public Object deleteServiceRequest(String userName, Integer accountId, Integer serviceId, String remarks) {
+
+
+		try {
+			OkHttpClient client = new OkHttpClient().newBuilder()
+					.build();
+			MediaType mediaType = MediaType.parse("application/json");
+
+			Map<String,Object> bodyMap = new HashMap<>();
+			bodyMap.put("accountId", accountId);
+			bodyMap.put("serviceId", serviceId);
+			bodyMap.put("userName", userName);
+			bodyMap.put("remarks", remarks);
+			
+			
+			RequestBody body = RequestBody.create(mediaType,new Gson().toJson(bodyMap));
+			
+//			RequestBody body = RequestBody.create(mediaType, "{\r\n    \"accountId\" :   1007,\r\n    \"serviceId\" :   26,\r\n    \"userName\"  :   \"us1\",\r\n    \"remarks\"   :   \"Calling\"\r\n}");
+			Request request = new Request.Builder()
+					.url(cpusApi+"/serviceRequest/deleteServiceReq_1_0")
+					.method("DELETE", body)
+					.addHeader("Content-Type", "application/json")
+					.build();
+			Response response = client.newCall(request).execute();
+
+			String responseString = response.body().string();
+			System.out.println("Response from addservicerequest  :"+responseString);
+			JSONObject hashMap = new JSONObject(responseString);
+
+
+
+			return hashMap.toMap();
+
+		}
+		catch(Exception e)
+		{
+			System.err.print("***********	Error	*************");
+			System.err.println("deleteServiceRequest : "+e);
+			e.printStackTrace();
+			System.err.print("***********	End	*************");
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Failed processing request");
 			}};
 		}
 	}

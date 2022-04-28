@@ -1,13 +1,13 @@
 package com.ivis.controller;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 import com.google.gson.Gson;
 import com.ivis.service.IvisService;
 import com.ivis.util.KeycloakUtils;
+
+import okhttp3.MultipartBody;
 
 @Controller
 @CrossOrigin
@@ -35,7 +37,7 @@ public class HelpDeskController {
 				add("userName");
 				add("accessToken");
 				add("calling_System_Detail");
-				add("SiteId");
+				add("siteId");
 			}
 		})) {
 			return new HashMap<String, String>() {
@@ -62,42 +64,75 @@ public class HelpDeskController {
 
 	}
 
+
 	@PostMapping("/addServiceRequest_1_0")
-	public Object addServiceRequest(@RequestParam(name = "images", required = false) MultipartFile imagedata,
-			@RequestParam("data") String metadata) {
-		HashMap<Object,Object> inputData = null;
-		try {
-		Gson gson = new Gson();    
-		inputData = gson.fromJson(metadata,HashMap.class);
-		}
-		catch(Exception e)
+	public Object addServiceRequest(@RequestParam("siteId") Integer accountId,@RequestParam("serviceName") String serviceCategoryName,
+			@RequestParam("subServiceName") String serviceSubCategoryName,@RequestParam("userName") String userName,
+			@RequestParam("calling_System_Detail") String calling_System_Detail,@RequestParam(name = "Attachements",
+			required = false) MultipartFile[] attachements,@RequestParam("description") String description,
+			@RequestParam(name = "preferredTimeToCall", required = false) String preferredTimeToCall,
+			@RequestParam(name = "priority", required = false) String priority,@RequestParam(name = "remarks", required = false) String remarks,
+			@RequestParam("accessToken") String accessToken) {
+		if(!KeycloakUtils.verifyaccesstoken(userName, accessToken))
 		{
-			System.err.println(e);
 			return new HashMap<String, String>() {
 				{
 					put("Status", "Failed");
-					put("Message", "Invalid format");
+					put("Message", "Invalid accessToken");
+
 				}
 			};
 		}
+		else
+		{
+			return server.addOrUpdateServiceRequest(accountId,null,serviceCategoryName,serviceSubCategoryName,
+					userName,calling_System_Detail,attachements,description,
+					preferredTimeToCall,priority,remarks);
+		}
 		
-		ArrayList<String> requiredkeys = new ArrayList<String>() {
+	
+	}
+	
+	@PostMapping("/updateServiceRequest_1_0")
+	public Object updateServiceRequest(@RequestParam("siteId") Integer accountId,@RequestParam("serviceId") Integer serviceId,@RequestParam("serviceName") String serviceCategoryName,
+			@RequestParam("subServiceName") String serviceSubCategoryName,@RequestParam("userName") String userName,
+			@RequestParam("calling_System_Detail") String calling_System_Detail,@RequestParam(name = "Attachements",
+			required = false) MultipartFile[] attachements,@RequestParam("description") String description,
+			@RequestParam(name = "preferredTimeToCall", required = false) String preferredTimeToCall,
+			@RequestParam(name = "priority", required = false) String priority,@RequestParam(name = "remarks", required = false) String remarks,
+			@RequestParam("accessToken") String accessToken) {
+		if(!KeycloakUtils.verifyaccesstoken(userName, accessToken))
+		{
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Invalid accessToken");
+
+				}
+			};
+		}
+		else
+		{
+			return server.addOrUpdateServiceRequest(accountId,serviceId,serviceCategoryName,serviceSubCategoryName,
+					userName,calling_System_Detail,attachements,description,
+					preferredTimeToCall,priority,remarks);
+		}
+		
+	
+	}
+	
+	@PostMapping("/deleteServiceRequest_1_0")
+	public Object deleteServiceRequest(@RequestBody HashMap<String,Object> data)
+	{
+		if (!data.keySet().containsAll(new ArrayList<String>() {
 			{
 				add("userName");
 				add("accessToken");
 				add("calling_System_Detail");
+				add("siteId");
+				add("serviceId");
 			}
-		};
-
-		requiredkeys.add("SiteId");
-		requiredkeys.add("ServiceName");
-		requiredkeys.add("ServiceSubCategory");
-
-		requiredkeys.add("description");
-
-
-
-		if (!inputData.keySet().containsAll(requiredkeys)) {
+		})) {
 			return new HashMap<String, String>() {
 				{
 					put("Status", "Failed");
@@ -105,26 +140,28 @@ public class HelpDeskController {
 				}
 			};
 		}
-
-		String userName = inputData.get("userName").toString();
-		String accesstoken = inputData.get("accessToken").toString();
-		String callingSystemDetail = inputData.get("calling_System_Detail").toString();
-		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accesstoken);
 		
-		if(accessCheck)
-		{
-			return server.addServiceRequest(inputData);
-		}
-		else
+		String userName		= (String) data.get("userName");
+		String accessToken	= (String) data.get("accessToken");
+		Integer accountId	= (Integer) data.get("siteId");
+		Integer serviceId	= (Integer) data.get("serviceId");
+		String remarks 		= (String) data.get("calling_System_Detail");
+		if(!KeycloakUtils.verifyaccesstoken(userName, accessToken))
 		{
 			return new HashMap<String, String>() {
 				{
 					put("Status", "Failed");
-					put("Message", "Invalid user details");
+					put("Message", "Invalid accessToken");
 
 				}
 			};
 		}
+		else
+		{
+
+			return server.deleteServiceRequest(userName,accountId,serviceId,remarks);
+		}
+		
 	}
 
 }

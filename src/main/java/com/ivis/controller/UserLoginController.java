@@ -144,13 +144,14 @@ public class UserLoginController {
 			http.setRequestMethod("POST");
 			http.setDoOutput(true);
 			http.setRequestProperty("Accept", "application/json");
-			http.setRequestProperty("Authorization", "Bearer {token}");
+//			http.setRequestProperty("Authorization", "Bearer {token}");
 			http.setRequestProperty("Content-Type", "application/json");
-
+			System.out.println("works til here *******************");
 			String data = "{\n\n    \"userName\": \""
 					+ userdata.get("userName") + "\",\n    \"calling_System_Detail\": \""
 					+ userdata.get("calling_System_Detail") + "\",\n    \"refreshToken\":\""
 					+ userdata.get("refreshToken") + "\"\n\n}";
+			
 			byte[] out = data.getBytes(StandardCharsets.UTF_8);
 
 			OutputStream stream = http.getOutputStream();
@@ -169,6 +170,8 @@ public class UserLoginController {
 		} catch (Exception e) {
 			System.err.println(e);
 
+			e.printStackTrace();
+			
 			return null;
 		}
 	}

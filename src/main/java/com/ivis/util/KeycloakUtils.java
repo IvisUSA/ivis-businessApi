@@ -54,7 +54,6 @@ public class KeycloakUtils {
 		}
 		catch(Exception e)
 		{
-			System.out.println("false");
 			System.out.println(e);
 			return false;
 		}

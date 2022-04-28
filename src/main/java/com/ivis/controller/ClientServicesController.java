@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ivis.service.IvisService;
+import com.ivis.service.ServerConfig;
 
 @CrossOrigin
 @Controller
@@ -27,7 +28,7 @@ public class ClientServicesController {
 		
 		
 		if(calling_user_details.equals("IVISUSA")) {
-	    String url = "http://smstaging.iviscloud.net:8090/cpus/clientServices_1_0/accountId="+accountId;
+	    String url = ServerConfig.cpusapi+"/clientServices_1_0/accountId="+accountId;
 	    
 	    return ivis.mapServices2(url,Request_type,accountId);
 		}
