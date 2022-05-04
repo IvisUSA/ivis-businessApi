@@ -39,6 +39,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -47,12 +48,15 @@ import com.google.gson.reflect.TypeToken;
 import com.ivis.ApplicationModels.Analysis;
 import com.ivis.ApplicationModels.CamStreamListModel;
 import com.ivis.ApplicationModels.CamStreamListModelWithActiveCams;
+import com.ivis.ApplicationModels.CategoriesModel;
+import com.ivis.ApplicationModels.CategoriesSubcategoriesOutputModel;
 import com.ivis.ApplicationModels.MonitoringDetailsInput;
 import com.ivis.ApplicationModels.MonitoringDetailsOutput;
 import com.ivis.ApplicationModels.MonitoringHoursListModel;
 import com.ivis.ApplicationModels.Services;
 import com.ivis.ApplicationModels.SiteList;
 import com.ivis.ApplicationModels.SnapshortUrlsForAccountModel;
+import com.ivis.ApplicationModels.Subcategories;
 import com.ivis.ApplicationModels.SnapshortUrlsForAccountModel.Camera;
 import com.ivis.ApplicationModels.UserLogin;
 import com.ivis.ApplicationModels.account;
@@ -65,7 +69,6 @@ import com.ivis.Businessentity.UserEntity;
 import com.ivis.util.ReadJson;
 import com.ivis.util.util;
 
-import threads.SnapShotUrlsForAccountUsingThread;
 
 @Service
 public class IvisService {
@@ -1085,4 +1088,86 @@ public class IvisService {
 		}
 	}
 
+	public Object getCategoryList(HashMap<String, String> inputData) {
+		// TODO Auto-generated method stub
+		
+		try {
+		OkHttpClient client = new OkHttpClient().newBuilder()
+				  .build();
+				Request request = new Request.Builder()
+//				  .url("http://10.0.2.197:8080/api/tsc/getTService")
+				  .url(cpusApi+"/api/tsc/getTService")
+				  .method("GET", null)
+				  .build();
+				JSONArray jsonList = new JSONArray();
+					Response response = client.newCall(request).execute();
+					String responseString = response.body().string();
+					if(responseString.startsWith("[")) {
+					 jsonList = new JSONArray(responseString);}
+					else
+						return new HashMap<String,Object>(){{
+							put("Status","Failed");
+							put("Message","Request cannot be processed.Try again later...");
+						}};
+					ArrayList<CategoriesModel> dataList = new ArrayList<CategoriesModel>();
+					for(Object i:jsonList)
+						dataList.add(new Gson().fromJson(i.toString(), CategoriesModel.class));
+
+					
+					HashMap<String,Object> outputMap = new HashMap<>();
+					
+					ArrayList<CategoriesSubcategoriesOutputModel> categoriesOutputList = new ArrayList<>();
+					ArrayList<Integer> catIdList = new ArrayList<Integer>();
+					for(CategoriesModel i : dataList)
+					{
+						if(!catIdList.contains(i.getCatid()))
+						{
+							catIdList.add(i.getCatid());
+						}
+					}
+					
+					
+					for(Integer i:catIdList)
+					{
+						ArrayList<Subcategories> subCatList = new ArrayList<Subcategories>();
+						String catName = "";
+						for(CategoriesModel j : dataList)
+						{
+
+							Subcategories subcat = new Subcategories();
+							subcat.setSubcatid(j.getSubcatid());
+							subcat.setSubcatname(j.getSubcatname());
+							if(j.getCatid()==i&&(!(subCatList.contains(subcat))))
+							{
+
+								subCatList.add(subcat);
+								catName = j.getCatname();
+							}
+						}
+						
+						CategoriesSubcategoriesOutputModel category = new CategoriesSubcategoriesOutputModel();
+
+						category.setSubcategoriesList(subCatList);
+						category.setCatid(i);
+						category.setCatname(catName);
+						categoriesOutputList.add(category);
+					}
+					ObjectMapper mapper = new ObjectMapper();
+					
+					return new HashMap<String,Object>(){{
+						put("Status","Success");
+						put("Message","Category List is valid");
+						put("CategoryList",categoriesOutputList);
+					}};
+				} catch (IOException e) {
+					e.printStackTrace();
+					return new HashMap<String,Object>(){{
+						put("Status","Failed");
+						put("Message","Request cannot be processed.Try again later...");
+					}};
+				}
+		
+	}
+
+	
 }

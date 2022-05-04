@@ -163,5 +163,41 @@ public class HelpDeskController {
 		}
 		
 	}
+	
+	@PostMapping("/categoryList_1_0")
+	public Object categoriesList(@RequestBody HashMap<String, String> inputData)
+	{
+		if (!inputData.keySet().containsAll(new ArrayList<String>() {
+			{
+				add("userName");
+				add("accessToken");
+				add("calling_System_Detail");
+			}
+		})) {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Insufficient details");
+				}
+			};
+		}
+		
+		String userName = inputData.get("userName");
+		String accesstoken = inputData.get("accessToken");
+		String callingSystemDetail = inputData.get("calling_System_Detail");
+		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accesstoken);
+
+		if (accessCheck) {
+			return server.getCategoryList(inputData);
+		} else
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Invalid user details");
+
+				}
+			};
+		
+	}
 
 }
