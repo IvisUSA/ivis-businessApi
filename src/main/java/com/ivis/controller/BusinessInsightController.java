@@ -40,7 +40,7 @@ public class BusinessInsightController {
 		
 		
 		if(calling_user_details.equals("IVISUSA")) {
-		List<BIAnalyticsEntity> bIAnalytics=this.ivis.getBusinessAnalystics(client_id,date);
+		List<BIAnalyticsEntity> bIAnalytics=ivis.getBusinessAnalystics(client_id,date);
 		
 		return bIAnalytics;
 		}
@@ -56,7 +56,7 @@ public class BusinessInsightController {
 	public Object biAnalyticsReport(@RequestParam( "SiteId") int SiteId,@RequestParam(value = "fromDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date FromDate ,@RequestParam(value = "toDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date ToDate,@RequestParam( "calling_user_details") String calling_user_details ){
 		
 		if(calling_user_details.equals("IVISUSA")) {
-		Object bIAnalytics=this.ivis.getbiAnalyticsReport2(SiteId,FromDate,ToDate);
+		Object bIAnalytics=ivis.getbiAnalyticsReport2(SiteId,FromDate,ToDate);
 		
 		return bIAnalytics;
 		}
@@ -67,7 +67,7 @@ public class BusinessInsightController {
 	public Object biAnalyticsReport2(@RequestParam( "SiteId") int SiteId,@RequestParam(value = "fromDate") String FromDate ,@RequestParam(value = "toDate")  String ToDate,@RequestParam( "calling_user_details") String calling_user_details ){
 		
 		if(calling_user_details.equals("IVISUSA")) {
-		Object bIAnalytics=this.ivis.getbiAnalyticsReport3(SiteId,FromDate,ToDate);
+		Object bIAnalytics=ivis.getbiAnalyticsReport3(SiteId,FromDate,ToDate);
 		
 		return bIAnalytics;
 		}
