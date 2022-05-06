@@ -37,10 +37,10 @@ public class BusinessInsightController {
 	
 	
 	@GetMapping("/getAnalyticsListforSite_1_0")
-	public Object getBusinessInsights(@RequestParam( "SiteId") int client_id,@RequestParam( "calling_user_details") String calling_user_details,@RequestParam(value = "date", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date date  ){
+	public Object getBusinessInsights(@RequestParam( "SiteId") int client_id,@RequestParam( "calling_System_Detail") String calling_System_Detail,@RequestParam(value = "date", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date date  ){
 		
 		
-		if(calling_user_details.equals("IVISUSA")) {
+		if(calling_System_Detail.equals("IVISUSA")) {
 		Object bIAnalytics=ivis.getBusinessAnalystics2(client_id,date);
 		
 		return bIAnalytics;
@@ -48,7 +48,7 @@ public class BusinessInsightController {
 		else
 			return new HashMap<String,String>() {{
 				put("Status","Failed");
-				put("Message","Please pass calling_user_details");
+				put("Message","Please pass calling_System_Detail");
 			}};
 	}
 	
@@ -57,14 +57,17 @@ public class BusinessInsightController {
 	
 	
 	@GetMapping(path = "/biAnalyticsReport_1_0", produces=MediaType.APPLICATION_JSON_VALUE)
-	public Object biAnalyticsReport(@RequestParam( "SiteId") int SiteId,@RequestParam(value = "fromDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date FromDate ,@RequestParam(value = "toDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date ToDate,@RequestParam( "calling_user_details") String calling_user_details ){
+	public Object biAnalyticsReport(@RequestParam( "SiteId") int SiteId,@RequestParam(value = "fromDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date FromDate ,@RequestParam(value = "toDate", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date ToDate,@RequestParam( "calling_System_Detail") String calling_System_Detail ){
 		
-		if(calling_user_details.equals("IVISUSA")) {
+		if(calling_System_Detail.equals("IVISUSA")) {
 		Object bIAnalytics=ivis.getbiAnalyticsReport2(SiteId,FromDate,ToDate);
 		
 		return bIAnalytics;
 		}
-		else return null;
+		else return new HashMap<String,String>() {{
+			put("Status","Failed");
+			put("Message","Please pass calling_System_Detail");
+		}};
 
 	}
 	@GetMapping(path = "/biAnalyticsReport_1_2", produces=MediaType.APPLICATION_JSON_VALUE)

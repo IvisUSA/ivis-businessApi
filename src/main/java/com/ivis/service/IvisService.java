@@ -564,45 +564,50 @@ public class IvisService {
 
 		String client_id = util.readUrlData(sitesUrl);
 
-		HttpPost post = new HttpPost("http://ivisbi.com/v2/api/analyticsReport");
-
-		// add request parameter, form parameters
-		List<NameValuePair> urlParameters = new ArrayList<>();
-		urlParameters.add(new BasicNameValuePair("client_id", client_id));
-		urlParameters.add(new BasicNameValuePair("fromDate", fromDate.toString()));
-		urlParameters.add(new BasicNameValuePair("toDate", toDate.toString()));
-
-		try {
-			post.setEntity(new UrlEncodedFormEntity(urlParameters));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
+		String url = IvisBiApi+"/getReports";
+		try
+		{
+		OkHttpClient client = new OkHttpClient().newBuilder()
+				  .build();
+				MediaType mediaType = MediaType.parse("application/json");
+				
+				JSONObject requestBody = new JSONObject();
+				requestBody.put("id", client_id);
+				
+				if(fromDate!=null)
+				{DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");  
+				String strDate = dateFormat.format(fromDate);  
+					requestBody.put("startdate", strDate);
+				}
+				if(toDate!=null)
+				{DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");  
+				String strDate = dateFormat.format(toDate);  
+					requestBody.put("enddate", strDate);
+				}
+				
+				RequestBody body = RequestBody.create(mediaType, requestBody.toString());
+				
+				Request request = new Request.Builder()
+				  .url(url)
+				  .method("POST", body)
+				  .addHeader("Content-Type", "application/json")
+				  .build();
+				Response response = client.newCall(request).execute();
+				String reportsString = response.body().string();
+				return new HashMap<String,Object>() {{
+					put("Status","Success");
+					put("Message","List generated successfully");
+					put("AnalyticsReportList",new JSONArray(reportsString).toList());
+				}};
 		}
-
-		try (CloseableHttpClient httpClient = HttpClients.createDefault();
-				CloseableHttpResponse response = httpClient.execute(post)) {
-
-			String input = EntityUtils.toString(response.getEntity());
-			JSONObject json = new JSONObject(input);
-			System.out.println(json.keySet().toArray()[0]);
-			ArrayList<Object> data = new ArrayList<Object>();
-			for (int i = 0; i < json.keySet().toArray().length; i++) {
-				System.out.println(json.keySet().toArray()[i]);
-				HashMap<Object, Object> hashData = new HashMap<Object, Object>();
-
-				JSONArray dataObject = json.getJSONArray(json.keySet().toArray()[i].toString());
-
-				hashData.put("data", dataObject.toList());
-				hashData.put("name", json.keySet().toArray()[i]);
-				data.add(hashData);
-			}
-
-			// TODO Put Status
-
-			return data;
-		} catch (Exception e) {
-			System.err.println(e);
-			return null;
+		catch(Exception e)
+		{
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Sorry, cannot process your request.Please try again later...");
+			}};
 		}
+	
 	}
 	public Object getbiAnalyticsReport3(int siteId, String fromDate, String toDate) {
 		// TODO Auto-generated method stub
