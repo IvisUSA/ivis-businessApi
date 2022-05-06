@@ -1,6 +1,7 @@
 package com.ivis.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +37,19 @@ public class BusinessInsightController {
 	
 	
 	@GetMapping("/getAnalyticsListforSite_1_0")
-	public List<BIAnalyticsEntity> getBusinessInsights(@RequestParam( "SiteId") int client_id,@RequestParam( "calling_user_details") String calling_user_details,@RequestParam(value = "date", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date date  ){
+	public Object getBusinessInsights(@RequestParam( "SiteId") int client_id,@RequestParam( "calling_user_details") String calling_user_details,@RequestParam(value = "date", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date date  ){
 		
 		
 		if(calling_user_details.equals("IVISUSA")) {
-		List<BIAnalyticsEntity> bIAnalytics=ivis.getBusinessAnalystics(client_id,date);
+		Object bIAnalytics=ivis.getBusinessAnalystics2(client_id,date);
 		
 		return bIAnalytics;
 		}
 		else
-			return null;
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Please pass calling_user_details");
+			}};
 	}
 	
 

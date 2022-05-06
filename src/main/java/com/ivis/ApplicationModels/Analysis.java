@@ -2,8 +2,8 @@ package com.ivis.ApplicationModels;
 
 public class Analysis {
 	String type;
-	int count;
-	int variance;
+	String count;
+	String variance;
 	String status;
 	/**
 	 * @return the type
@@ -20,25 +20,25 @@ public class Analysis {
 	/**
 	 * @return the count
 	 */
-	public int getCount() {
+	public String getCount() {
 		return count;
 	}
 	/**
 	 * @param count the count to set
 	 */
-	public void setCount(int count) {
+	public void setCount(String count) {
 		this.count = count;
 	}
 	/**
 	 * @return the variance
 	 */
-	public int getVariance() {
+	public String getVariance() {
 		return variance;
 	}
 	/**
 	 * @param varience the variance to set
 	 */
-	public void setVariance(int variance) {
+	public void setVariance(String variance) {
 		this.variance = variance;
 	}
 	/**
