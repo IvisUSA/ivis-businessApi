@@ -327,6 +327,12 @@ public class IvisService {
 
 			JSONArray servicesListJson = new JSONArray(servicesListString);
 
+			if(servicesListJson.toList().size()==0)
+				return new HashMap<String,String>() {{
+					put("Status","Failed");
+					put("Message","Failed processing request");
+				}};
+			
 			for(Object i:servicesListJson)
 			{
 
@@ -594,11 +600,18 @@ public class IvisService {
 				  .build();
 				Response response = client.newCall(request).execute();
 				String reportsString = response.body().string();
+				if(new JSONArray(reportsString).toList().size()>0)
 				return new HashMap<String,Object>() {{
 					put("Status","Success");
 					put("Message","List generated successfully");
 					put("AnalyticsReportList",new JSONArray(reportsString).toList());
 				}};
+				else
+					return new HashMap<String,String>() {{
+						put("Status","Failed");
+						put("Message","Sorry, no data found.Please try again later...");
+					}};
+					
 		}
 		catch(Exception e)
 		{
