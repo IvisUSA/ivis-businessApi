@@ -886,7 +886,21 @@ public class IvisService {
 	public Object getSiteListByUserName(String username) {
 		JSONObject outobj = new JSONObject();
 		String siteUrl = cpusApi+"/sites/GetSitesListForUser_1_0?userName=" + username;
+		
+		
 		String response = util.readUrlData(siteUrl);
+		
+		if(response == null)
+		{
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Data not available");
+
+				}
+			};
+		}
+		
 		Gson gson = new Gson();
 		SiteList sitesListData = gson.fromJson(response, SiteList.class);
 		if (sitesListData.getSiteList().size() > 0) {
@@ -895,6 +909,13 @@ public class IvisService {
 		} else {
 			sitesListData.setStatus("Failed");
 			sitesListData.setMessage("Data not available");
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Data not available");
+
+				}
+			};
 		}
 		String jsondata = gson.toJson(sitesListData);
 		JSONObject jsonobj = new JSONObject(jsondata);
