@@ -199,5 +199,85 @@ public class HelpDeskController {
 			};
 		
 	}
+	
+	@PostMapping("/createServiceCat_1_0")
+	public Object createServiceCat_1_0(@RequestBody HashMap<String, String> inputData)
+	{
+		if (!inputData.keySet().containsAll(new ArrayList<String>() {
+			{
+				add("userName");
+				add("accessToken");
+				add("calling_System_Detail");
+
+				add("catName");
+				add("description");
+				add("catIconPath");
+			}
+		})) {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Insufficient details");
+				}
+			};
+		}
+		
+		String userName = inputData.get("userName");
+		String accesstoken = inputData.get("accessToken");
+		String callingSystemDetail = inputData.get("calling_System_Detail");
+		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accesstoken);
+
+		if (accessCheck) {
+			return server.createServiceCat_1_0(inputData);
+		} else
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Invalid user details");
+
+				}
+			};
+		
+	}
+	@PostMapping("/createServiceSubcat")
+	public Object createServiceSubcat(@RequestBody HashMap<String, String> inputData)
+	{
+		if (!inputData.keySet().containsAll(new ArrayList<String>() {
+			{
+				add("userName");
+				add("accessToken");
+				add("calling_System_Detail");
+
+				add("serviceSubcatName");
+				add("description");
+				add("serviceSubcatIconPath");
+				add("serviceCatId");
+			}
+		})) {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Insufficient details");
+				}
+			};
+		}
+		
+		String userName = inputData.get("userName");
+		String accesstoken = inputData.get("accessToken");
+		String callingSystemDetail = inputData.get("calling_System_Detail");
+		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accesstoken);
+
+		if (accessCheck) {
+			return server.createServiceSubcat(inputData);
+		} else
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Invalid user details");
+
+				}
+			};
+		
+	}
 
 }

@@ -444,6 +444,10 @@ public class IvisService {
 			else
 				mappeddata.put("background", null);
 
+			if (!json.get("nonWorkingDays").equals(null))
+				mappeddata.put("nonWorkingDays", json.get("nonWorkingDays"));
+			else
+				mappeddata.put("nonWorkingDays", null);
 			mappeddata.put("SiteId", json.get("accountId"));
 
 			mappeddata.put("SiteName", json.get("siteName"));
@@ -472,6 +476,7 @@ public class IvisService {
 			if (Request_type != null && Request_type.equals("Analytics")) {
 				mappeddata.put("Analytics", this.getBusinessAnalystics((Integer.parseInt(accountId)), null));
 			}
+			
 			return mappeddata;
 
 		} catch (IOException | JSONException e) {
@@ -561,9 +566,69 @@ public class IvisService {
 			return null;
 		}
 	}
-
-	public Object getbiAnalyticsReport2(int siteId, Date fromDate, Date toDate) {
+	public Object getAnalyticTrends(int siteId, Date date, int analyticTypeId) {
 		// TODO Auto-generated method stub
+
+		String sitesUrl = cpusApi+"/sites/getBICustomerSiteId_1_0?accId=";
+		sitesUrl = sitesUrl + siteId;
+
+		String client_id = util.readUrlData(sitesUrl);
+
+		String url = IvisBiApi+"/getTrends";
+		
+		try
+		{
+			OkHttpClient client = new OkHttpClient().newBuilder()
+					  .build();
+					MediaType mediaType = MediaType.parse("application/json");
+
+
+				
+				JSONObject requestBody = new JSONObject();
+				requestBody.put("id", client_id.replace("\n", ""));
+				
+				if(date!=null)
+				{DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");  
+				String strDate = dateFormat.format(date);  
+					requestBody.put("startdate", strDate);
+				}
+
+					requestBody.put("fieldid",String.valueOf(analyticTypeId));
+
+				RequestBody body = RequestBody.create(mediaType, requestBody.toString());
+//				RequestBody body = RequestBody.create(mediaType, "{\r\n\"id\":\"1\",\r\n\"fieldid\":\"8\",\r\n\"startdate\":\"2022-03-01\"\r\n}");
+
+				Request request = new Request.Builder()
+				  .url(url)
+				  .method("POST", body)
+				  .addHeader("Content-Type", "application/json")
+				  .build();
+
+
+				Response response = client.newCall(request).execute();
+				String reportsString = response.body().string();
+				if(new JSONArray(reportsString).toList().size()>0)
+				return new HashMap<String,Object>() {{
+					put("Status","Success");
+					put("Message","List generated successfully");
+					put("AnalyticsTrends",new JSONArray(reportsString).toList());
+				}};
+				else
+					return new HashMap<String,String>() {{
+						put("Status","Failed");
+						put("Message","Sorry, no data found.Please try again later...");
+					}};
+					
+		}
+		catch(Exception e)
+		{
+			return new HashMap<String,String>() {{
+				put("Status","Failed");
+				put("Message","Sorry, cannot process your request.Please try again later...");
+			}};
+		}
+	}
+	public Object getbiAnalyticsReport2(int siteId, Date fromDate, Date toDate) {
 
 		String sitesUrl = cpusApi+"/sites/getBICustomerSiteId_1_0?accId=";
 		sitesUrl = sitesUrl + siteId;
@@ -1226,68 +1291,70 @@ public class IvisService {
 					.build();
 			Request request = new Request.Builder()
 					//				  .url("http://10.0.2.197:8080/api/tsc/getTService")
-					.url(cpusApi+"/api/tsc/getTService")
+					.url(cpusApi+"/serviceHelpDesk/getServiceCategoryDetails_1_0")
 					.method("GET", null)
 					.build();
-			JSONArray jsonList = new JSONArray();
+			
 			Response response = client.newCall(request).execute();
 			String responseString = response.body().string();
-			if(responseString.startsWith("[")) {
-				jsonList = new JSONArray(responseString);}
-			else
-				return new HashMap<String,Object>(){{
-					put("Status","Failed");
-					put("Message","Request cannot be processed.Try again later...");
-				}};
-				ArrayList<CategoriesModel> dataList = new ArrayList<CategoriesModel>();
-				for(Object i:jsonList)
-					dataList.add(new Gson().fromJson(i.toString(), CategoriesModel.class));
-
-
-				HashMap<String,Object> outputMap = new HashMap<>();
-
-				ArrayList<CategoriesSubcategoriesOutputModel> categoriesOutputList = new ArrayList<>();
-				ArrayList<Integer> catIdList = new ArrayList<Integer>();
-				for(CategoriesModel i : dataList)
-				{
-					if(!catIdList.contains(i.getCatid()))
-					{
-						catIdList.add(i.getCatid());
-					}
-				}
-
-
-				for(Integer i:catIdList)
-				{
-					ArrayList<Subcategories> subCatList = new ArrayList<Subcategories>();
-					String catName = "";
-					for(CategoriesModel j : dataList)
-					{
-
-						Subcategories subcat = new Subcategories();
-						subcat.setSubcatid(j.getSubcatid());
-						subcat.setSubcatname(j.getSubcatname());
-						if(j.getCatid()==i&&(!(subCatList.contains(subcat))))
-						{
-
-							subCatList.add(subcat);
-							catName = j.getCatname();
-						}
-					}
-
-					CategoriesSubcategoriesOutputModel category = new CategoriesSubcategoriesOutputModel();
-
-					category.setSubcategoriesList(subCatList);
-					category.setCatid(i);
-					category.setCatname(catName);
-					categoriesOutputList.add(category);
-				}
+			System.out.println(responseString);
+			JSONArray jsonList = new JSONArray(responseString);
+//			if(responseString.startsWith("[")) {
+//				jsonList = new JSONArray(responseString);}
+//			else
+//				return new HashMap<String,Object>(){{
+//					put("Status","Failed");
+//					put("Message","Request cannot be processed.Try again later...");
+//				}};
+//				ArrayList<CategoriesModel> dataList = new ArrayList<CategoriesModel>();
+//				for(Object i:jsonList)
+//					dataList.add(new Gson().fromJson(i.toString(), CategoriesModel.class));
+//
+//
+//				HashMap<String,Object> outputMap = new HashMap<>();
+//
+//				ArrayList<CategoriesSubcategoriesOutputModel> categoriesOutputList = new ArrayList<>();
+//				ArrayList<Integer> catIdList = new ArrayList<Integer>();
+//				for(CategoriesModel i : dataList)
+//				{
+//					if(!catIdList.contains(i.getCatid()))
+//					{
+//						catIdList.add(i.getCatid());
+//					}
+//				}
+//
+//
+//				for(Integer i:catIdList)
+//				{
+//					ArrayList<Subcategories> subCatList = new ArrayList<Subcategories>();
+//					String catName = "";
+//					for(CategoriesModel j : dataList)
+//					{
+//
+//						Subcategories subcat = new Subcategories();
+//						subcat.setSubcatid(j.getSubcatid());
+//						subcat.setSubcatname(j.getSubcatname());
+//						if(j.getCatid()==i&&(!(subCatList.contains(subcat))))
+//						{
+//
+//							subCatList.add(subcat);
+//							catName = j.getCatname();
+//						}
+//					}
+//
+//					CategoriesSubcategoriesOutputModel category = new CategoriesSubcategoriesOutputModel();
+//
+//					category.setSubcategoriesList(subCatList);
+//					category.setCatid(i);
+//					category.setCatname(catName);
+//					categoriesOutputList.add(category);
+//				}
 				ObjectMapper mapper = new ObjectMapper();
-
+				
 				return new HashMap<String,Object>(){{
 					put("Status","Success");
 					put("Message","Category List is valid");
-					put("CategoryList",categoriesOutputList);
+					put("CategoryList",jsonList.toList());
 				}};
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -1298,6 +1365,100 @@ public class IvisService {
 		}
 
 	}
+
+	public Object createServiceCat_1_0(HashMap<String, String> inputData) {
+
+
+		try
+		{
+			OkHttpClient client = new OkHttpClient().newBuilder()
+					  .build();
+					MediaType mediaType = MediaType.parse("application/json");
+					Map<String,Object> bodyMap = new HashMap<>();
+					bodyMap.put("catName", inputData.get("catName"));
+					bodyMap.put("description", inputData.get("description"));
+					bodyMap.put("catIconPath", inputData.get("catIconPath"));
+
+
+					RequestBody body = RequestBody.create(mediaType,new Gson().toJson(bodyMap));
+//					RequestBody body = RequestBody.create(mediaType, "{\r\n    \"catName\":\"Safety Escort\",\r\n    \"description\":\"Safety Escort\",\r\n    \"catIconPath\":\"http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/AnalyticsIcon/customer.png\"\r\n}");
+					Request request = new Request.Builder()
+					  .url(cpusApi+"/serviceHelpDesk/addServiceCategory_1_0")
+					  .method("POST", body)
+					  .addHeader("Content-Type", "application/json")
+					  .build();
+					Response response = client.newCall(request).execute();
+					String responseString = response.body().string();
+
+					return new HashMap<String,Object>(){{
+						put("Status","Success");
+						put("Message","Request processed");
+						putAll(new JSONObject(responseString).toMap());
+					}};
+					
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return new HashMap<String,Object>(){{
+				put("Status","Failed");
+				put("Message","Request cannot be processed.Try again later...");
+			}};
+		}
+		
+		
+		
+
+	}
+
+	public Object createServiceSubcat(HashMap<String, String> inputData) {
+
+
+		try
+		{
+			OkHttpClient client = new OkHttpClient().newBuilder()
+					  .build();
+					MediaType mediaType = MediaType.parse("application/json");
+					Map<String,Object> bodyMap = new HashMap<>();
+					bodyMap.put("serviceSubcatName", inputData.get("serviceSubcatName"));
+					bodyMap.put("description", inputData.get("description"));
+					bodyMap.put("serviceSubcatIconPath", inputData.get("serviceSubcatIconPath"));
+					bodyMap.put("serviceCatId", inputData.get("serviceCatId"));
+
+
+					RequestBody body = RequestBody.create(mediaType,new Gson().toJson(bodyMap));
+//					RequestBody body = RequestBody.create(mediaType, "{\r\n    \"catName\":\"Safety Escort\",\r\n    \"description\":\"Safety Escort\",\r\n    \"catIconPath\":\"http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/AnalyticsIcon/customer.png\"\r\n}");
+					Request request = new Request.Builder()
+					  .url(cpusApi+"/serviceHelpDesk/addServiceSubCategory_1_0")
+					  .method("POST", body)
+					  .addHeader("Content-Type", "application/json")
+					  .build();
+					Response response = client.newCall(request).execute();
+					String responseString = response.body().string();
+
+					return new HashMap<String,Object>(){{
+						put("Status","Success");
+						put("Message","Request processed");
+						putAll(new JSONObject(responseString).toMap());
+					}};
+					
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return new HashMap<String,Object>(){{
+				put("Status","Failed");
+				put("Message","Request cannot be processed.Try again later...");
+			}};
+		}
+		
+		
+		
+
+	
+	}
+
+
 
 
 }

@@ -81,5 +81,18 @@ public class BusinessInsightController {
 		else return null;
 
 	}
+	@GetMapping(path = "/analyticTrends_1_0", produces=MediaType.APPLICATION_JSON_VALUE)
+	public Object analyticTrends_1_0(@RequestParam( "SiteId") int SiteId,@RequestParam( "calling_System_Detail") String calling_System_Detail,@RequestParam(value = "analyticTypeId")int analyticTypeId ,@RequestParam(value = "date", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date date  ){
+		
+//		if(calling_System_Detail.equals("Mobile_App")) {
+		if(true) {
+		Object bITrends=ivis.getAnalyticTrends(SiteId,date,analyticTypeId);
+		
+		return bITrends;
+		}
+		else return null;
+
+	}
+	
 
 }
