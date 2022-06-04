@@ -48,22 +48,40 @@ public class BiAnalyticsReportsTest {
 	public static String IvisBiApi = ServerConfig.ivisBiApi;
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		String date1;
-		try {
-//			date1 = new SimpleDateFormat("yyyy-mm-dd").parse("2022-03-01");
-			getBusinessAnalystics(1,"2022-03-01");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			
-		}  
-		
-		
-		
-	}
-	public static List<BIAnalyticsEntity> getBusinessAnalystics(int accountId, String date) {
 
-		
-		return null;
+		new BiAnalyticsReportsTest().getTrendsMobile((Integer) 0,null);
+	}
+
+	public Object getTrendsMobile(int accountId, String date) {
+		try {
+			Map<String, Object> bodyMap = new HashMap<>();
+			OkHttpClient client = new OkHttpClient().newBuilder().build();
+
+			bodyMap.put("id", 1);
+			bodyMap.put("fieldid", 8);
+			bodyMap.put("startdate", "2022-03-01");
+
+			MediaType mediaType = MediaType.parse("application/json");
+			RequestBody body = RequestBody.create(mediaType, new Gson().toJson(bodyMap));
+
+			Request request = new Request.Builder().url(IvisBiApi + "/getTrendsMobile").method("POST", body)
+					.addHeader("Content-Type", "application/json").build();
+			Response response = client.newCall(request).execute();
+			String responseString = response.body().string();
+//			String responseString2 = response.body().string();
+
+//			System.out.println(responseString2);
+
+			return new JSONArray(responseString).toList();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Failed processing request");
+				}
+			};
+		}
+
 	}
 }

@@ -7,9 +7,16 @@ import com.ivis.ApplicationModels.Analysis;
 public class BIAnalyticsEntity {
 	
 	String service;
+	int serviceId;
 	List<Analysis> analytics;
 	
 	
+	public int getServiceId() {
+		return serviceId;
+	}
+	public void setServiceId(int serviceId) {
+		this.serviceId = serviceId;
+	}
 	/**
 	 * @return the service
 	 */

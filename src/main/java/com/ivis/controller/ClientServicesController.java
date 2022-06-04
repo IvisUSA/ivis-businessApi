@@ -40,4 +40,10 @@ public class ClientServicesController {
 			}
 		};
 	}
+	
+	@GetMapping("/notWorkingDays_1_0")
+	private Object getNotWorkingDays_1_0(@RequestParam("siteId") int siteId,@RequestParam( "calling_System_Detail") String calling_System_Detail,@RequestParam("year") int year)
+	{
+		return ivis.getNotWorkingDays_1_0(siteId,year);
+	}
 }

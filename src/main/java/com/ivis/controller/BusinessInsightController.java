@@ -70,10 +70,10 @@ public class BusinessInsightController {
 		}};
 
 	}
-	@GetMapping(path = "/biAnalyticsReport_1_2", produces=MediaType.APPLICATION_JSON_VALUE)
-	public Object biAnalyticsReport2(@RequestParam( "SiteId") int SiteId,@RequestParam(value = "fromDate") String FromDate ,@RequestParam(value = "toDate")  String ToDate,@RequestParam( "calling_user_details") String calling_user_details ){
+	@GetMapping(path = "/biAnalyticsReport_2_0", produces=MediaType.APPLICATION_JSON_VALUE)
+	public Object biAnalyticsReport2(@RequestParam( "SiteId") int SiteId,@RequestParam(value = "fromDate") String FromDate ,@RequestParam(value = "toDate")  String ToDate,@RequestParam( "calling_System_Detail") String calling_System_Detail ){
 		
-		if(calling_user_details.equals("IVISUSA")) {
+		if(calling_System_Detail.equals("IVISUSA")) {
 		Object bIAnalytics=ivis.getbiAnalyticsReport3(SiteId,FromDate,ToDate);
 		
 		return bIAnalytics;
@@ -93,6 +93,17 @@ public class BusinessInsightController {
 		else return null;
 
 	}
-	
+	@GetMapping(path = "/analyticTrends_2_0", produces=MediaType.APPLICATION_JSON_VALUE)
+	public Object analyticTrends_2_0(@RequestParam( "SiteId") int SiteId,@RequestParam( "calling_System_Detail") String calling_System_Detail,@RequestParam(value = "analyticTypeId")int analyticTypeId ,@RequestParam(value = "date", required=false) @DateTimeFormat(pattern="yyyy/mm/dd") Date date  ){
+		
+//		if(calling_System_Detail.equals("Mobile_App")) {
+		if(true) {
+		Object bITrends=ivis.getAnalyticTrends2(SiteId,date,analyticTypeId);
+		
+		return bITrends;
+		}
+		else return null;
+
+	}
 
 }

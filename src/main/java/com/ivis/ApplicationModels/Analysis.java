@@ -5,6 +5,14 @@ public class Analysis {
 	String count;
 	String variance;
 	String status;
+	String percentage;
+	
+	public String getPercentage() {
+		return percentage;
+	}
+	public void setPercentage(String percentage) {
+		this.percentage = percentage;
+	}
 	/**
 	 * @return the type
 	 */

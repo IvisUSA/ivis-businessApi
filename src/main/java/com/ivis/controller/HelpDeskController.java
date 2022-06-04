@@ -41,7 +41,7 @@ public class HelpDeskController {
 			}
 		})) {
 			return new HashMap<String, String>() {
-				{
+				{   
 					put("Status", "Failed");
 					put("Message", "Insufficient details");
 				}
@@ -51,9 +51,9 @@ public class HelpDeskController {
 		String accesstoken = inputData.get("accessToken");
 		String callingSystemDetail = inputData.get("calling_System_Detail");
 		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accesstoken);
-		if (accessCheck) {
+		if (accessCheck) 
 			return server.getServiceRequests(inputData);
-		} else
+		 else
 			return new HashMap<String, String>() {
 				{
 					put("Status", "Failed");
@@ -74,7 +74,7 @@ public class HelpDeskController {
 			@RequestParam(name = "priority", required = false) String priority,@RequestParam(name = "remarks", required = false) String remarks,
 			@RequestParam("accessToken") String accessToken) {
 		if(!KeycloakUtils.verifyaccesstoken(userName, accessToken))
-		{
+		
 			return new HashMap<String, String>() {
 				{
 					put("Status", "Failed");
@@ -82,13 +82,13 @@ public class HelpDeskController {
 
 				}
 			};
-		}
+		
 		else
-		{
+		
 			return server.addOrUpdateServiceRequest(accountId,null,serviceCategoryName,serviceSubCategoryName,
 					userName,calling_System_Detail,attachements,description,
 					preferredTimeToCall,priority,remarks);
-		}
+		
 		
 	
 	}
