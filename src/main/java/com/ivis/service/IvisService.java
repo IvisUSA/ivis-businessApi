@@ -13,6 +13,8 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 //import java.net.http.HttpClient;
 //import java.net.http.HttpRequest;
 //import java.net.http.HttpResponse;
@@ -97,7 +99,7 @@ public class IvisService {
 
 		String camResponse = util.readUrlData(sitesUrl);
 		List<BusinessEntity> devList = new ArrayList<BusinessEntity>();
-		;
+		
 		SitesEntity siteData = (SitesEntity) new Gson().fromJson(camResponse, SitesEntity.class);
 
 		List<account> sitesList = siteData.getSiteList();
@@ -528,42 +530,6 @@ public class IvisService {
 
 	}
 
-	public Object getbiAnalyticsReport(int siteId, Date fromDate, Date toDate) {
-		// TODO Auto-generated method stub
-
-		String sitesUrl = cpusApi + "/sites/getBICustomerSiteId_1_0?accId=";
-		sitesUrl = sitesUrl + siteId;
-
-		String client_id = util.readUrlData(sitesUrl);
-
-		HttpPost post = new HttpPost("http://ivisbi.com/v2/api/analyticsReport");
-
-		// add request parameter, form parameters
-		List<NameValuePair> urlParameters = new ArrayList<>();
-		urlParameters.add(new BasicNameValuePair("client_id", client_id));
-		urlParameters.add(new BasicNameValuePair("fromDate", fromDate.toString()));
-		urlParameters.add(new BasicNameValuePair("toDate", toDate.toString()));
-
-		try {
-			post.setEntity(new UrlEncodedFormEntity(urlParameters));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-
-		try (CloseableHttpClient httpClient = HttpClients.createDefault();
-				CloseableHttpResponse response = httpClient.execute(post)) {
-
-			String input = EntityUtils.toString(response.getEntity());
-			System.out.println(input);
-			JSONObject json = new JSONObject(input);
-			// System.out.println(json);
-
-			return input;
-		} catch (Exception e) {
-			System.err.println(e);
-			return null;
-		}
-	}
 
 	public Object getAnalyticTrends(int siteId, Date date, int analyticTypeId) {
 		// TODO Auto-generated method stub
@@ -627,8 +593,9 @@ public class IvisService {
 			};
 		}
 	}
+
 	public Object getAnalyticTrends2(int siteId, Date date, int analyticTypeId) {
-		
+
 		return new BiUtils().getTrendsMobile(siteId, date, analyticTypeId);
 	}
 
@@ -1063,32 +1030,62 @@ public class IvisService {
 			JSONObject jsonOutput = new JSONObject();
 			String link = "";
 			if (inputData.containsKey("serviceId"))
-				link = cpusApi + "/serviceRequest/getServiceReq_1_0?accountId=" + inputData.get("siteId")
-						+ "&serviceId=" + inputData.get("serviceId")+"&userName="+inputData.get("userName");
+				link = cpusApi + "/serviceRequest/getServiceReq_1_0?"
+						+ "&serviceId=" + inputData.get("serviceId") + "&userName=" + inputData.get("userName");
 			else
-				link = cpusApi + "/serviceRequest/getServiceReq_1_0?accountId=" + inputData.get("siteId")+"&userName="+inputData.get("userName");
+				link = cpusApi + "/serviceRequest/getServiceReq_1_0?&userName="
+						+ inputData.get("userName");
+			
+			if(inputData.containsKey("siteId"))
+				link += "&siteId=" + inputData.get("siteId");
+			
 			String jsonstring = util.readUrlData(link);
 			JSONObject json = new JSONObject(jsonstring);
 
 			JSONArray jsonList = json.getJSONArray("helpDeskList");
 			List<Object> jsonList2 = new ArrayList<Object>();
+String givenFormat = "yyyy-MM-dd'T'HH:mm:ss";
+String reqdFormat = "yyyy-MM-dd HH:mm:ss";
+DateTimeFormatter givenFormatF = DateTimeFormatter.ofPattern(givenFormat);
+DateTimeFormatter reqdFormatF = DateTimeFormatter.ofPattern(reqdFormat);
+
 			for (Object i : jsonList) {
 				JSONObject jsonObject = new JSONObject(i.toString());
 
+				
+				
 				if (jsonObject.get("createdBy").equals(inputData.get("userName"))) {
+					
+					if (!jsonObject.get("createdTime").equals(null)) {
+//						String str = jsonObject.getString("createdTime");
+//						LocalDateTime dateTime = LocalDateTime.parse(str, givenFormatF);
+//					    String formattedDate = dateTime.format(reqdFormatF);
+						jsonObject.put("createdTime", LocalDateTime.parse(jsonObject.getString("createdTime"), givenFormatF).format(reqdFormatF));
+					}
+					
+					if (!jsonObject.get("PrefTimeToCall").equals(null)) {
+//						String str = jsonObject.getString("PrefTimeToCall");
+//						LocalDateTime dateTime = LocalDateTime.parse(str, givenFormatF);
+//					    String formattedDate = dateTime.format(reqdFormatF);
+						jsonObject.put("PrefTimeToCall", LocalDateTime.parse(jsonObject.getString("PrefTimeToCall"), givenFormatF).format(reqdFormatF));
+					}
+
+					if (!jsonObject.get("editedTime").equals(null)) {
+
+//						String str = jsonObject.getString("editedTime");
+//						LocalDateTime dateTime = LocalDateTime.parse(str, givenFormatF);
+//					    String formattedDate = dateTime.format(reqdFormatF);
+						jsonObject.put("editedTime", LocalDateTime.parse(jsonObject.getString("editedTime"), givenFormatF).format(reqdFormatF));
+					}
 					jsonList2.add(jsonObject);
 				}
 
 			}
-			//☺
 			jsonOutput.put("helpDeskList", jsonList2);
-			if(jsonList2.isEmpty())
-			{
+			if (jsonList2.isEmpty()) {
 				jsonOutput.put("Status", "Failed");
 				jsonOutput.put("Message", "Sorry, no data available...☺");
-			}
-			else
-			{
+			} else {
 				{
 					jsonOutput.put("Status", "Success");
 					jsonOutput.put("Message", "Request processed successfully");
@@ -1098,7 +1095,8 @@ public class IvisService {
 		} catch (Exception e) {
 			return new HashMap<String, String>() {
 				{
-
+					System.err.println(e);
+					e.printStackTrace();
 					put("Status", "Failed");
 					put("Message", "Failed processing request");
 
@@ -1295,75 +1293,21 @@ public class IvisService {
 
 		try {
 			OkHttpClient client = new OkHttpClient().newBuilder().build();
-			Request request = new Request.Builder()
-					// .url("http://10.0.2.197:8080/api/tsc/getTService")
-					.url(cpusApi + "/serviceHelpDesk/getServiceCategoryDetails_1_0").method("GET", null).build();
+			Request request = new Request.Builder().url(cpusApi + "/serviceHelpDesk/getServiceCategoryDetails_1_0")
+					.method("GET", null).build();
 
 			Response response = client.newCall(request).execute();
 			String responseString = response.body().string();
 			System.out.println(responseString);
-			JSONArray jsonList = new JSONArray(responseString);
-			// if(responseString.startsWith("[")) {
-			// jsonList = new JSONArray(responseString);}
-			// else
-			// return new HashMap<String,Object>(){{
-			// put("Status","Failed");
-			// put("Message","Request cannot be processed.Try again later...");
-			// }};
-			// ArrayList<CategoriesModel> dataList = new ArrayList<CategoriesModel>();
-			// for(Object i:jsonList)
-			// dataList.add(new Gson().fromJson(i.toString(), CategoriesModel.class));
-			//
-			//
-			// HashMap<String,Object> outputMap = new HashMap<>();
-			//
-			// ArrayList<CategoriesSubcategoriesOutputModel> categoriesOutputList = new
-			// ArrayList<>();
-			// ArrayList<Integer> catIdList = new ArrayList<Integer>();
-			// for(CategoriesModel i : dataList)
-			// {
-			// if(!catIdList.contains(i.getCatid()))
-			// {
-			// catIdList.add(i.getCatid());
-			// }
-			// }
-			//
-			//
-			// for(Integer i:catIdList)
-			// {
-			// ArrayList<Subcategories> subCatList = new ArrayList<Subcategories>();
-			// String catName = "";
-			// for(CategoriesModel j : dataList)
-			// {
-			//
-			// Subcategories subcat = new Subcategories();
-			// subcat.setSubcatid(j.getSubcatid());
-			// subcat.setSubcatname(j.getSubcatname());
-			// if(j.getCatid()==i&&(!(subCatList.contains(subcat))))
-			// {
-			//
-			// subCatList.add(subcat);
-			// catName = j.getCatname();
-			// }
-			// }
-			//
-			// CategoriesSubcategoriesOutputModel category = new
-			// CategoriesSubcategoriesOutputModel();
-			//
-			// category.setSubcategoriesList(subCatList);
-			// category.setCatid(i);
-			// category.setCatname(catName);
-			// categoriesOutputList.add(category);
-			// }
-			ObjectMapper mapper = new ObjectMapper();
 
-			return new HashMap<String, Object>() {
-				{
-					put("Status", "Success");
-					put("Message", "Category List is valid");
-					put("CategoryList", jsonList.toList());
-				}
-			};
+			JSONObject jsonObj = new JSONObject(responseString);
+
+//			JSONArray jsonList = new JSONArray(responseString);
+			jsonObj.put("Status", "Success");
+			jsonObj.put("Message", "Category List is valid");
+			jsonObj.put("CategoryList", jsonObj.get("categoryList"));
+			jsonObj.remove("categoryList");
+			return jsonObj.toMap();
 		} catch (IOException e) {
 			e.printStackTrace();
 			return new HashMap<String, Object>() {
@@ -1488,7 +1432,7 @@ public class IvisService {
 					responseMap = new KeycloakUtils().getUidForUser(input);
 					if (responseMap.get("status").equals("Failed")) {
 						System.out.println("Failed getting user details");
-						
+
 						return new HashMap<String, Object>() {
 							{
 								put("Status", "Failed");
@@ -1513,9 +1457,7 @@ public class IvisService {
 									put("Message", "Failed creating user");
 								}
 							};
-						}
-						else
-						{
+						} else {
 							return new HashMap<String, Object>() {
 								{
 									put("Status", "Success");
@@ -1540,7 +1482,6 @@ public class IvisService {
 			};
 		}
 
-
 	}
 
 	public Object getNotWorkingDays_1_0(int siteId, int year) {
@@ -1549,13 +1490,11 @@ public class IvisService {
 	}
 
 	public Object updateUser(UserMgmtUserModel input) {
-		
-		
+
 		try {
 			Map<String, Object> responseMap = new UserMgmtUtils().userVerificationApi(input);
 			Object message = responseMap.get("message");
-			if(responseMap.get("status").equals("Failed"))
-			{
+			if (responseMap.get("status").equals("Failed")) {
 				return new HashMap<String, Object>() {
 					{
 						put("Status", "Failed");
@@ -1564,20 +1503,14 @@ public class IvisService {
 				};
 			}
 
-			
 			JSONObject userData = new JSONObject(new Gson().toJson(responseMap)).getJSONArray("data").getJSONObject(0);
-			
-			System.out.println( userData.getString("uid"));
-			
+
+			System.out.println(userData.getString("uid"));
+
 			responseMap = new KeycloakUtils().updateUser(input, userData.getString("uid"));
-			
-			
-			
-			
+
 			return null;
-		}
-		catch(Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 			return new HashMap<String, Object>() {
 				{
@@ -1590,13 +1523,8 @@ public class IvisService {
 
 	public Object deleteUser(UserMgmtUserModel input) {
 		// TODO Auto-generated method stub
-		
-		
-		
-		
+
 		return null;
 	}
 
-	
-	
 }

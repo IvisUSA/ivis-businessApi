@@ -37,7 +37,6 @@ public class HelpDeskController {
 				add("userName");
 				add("accessToken");
 				add("calling_System_Detail");
-				add("siteId");
 			}
 		})) {
 			return new HashMap<String, String>() {
@@ -73,7 +72,7 @@ public class HelpDeskController {
 			@RequestParam(name = "preferredTimeToCall", required = false) String preferredTimeToCall,
 			@RequestParam(name = "priority", required = false) String priority,@RequestParam(name = "remarks", required = false) String remarks,
 			@RequestParam("accessToken") String accessToken) {
-		if(!KeycloakUtils.verifyaccesstoken(userName, accessToken))
+		if(!KeycloakUtils.verifyaccesstoken(userName, accessToken)) {
 		
 			return new HashMap<String, String>() {
 				{
@@ -82,7 +81,7 @@ public class HelpDeskController {
 
 				}
 			};
-		
+		}
 		else
 		
 			return server.addOrUpdateServiceRequest(accountId,null,serviceCategoryName,serviceSubCategoryName,

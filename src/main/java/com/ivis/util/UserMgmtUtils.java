@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import org.json.JSONObject;
 
@@ -30,6 +31,7 @@ public class UserMgmtUtils {
 
 	public Map<String, Object> userVerificationApi(UserMgmtUserModel input)
 	{
+		
 		try {
 		//Calling userVerificationApi
 		OkHttpClient client = new OkHttpClient().newBuilder()
@@ -53,6 +55,7 @@ public class UserMgmtUtils {
 		String responseString = response.body().string();
 		System.out.println("Response from /verifyUser : \n"+responseString+"\n\n");
 		JSONObject responseJsonObj = new JSONObject(responseString);
+
 		return responseJsonObj.toMap();} 
 		catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -108,6 +111,8 @@ public class UserMgmtUtils {
 			Response response = client.newCall(request).execute();
 			String responseString = response.body().string();
 			responseJsonObj = new JSONObject(responseString);
+
+			
 			return responseJsonObj.toMap();
 		}
 		catch (IOException e) {
