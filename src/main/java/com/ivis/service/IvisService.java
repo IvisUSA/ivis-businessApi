@@ -363,17 +363,21 @@ public class IvisService {
 				JSONObject researchJsonMap = new JSONObject(researchString);
 				BIAnalyticsEntity _BIAnalyticsEntity = new BIAnalyticsEntity();
 				_BIAnalyticsEntity.setService((String) researchJsonMap.keySet().toArray()[0]);
+				System.out.println(serviceId);
 				_BIAnalyticsEntity.setServiceId(serviceId);
-				JSONArray analysisjsonlist = new JSONArray(
-						researchJsonMap.get(_BIAnalyticsEntity.getService()).toString());
-				List<Analysis> analysislist = new ArrayList<Analysis>();
-				for (Object j : analysisjsonlist) {
-					Analysis _Analysis = new Gson().fromJson(j.toString(), Analysis.class);
-					analysislist.add(_Analysis);
+				
+				String jsonArrayString = researchJsonMap.get(_BIAnalyticsEntity.getService()).toString();
+				if(jsonArrayString.charAt(0)=='[')
+				{
+					JSONArray analysisjsonlist = new JSONArray(jsonArrayString);
+					List<Analysis> analysislist = new ArrayList<Analysis>();
+					for (Object j : analysisjsonlist) {
+						Analysis _Analysis = new Gson().fromJson(j.toString(), Analysis.class);
+						analysislist.add(_Analysis);
+					}
+					_BIAnalyticsEntity.setAnalytics(analysislist);
+					bIAnalytics.add(_BIAnalyticsEntity);
 				}
-				_BIAnalyticsEntity.setAnalytics(analysislist);
-
-				bIAnalytics.add(_BIAnalyticsEntity);
 			}
 
 			return new HashMap<String, Object>() {
@@ -991,14 +995,14 @@ public class IvisService {
 			http.setRequestProperty("Accept", "application/json");
 			http.setRequestProperty("Content-Type", "application/json");
 
-			String data = "{\n    \"userName\" : \"" + userName + "\"\n}";
-
+			String data = "{    \"userName\" : \"" + userName + "\"}";
+System.out.println(data);
 			byte[] out = data.getBytes(StandardCharsets.UTF_8);
 
 			OutputStream stream = http.getOutputStream();
 			stream.write(out);
 
-			// System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
+			 System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
 
 			InputStream resp = http.getInputStream();
 
@@ -1006,10 +1010,13 @@ public class IvisService {
 			for (int ch; (ch = resp.read()) != -1;) {
 				sb.append((char) ch);
 			}
-			// System.out.println(sb);
+			 System.out.println(sb);
 			JSONObject json = new JSONObject(sb.toString());
 
 			http.disconnect();
+			
+			
+			
 			return json.toMap();
 		} catch (Exception e) {
 			System.err.println(e);
