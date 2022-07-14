@@ -15,6 +15,6 @@ public class ServerConfig {
 	public static String ivisBiApi = "http://usmgmt.iviscloud.net:777/bireports";
 	public static String userMgmt = "http://usmgmt.iviscloud.net:777/userMgmt";
 	
-	
+	public static String mgmtServer = "http://smstaging.iviscloud.net:8090/mngtServer";
 	
 }

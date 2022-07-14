@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -74,6 +76,7 @@ import com.ivis.Businessentity.SitesEntity;
 import com.ivis.Businessentity.UserEntity;
 import com.ivis.util.BiUtils;
 import com.ivis.util.KeycloakUtils;
+import com.ivis.util.MngtServerUtils;
 import com.ivis.util.ReadJson;
 import com.ivis.util.UserMgmtUtils;
 import com.ivis.util.util;
@@ -99,7 +102,7 @@ public class IvisService {
 
 		String camResponse = util.readUrlData(sitesUrl);
 		List<BusinessEntity> devList = new ArrayList<BusinessEntity>();
-		
+
 		SitesEntity siteData = (SitesEntity) new Gson().fromJson(camResponse, SitesEntity.class);
 
 		List<account> sitesList = siteData.getSiteList();
@@ -365,10 +368,9 @@ public class IvisService {
 				_BIAnalyticsEntity.setService((String) researchJsonMap.keySet().toArray()[0]);
 				System.out.println(serviceId);
 				_BIAnalyticsEntity.setServiceId(serviceId);
-				
+
 				String jsonArrayString = researchJsonMap.get(_BIAnalyticsEntity.getService()).toString();
-				if(jsonArrayString.charAt(0)=='[')
-				{
+				if (jsonArrayString.charAt(0) == '[') {
 					JSONArray analysisjsonlist = new JSONArray(jsonArrayString);
 					List<Analysis> analysislist = new ArrayList<Analysis>();
 					for (Object j : analysisjsonlist) {
@@ -533,7 +535,6 @@ public class IvisService {
 		}
 
 	}
-
 
 	public Object getAnalyticTrends(int siteId, Date date, int analyticTypeId) {
 		// TODO Auto-generated method stub
@@ -996,13 +997,13 @@ public class IvisService {
 			http.setRequestProperty("Content-Type", "application/json");
 
 			String data = "{    \"userName\" : \"" + userName + "\"}";
-System.out.println(data);
+			System.out.println(data);
 			byte[] out = data.getBytes(StandardCharsets.UTF_8);
 
 			OutputStream stream = http.getOutputStream();
 			stream.write(out);
 
-			 System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
+			System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
 
 			InputStream resp = http.getInputStream();
 
@@ -1010,13 +1011,11 @@ System.out.println(data);
 			for (int ch; (ch = resp.read()) != -1;) {
 				sb.append((char) ch);
 			}
-			 System.out.println(sb);
+			System.out.println(sb);
 			JSONObject json = new JSONObject(sb.toString());
 
 			http.disconnect();
-			
-			
-			
+
 			return json.toMap();
 		} catch (Exception e) {
 			System.err.println(e);
@@ -1037,44 +1036,43 @@ System.out.println(data);
 			JSONObject jsonOutput = new JSONObject();
 			String link = "";
 			if (inputData.containsKey("serviceId"))
-				link = cpusApi + "/serviceRequest/getServiceReq_1_0?"
-						+ "&serviceId=" + inputData.get("serviceId") + "&userName=" + inputData.get("userName");
+				link = cpusApi + "/serviceRequest/getServiceReq_1_0?" + "&serviceId=" + inputData.get("serviceId")
+						+ "&userName=" + inputData.get("userName");
 			else
-				link = cpusApi + "/serviceRequest/getServiceReq_1_0?&userName="
-						+ inputData.get("userName");
-			
-			if(inputData.containsKey("siteId"))
+				link = cpusApi + "/serviceRequest/getServiceReq_1_0?&userName=" + inputData.get("userName");
+
+			if (inputData.containsKey("siteId"))
 				link += "&siteId=" + inputData.get("siteId");
-			
+
 			String jsonstring = util.readUrlData(link);
 			JSONObject json = new JSONObject(jsonstring);
 
 			JSONArray jsonList = json.getJSONArray("helpDeskList");
 			List<Object> jsonList2 = new ArrayList<Object>();
-String givenFormat = "yyyy-MM-dd'T'HH:mm:ss";
-String reqdFormat = "yyyy-MM-dd HH:mm:ss";
-DateTimeFormatter givenFormatF = DateTimeFormatter.ofPattern(givenFormat);
-DateTimeFormatter reqdFormatF = DateTimeFormatter.ofPattern(reqdFormat);
+			String givenFormat = "yyyy-MM-dd'T'HH:mm:ss";
+			String reqdFormat = "yyyy-MM-dd HH:mm:ss";
+			DateTimeFormatter givenFormatF = DateTimeFormatter.ofPattern(givenFormat);
+			DateTimeFormatter reqdFormatF = DateTimeFormatter.ofPattern(reqdFormat);
 
 			for (Object i : jsonList) {
 				JSONObject jsonObject = new JSONObject(i.toString());
 
-				
-				
 				if (jsonObject.get("createdBy").equals(inputData.get("userName"))) {
-					
+
 					if (!jsonObject.get("createdTime").equals(null)) {
 //						String str = jsonObject.getString("createdTime");
 //						LocalDateTime dateTime = LocalDateTime.parse(str, givenFormatF);
 //					    String formattedDate = dateTime.format(reqdFormatF);
-						jsonObject.put("createdTime", LocalDateTime.parse(jsonObject.getString("createdTime"), givenFormatF).format(reqdFormatF));
+						jsonObject.put("createdTime", LocalDateTime
+								.parse(jsonObject.getString("createdTime"), givenFormatF).format(reqdFormatF));
 					}
-					
+
 					if (!jsonObject.get("PrefTimeToCall").equals(null)) {
 //						String str = jsonObject.getString("PrefTimeToCall");
 //						LocalDateTime dateTime = LocalDateTime.parse(str, givenFormatF);
 //					    String formattedDate = dateTime.format(reqdFormatF);
-						jsonObject.put("PrefTimeToCall", LocalDateTime.parse(jsonObject.getString("PrefTimeToCall"), givenFormatF).format(reqdFormatF));
+						jsonObject.put("PrefTimeToCall", LocalDateTime
+								.parse(jsonObject.getString("PrefTimeToCall"), givenFormatF).format(reqdFormatF));
 					}
 
 					if (!jsonObject.get("editedTime").equals(null)) {
@@ -1082,7 +1080,8 @@ DateTimeFormatter reqdFormatF = DateTimeFormatter.ofPattern(reqdFormat);
 //						String str = jsonObject.getString("editedTime");
 //						LocalDateTime dateTime = LocalDateTime.parse(str, givenFormatF);
 //					    String formattedDate = dateTime.format(reqdFormatF);
-						jsonObject.put("editedTime", LocalDateTime.parse(jsonObject.getString("editedTime"), givenFormatF).format(reqdFormatF));
+						jsonObject.put("editedTime", LocalDateTime
+								.parse(jsonObject.getString("editedTime"), givenFormatF).format(reqdFormatF));
 					}
 					jsonList2.add(jsonObject);
 				}
@@ -1532,6 +1531,132 @@ DateTimeFormatter reqdFormatF = DateTimeFormatter.ofPattern(reqdFormat);
 		// TODO Auto-generated method stub
 
 		return null;
+	}
+
+	/**
+	 * 
+	 * @param siteId
+	 * @param requestType
+	 * @return
+	 */
+	public Object getDeviceDetailsByRequestType(int siteId, String requestType) {
+
+		switch (requestType) {
+		case "Cameras":
+
+			JSONObject response = new MngtServerUtils().getCentralUnitDetails_1_0(siteId);
+			if (response.getString("Status").equals("Failed")) {
+				return response.toMap();
+			}
+			response.remove("siteId");
+
+			JSONObject centralBoxDetails = response.getJSONObject("CentralBoxDetails");
+
+			JSONArray centralBoxDetailsList = new JSONArray();
+
+			for (String i : centralBoxDetails.keySet()) {
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("title", i);
+				jsonObj.put("value", centralBoxDetails.get(i));
+				centralBoxDetailsList.put(jsonObj);
+			}
+			response.put("CentralBoxDetails", centralBoxDetailsList);
+
+			JSONArray cameraList = response.getJSONArray("Camera");
+			JSONArray cameraListOfLists = new JSONArray();
+			for (Object i : cameraList) {
+				JSONObject cameraJsonObj = new JSONObject(i.toString());
+
+				JSONArray cameraListTemp = new JSONArray();
+
+				for (String j : cameraJsonObj.keySet()) {
+					JSONObject jsonObj = new JSONObject();
+					jsonObj.put("title", j);
+					jsonObj.put("value", cameraJsonObj.get(j));
+					cameraListTemp.put(jsonObj);
+				}
+				cameraListOfLists.put(cameraListTemp);
+			}
+
+			response.put("Camera", cameraListOfLists);
+
+			return response.toMap();
+		case "Devices":
+			response = new MngtServerUtils().getCentralUnitDetails_1_0(siteId);
+			if (response.getString("Status").equals("Failed")) {
+				return response.toMap();
+			}
+			JSONObject response1 = new MngtServerUtils().getDeviceDetailsForSite_1_0(siteId);
+			if (response1.getString("Status").equals("Failed")) {
+				return response1.toMap();
+			}
+			response1.remove("siteId");
+
+			response1.put("CentralBoxDetails", response.get("CentralBoxDetails"));
+			JSONObject centralBoxDetails1 = response1.getJSONObject("CentralBoxDetails");
+
+			JSONArray centralBoxDetailsList1 = new JSONArray();
+
+			for (String i : centralBoxDetails1.keySet()) {
+				JSONObject jsonObj = new JSONObject();
+				jsonObj.put("title", i);
+				jsonObj.put("value", centralBoxDetails1.get(i));
+				centralBoxDetailsList1.put(jsonObj);
+			}
+			response1.put("CentralBoxDetails", centralBoxDetailsList1);
+
+			JSONArray devicesDataList = response1.getJSONArray("devices");
+			JSONArray devicesListOfList = new JSONArray();
+			for (Object i : devicesDataList) {
+				JSONObject tempObj = new JSONObject(i.toString());
+				JSONArray tempArray = new JSONArray();
+				for (String j : tempObj.keySet()) {
+					if (j.equals("accessories")) {
+						
+						JSONObject tempObj2 = new JSONObject();
+						JSONArray tempArr2 = tempObj.getJSONArray(j);
+						JSONObject ktempobj = new JSONObject();
+						for (Object k : tempArr2) {
+							JSONObject kobj = new JSONObject(k.toString());
+							JSONArray ktempArray = new JSONArray();
+							
+							for(String l:kobj.keySet())
+							{
+								System.out.println(l);
+								JSONObject ltempObj = new JSONObject();
+								ltempObj.put("title", l);
+								ltempObj.put("value", kobj.get(l));
+								ktempArray.put(ltempObj);
+							}
+							ktempobj.put("title", j);
+							ktempobj.put("value", ktempArray);
+						}
+
+						tempObj2.put("title", j);
+						tempObj2.put("value", ktempobj);
+						tempArray.put(tempObj2);
+					} else {
+						JSONObject tempObj2 = new JSONObject();
+						tempObj2.put("title", j);
+						tempObj2.put("value", tempObj.get(j));
+						tempArray.put(tempObj2);
+					}
+				}
+				devicesListOfList.put(tempArray);
+			}
+			response1.put("devices", devicesListOfList);
+
+			return response1.toMap();
+		default:
+			return new HashMap<String, Object>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Please send request type either Cameras or Devices");
+				}
+			};
+		}
+
+		
 	}
 
 }
