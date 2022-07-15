@@ -1,7 +1,9 @@
 package com.ivis.controller;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 import com.ivis.ApplicationModels.UserLogin;
@@ -26,6 +29,8 @@ import com.ivis.ApplicationModels.UserMgmtUserModel;
 import com.ivis.service.IvisService;
 import com.ivis.service.ServerConfig;
 import com.ivis.util.KeycloakUtils;
+
+import jdk.internal.util.xml.impl.Input;
 
 @Controller
 @CrossOrigin
@@ -44,22 +49,7 @@ public class UserManagementController {
 
 	@PostMapping(path = "/addUser_1_0")
 	public Object addUser_1_0(@RequestBody HashMap<String, Object> input) {
-//		ArrayList<String> a = new ArrayList<String>() {
-//			{
-//				add("userName");
-//				add("password");
-//				add("firstName");
-//				add("lastName");
-//				add("email");
-//				add("gender");
-//				add("realm");
-//				add("contactNumber-1");
-//				add("access_token");
-//				add("calling_user_name");
-//				add("calling_system_detail");
-//				add("safety_escort");
-//			}
-//		};
+
 		if (!input.keySet().containsAll(new ArrayList<String>() {
 			{
 				add("username");
@@ -76,8 +66,7 @@ public class UserManagementController {
 
 			}
 		})) {
-//			System.err.println(a.removeAll(input.keySet()));
-//			System.err.println(a);
+
 			return new HashMap<String, String>() {
 				{
 					put("Status", "Failed");
@@ -102,6 +91,10 @@ public class UserManagementController {
 			};
 		}
 	}
+	
+	
+	
+	
 
 	@PostMapping(path = "/updateUser_1_0")
 	public Object updateUser_1_0(@RequestBody HashMap<String, Object> input) {

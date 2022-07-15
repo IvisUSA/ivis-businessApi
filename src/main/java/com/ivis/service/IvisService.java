@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -1404,24 +1405,24 @@ public class IvisService {
 		}
 
 	}
-/**
- * @author Deepika
- * @param input
- * @return 
- */
+
+	/**
+	 * @author Deepika
+	 * @param input
+	 * @return
+	 */
 	public Object addUser(HashMap<String, Object> input) {
-		
-		if(!input.get("username").toString().toLowerCase().equals(input.get("username").toString()))
+
+		if (!input.get("username").toString().toLowerCase().equals(input.get("username").toString()))
 			return new HashMap<String, Object>() {
-			{
-				put("Status", "Failed");
-				put("Message", "Username must be in lowercase");
-			}
-		};
-			
+				{
+					put("Status", "Failed");
+					put("Message", "Username must be in lowercase");
+				}
+			};
+
 		HashMap bodymap = new HashMap<>();
-		
-		
+
 		bodymap.put("UserName", input.get("username"));
 		bodymap.put("Password", input.get("password"));
 		bodymap.put("FirstName", input.get("firstname"));
@@ -1446,19 +1447,17 @@ public class IvisService {
 		bodymap.put("calling_user_name", input.get("callingUsername"));
 		bodymap.put("Calling_system_detail", input.get("callingSystemDetail"));
 		bodymap.put("Safety_escort", input.get("safetyEscort"));
-		
+     
 		
 		return new KeycloakUtils().createUser(bodymap);
-		
-	
-	
+
 	}
 
 	public Object getNotWorkingDays_1_0(int siteId, int year) {
 		// TODO Auto-generated method stub
 		return new BiUtils().getNotWorkingDays(siteId, year);
 	}
-	
+
 	/**
 	 * @author Deepika
 	 * @param input
@@ -1466,10 +1465,10 @@ public class IvisService {
 	 */
 
 	public Object updateUser(HashMap<String, Object> input) {
-		
+
 		HashMap bodymap = new HashMap<>();
-		
-		bodymap.put("UserName", input.get("username"));	
+
+		bodymap.put("UserName", input.get("username"));
 		bodymap.put("FirstName", input.get("firstname"));
 		bodymap.put("LastName", input.get("lastname"));
 		bodymap.put("Role-List", input.get("roleList"));
@@ -1492,24 +1491,63 @@ public class IvisService {
 		bodymap.put("calling_user_name", input.get("callingUsername"));
 		bodymap.put("Calling_system_detail", input.get("callingSystemDetail"));
 		bodymap.put("Safety_escort", input.get("safetyEscort"));
-		
-		
+     
 		return new KeycloakUtils().updateUser(bodymap);
-		
-		
-		
+
 	}
-	
+
+	/**
+	 * @author Deepika
+	 * @param input
+	 * @return
+	 */
+
 	public Object getuserDetails(HashMap<String, String> input) {
-		
+
 		HashMap bodymap = new HashMap<>();
 		bodymap.put("UserName", input.get("username"));
 		bodymap.put("Email", input.get("email"));
 		bodymap.put("calling_user_name", input.get("callingUsername"));
 		bodymap.put("access_token", input.get("accesstoken"));
+
+		
+		Map x = new KeycloakUtils().getUser(bodymap);
+		if (!(x.get("Status").equals("Success"))) 
+			return x;
 		
 		
-		return new KeycloakUtils().getUser(bodymap);
+		
+		x = (Map) x.get("UserDetails");
+		LinkedHashMap m = new LinkedHashMap<>();
+
+		m.put("username", x.get("UserName"));
+		m.put("password", x.get("Password"));
+		m.put("firstname", x.get("FirstName"));
+		m.put("lastname", x.get("LastName"));
+		m.put("roleList", x.get("Role-List"));
+		m.put("email", x.get("Email"));
+		m.put("active", x.get("Active"));
+		m.put("gender", x.get("Gender"));
+		m.put("contactNumber-1", x.get("ContactNumber-1"));
+		m.put("contactNumber-2", x.get("ContactNumber-2"));
+		m.put("country", x.get("Country"));
+		m.put("addressLine1", x.get("Address-line1"));
+		m.put("addressLine2", x.get("Address-Line2"));
+		m.put("district", x.get("District"));
+		m.put("state", x.get("State"));
+		m.put("city", x.get("City"));
+		m.put("pin", x.get("PIN"));
+		m.put("employee", x.get("employee"));
+		m.put("employeeId", x.get("employeeId"));
+		m.put("safetyEscort", x.get("Safety_escort"));
+
+		
+		
+		LinkedHashMap s = new LinkedHashMap<>();
+		s.put("status", "Success");
+		s.put("message", "User information retreived");
+		s.put("userDetails",m);
+		return s;
 		
 	}
 
@@ -1598,16 +1636,15 @@ public class IvisService {
 				JSONArray tempArray = new JSONArray();
 				for (String j : tempObj.keySet()) {
 					if (j.equals("accessories")) {
-						
+
 						JSONObject tempObj2 = new JSONObject();
 						JSONArray tempArr2 = tempObj.getJSONArray(j);
 						JSONObject ktempobj = new JSONObject();
 						for (Object k : tempArr2) {
 							JSONObject kobj = new JSONObject(k.toString());
 							JSONArray ktempArray = new JSONArray();
-							
-							for(String l:kobj.keySet())
-							{
+
+							for (String l : kobj.keySet()) {
 								System.out.println(l);
 								JSONObject ltempObj = new JSONObject();
 								ltempObj.put("title", l);
@@ -1642,7 +1679,6 @@ public class IvisService {
 			};
 		}
 
-		
 	}
 
 }
