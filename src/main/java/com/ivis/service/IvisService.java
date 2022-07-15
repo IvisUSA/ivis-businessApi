@@ -1404,127 +1404,100 @@ public class IvisService {
 		}
 
 	}
-
-	public Object addUser(UserMgmtUserModel input) {
-
-		try {
-			// Calling userVerificationApi
-
-			Map<String, Object> responseMap = new UserMgmtUtils().userVerificationApi(input);
-			if (responseMap.get("message").equals("User Already Exists")) {
-				System.out.println("User Already Exists");
-				return new HashMap<String, Object>() {
-					{
-						put("Status", "Failed");
-						put("Message", "User Already Exists");
-					}
-				};
-			} else {
-				// KeycloakApp create user api
-
-				responseMap = new KeycloakUtils().createUser(input);
-
-				if (responseMap.get("message").equals("Failed add user to keycloak.")) {
-					System.out.println("Failed add user to keycloak.");
-					return new HashMap<String, Object>() {
-						{
-							put("Status", "Failed");
-							put("Message", "Failed add user to keycloak.");
-						}
-					};
-				} else {
-					// KeycloakApp getUidForUser
-
-					responseMap = new KeycloakUtils().getUidForUser(input);
-					if (responseMap.get("status").equals("Failed")) {
-						System.out.println("Failed getting user details");
-
-						return new HashMap<String, Object>() {
-							{
-								put("Status", "Failed");
-								put("Message", "Failed getting user details");
-							}
-						};
-					} else {
-						// userMgmt/createUser
-
-						String uid = (String) responseMap.get("uid");
-
-						responseMap = new UserMgmtUtils().createUser(input, uid);
-						if (responseMap.get("status").equals("Failed")) {
-							System.out.println("Failed creating user");
-							// Delete user from keycloak
-
-							responseMap = new KeycloakUtils().deleteUser(input, uid);
-
-							return new HashMap<String, Object>() {
-								{
-									put("Status", "Failed");
-									put("Message", "Failed creating user");
-								}
-							};
-						} else {
-							return new HashMap<String, Object>() {
-								{
-									put("Status", "Success");
-									put("Message", "User created successfully");
-								}
-							};
-						}
-
-					}
-
-				}
-
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
+/**
+ * @author Deepika
+ * @param input
+ * @return 
+ */
+	public Object addUser(HashMap<String, Object> input) {
+		
+		if(!input.get("username").toString().toLowerCase().equals(input.get("username").toString()))
 			return new HashMap<String, Object>() {
-				{
-					put("Status", "Failed");
-					put("Message", "Exception occured : " + e);
-				}
-			};
-		}
-
+			{
+				put("Status", "Failed");
+				put("Message", "Username must be in lowercase");
+			}
+		};
+			
+		HashMap bodymap = new HashMap<>();
+		
+		
+		bodymap.put("UserName", input.get("username"));
+		bodymap.put("Password", input.get("password"));
+		bodymap.put("FirstName", input.get("firstname"));
+		bodymap.put("LastName", input.get("lastname"));
+		bodymap.put("Role-List", input.get("roleList"));
+		bodymap.put("Email", input.get("email"));
+		bodymap.put("Gender", input.get("gender"));
+		bodymap.put("Realm", input.get("realm"));
+		bodymap.put("ContactNumber-1", input.get("contactNumber-1"));
+		bodymap.put("ContactNumber-2", input.get("contactNumber-2"));
+		bodymap.put("Active", "T");
+		bodymap.put("Country", input.get("country"));
+		bodymap.put("Address_line1", input.get("addressLine1"));
+		bodymap.put("Address_Line2", input.get("addressLine2"));
+		bodymap.put("District", input.get("district"));
+		bodymap.put("State", input.get("state"));
+		bodymap.put("City", input.get("city"));
+		bodymap.put("PIN", input.get("pin"));
+		bodymap.put("employee", input.get("employee"));
+		bodymap.put("employeeId", input.get("employeeId"));
+		bodymap.put("access_token", input.get("accesstoken"));
+		bodymap.put("calling_user_name", input.get("callingUsername"));
+		bodymap.put("Calling_system_detail", input.get("callingSystemDetail"));
+		bodymap.put("Safety_escort", input.get("safetyEscort"));
+		
+		
+		return new KeycloakUtils().createUser(bodymap);
+		
+	
+	
 	}
 
 	public Object getNotWorkingDays_1_0(int siteId, int year) {
 		// TODO Auto-generated method stub
 		return new BiUtils().getNotWorkingDays(siteId, year);
 	}
+	
+	/**
+	 * @author Deepika
+	 * @param input
+	 * @return
+	 */
 
-	public Object updateUser(UserMgmtUserModel input) {
-
-		try {
-			Map<String, Object> responseMap = new UserMgmtUtils().userVerificationApi(input);
-			Object message = responseMap.get("message");
-			if (responseMap.get("status").equals("Failed")) {
-				return new HashMap<String, Object>() {
-					{
-						put("Status", "Failed");
-						put("Message", message);
-					}
-				};
-			}
-
-			JSONObject userData = new JSONObject(new Gson().toJson(responseMap)).getJSONArray("data").getJSONObject(0);
-
-			System.out.println(userData.getString("uid"));
-
-			responseMap = new KeycloakUtils().updateUser(input, userData.getString("uid"));
-
-			return null;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new HashMap<String, Object>() {
-				{
-					put("Status", "Failed");
-					put("Message", "Exception occured : " + e);
-				}
-			};
-		}
+	public Object updateUser(HashMap<String, Object> input) {
+		
+		HashMap bodymap = new HashMap<>();
+		
+		bodymap.put("UserName", input.get("username"));	
+		bodymap.put("FirstName", input.get("firstname"));
+		bodymap.put("LastName", input.get("lastname"));
+		bodymap.put("Role-List", input.get("roleList"));
+		bodymap.put("Email", input.get("email"));
+		bodymap.put("Gender", input.get("gender"));
+		bodymap.put("Realm", input.get("realm"));
+		bodymap.put("ContactNumber-1", input.get("contactNumber-1"));
+		bodymap.put("ContactNumber-2", input.get("contactNumber-2"));
+		bodymap.put("Active", input.get("active"));
+		bodymap.put("Country", input.get("country"));
+		bodymap.put("Address_line1", input.get("addressLine1"));
+		bodymap.put("Address_Line2", input.get("addressLine2"));
+		bodymap.put("District", input.get("district"));
+		bodymap.put("State", input.get("state"));
+		bodymap.put("City", input.get("city"));
+		bodymap.put("PIN", input.get("pin"));
+		bodymap.put("employee", input.get("employee"));
+		bodymap.put("employeeId", input.get("employeeId"));
+		bodymap.put("access_token", input.get("accesstoken"));
+		bodymap.put("calling_user_name", input.get("callingUsername"));
+		bodymap.put("Calling_system_detail", input.get("callingSystemDetail"));
+		bodymap.put("Safety_escort", input.get("safetyEscort"));
+		
+		
+		return new KeycloakUtils().updateUser(bodymap);
+		
+		
+		
 	}
 
 	public Object deleteUser(UserMgmtUserModel input) {

@@ -56,24 +56,25 @@ public class KeycloakUtils {
 			};
 		}
 	}
-	public Map<String, Object> createUser(UserMgmtUserModel input) {
+
+	/**.
+	 * @author Deepika
+	 * @param input
+	 * @return
+	 */
+	public Map<String, Object> createUser(HashMap<String, Object> input) {
 		try {
 			// KeycloakApp create user api
+
+			HashMap bodyMap = input;
+
 			OkHttpClient client = new OkHttpClient().newBuilder().build();
 			MediaType mediaType = MediaType.parse("application/json");
-			HashMap bodyMap = new HashMap<>();
-	
-			bodyMap.put("email", input.getEmail());
-			bodyMap.put("firstName", input.getFirstName());
-			bodyMap.put("lastName", input.getLastName());
-			bodyMap.put("username", input.getUserName());
-			bodyMap.put("realmId", input.getRealm());
-			bodyMap.put("password", input.getPassword());
-			bodyMap.put("access_token", input.getAccess_token());
 			RequestBody body = RequestBody.create(mediaType, new Gson().toJson(bodyMap));
-			Request request = new Request.Builder().url(ServerConfig.keycloakapi + "/createUser").method("POST", body)
+			Request request = new Request.Builder().url(keycloakApi + "/createUser").method("POST", body)
 					.addHeader("Content-Type", "application/json").build();
 			Response response = client.newCall(request).execute();
+
 			String responseString = response.body().string();
 			System.out.println("Response from KeycloakApp create user api : \n" + responseString);
 			JSONObject responseJsonObj = new JSONObject(responseString);
@@ -89,6 +90,7 @@ public class KeycloakUtils {
 			};
 		}
 	}
+
 	public Map<String, Object> deleteUser(UserMgmtUserModel input, String uid) {
 		try {
 			OkHttpClient client = new OkHttpClient().newBuilder().build();
@@ -103,11 +105,11 @@ public class KeycloakUtils {
 			Response response = client.newCall(request).execute();
 			String responseString = response.body().string();
 			System.out.println("Response from KeycloakApp deleteUser : \n" + responseString);
-	
+
 			JSONObject responseJsonObj = new JSONObject(responseString);
-	
+
 			return responseJsonObj.toMap();
-	
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			return new HashMap<String, Object>() {
@@ -118,32 +120,27 @@ public class KeycloakUtils {
 			};
 		}
 	}
-	public Map<String, Object> updateUser(UserMgmtUserModel input, String uid) {
+
+	public Map<String, Object> updateUser(HashMap<String, Object> input) {
 		try {
+
+			HashMap bodyMap = input;
+
 			OkHttpClient client = new OkHttpClient().newBuilder().build();
 			MediaType mediaType = MediaType.parse("application/json");
-			HashMap bodyMap = new HashMap<>();
-			bodyMap.put("email", input.getEmail());
-			bodyMap.put("firstName", input.getEmail());
-			bodyMap.put("lastName", input.getEmail());
-			bodyMap.put("username", input.getEmail());
-	
-			bodyMap.put("realmId", input.getRealm());
-			bodyMap.put("enabled", "T");
-			bodyMap.put("uid", uid);
-			bodyMap.put("access_token", input.getAccess_token());
-			
 			RequestBody body = RequestBody.create(mediaType, new Gson().toJson(bodyMap));
-			Request request = new Request.Builder().url(keycloakApi + "/updateUser")
+			Request request = new Request.Builder().url(keycloakApi+"/updateUser")
 					.method("POST", body).addHeader("Content-Type", "application/json").build();
 			Response response = client.newCall(request).execute();
+
+			
 			String responseString = response.body().string();
-			System.out.println("Response from KeycloakApp updateUser : \n" + responseString+"\n\n");
-	
+			System.out.println("Response from KeycloakApp updateUser : \n" + responseString + "\n\n");
+
 			JSONObject responseJsonObj = new JSONObject(responseString);
-	
+
 			return responseJsonObj.toMap();
-	
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new HashMap<String, Object>() {
@@ -154,13 +151,14 @@ public class KeycloakUtils {
 			};
 		}
 	}
-	public Map<String, Object> getUser(UserMgmtUserModel input,String uid) {
+
+	public Map<String, Object> getUser(UserMgmtUserModel input, String uid) {
 		try {
 			// KeycloakApp getUidForUser
 			OkHttpClient client = new OkHttpClient().newBuilder().build();
 			MediaType mediaType = MediaType.parse("application/json");
 			HashMap bodyMap = new HashMap<>();
-	
+
 			bodyMap.put("realmId", input.getRealm());
 			bodyMap.put("uid", uid);
 			bodyMap.put("access_token", input.getAccess_token());
@@ -168,12 +166,12 @@ public class KeycloakUtils {
 			Request request = new Request.Builder().url(keycloakApi + "/getUser").method("POST", body)
 					.addHeader("Content-Type", "application/json").build();
 			Response response = client.newCall(request).execute();
-	
+
 			String responseString = response.body().string();
-			System.out.println("Response from KeycloakApp getUser : \n" + responseString+"\n\n");
-	
+			System.out.println("Response from KeycloakApp getUser : \n" + responseString + "\n\n");
+
 			JSONObject responseJsonObj = new JSONObject(responseString);
-	
+
 			return responseJsonObj.toMap();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -185,6 +183,7 @@ public class KeycloakUtils {
 			};
 		}
 	}
+
 	public static boolean verifyaccesstoken(String username, String accessToken) {
 		try {
 			URL url = new URL(ServerConfig.keycloakapi + "/verifyAccessToken");
@@ -224,7 +223,8 @@ public class KeycloakUtils {
 			return false;
 		}
 	}
-	public Map<String, Object> forgotPassword(UserMgmtUserModel input,String uid) {
+
+	public Map<String, Object> forgotPassword(UserMgmtUserModel input, String uid) {
 		try {
 			// KeycloakApp getUidForUser
 			OkHttpClient client = new OkHttpClient().newBuilder().build();
@@ -238,12 +238,12 @@ public class KeycloakUtils {
 			Request request = new Request.Builder().url(keycloakApi + "/forgotPassword").method("POST", body)
 					.addHeader("Content-Type", "application/json").build();
 			Response response = client.newCall(request).execute();
-	
+
 			String responseString = response.body().string();
-			System.out.println("Response from KeycloakApp forgotPassword : \n" + responseString+"\n\n");
-	
+			System.out.println("Response from KeycloakApp forgotPassword : \n" + responseString + "\n\n");
+
 			JSONObject responseJsonObj = new JSONObject(responseString);
-	
+
 			return responseJsonObj.toMap();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -255,7 +255,8 @@ public class KeycloakUtils {
 			};
 		}
 	}
-	public Map<String, Object> changePassword(UserMgmtUserModel input,String uid) {
+
+	public Map<String, Object> changePassword(UserMgmtUserModel input, String uid) {
 		try {
 			// KeycloakApp getUidForUser
 			OkHttpClient client = new OkHttpClient().newBuilder().build();
@@ -269,12 +270,12 @@ public class KeycloakUtils {
 			Request request = new Request.Builder().url(keycloakApi + "/changePassword").method("POST", body)
 					.addHeader("Content-Type", "application/json").build();
 			Response response = client.newCall(request).execute();
-	
+
 			String responseString = response.body().string();
-			System.out.println("Response from KeycloakApp changePassword : \n" + responseString+"\n\n");
-	
+			System.out.println("Response from KeycloakApp changePassword : \n" + responseString + "\n\n");
+
 			JSONObject responseJsonObj = new JSONObject(responseString);
-	
+
 			return responseJsonObj.toMap();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -286,8 +287,8 @@ public class KeycloakUtils {
 			};
 		}
 	}
-	public Map<String,Object> disableUser(UserMgmtUserModel input,String uid)
-	{
+
+	public Map<String, Object> disableUser(UserMgmtUserModel input, String uid) {
 
 		try {
 			OkHttpClient client = new OkHttpClient().newBuilder().build();
@@ -297,23 +298,23 @@ public class KeycloakUtils {
 			bodyMap.put("firstName", input.getEmail());
 			bodyMap.put("lastName", input.getEmail());
 			bodyMap.put("username", input.getEmail());
-	
+
 			bodyMap.put("realmId", input.getRealm());
 			bodyMap.put("enabled", "T");
 			bodyMap.put("uid", uid);
 			bodyMap.put("access_token", input.getAccess_token());
-			
+
 			RequestBody body = RequestBody.create(mediaType, new Gson().toJson(bodyMap));
-			Request request = new Request.Builder().url(keycloakApi + "/disableUser")
-					.method("POST", body).addHeader("Content-Type", "application/json").build();
+			Request request = new Request.Builder().url(keycloakApi + "/disableUser").method("POST", body)
+					.addHeader("Content-Type", "application/json").build();
 			Response response = client.newCall(request).execute();
 			String responseString = response.body().string();
-			System.out.println("Response from KeycloakApp disableUser : \n" + responseString+"\n\n");
-	
+			System.out.println("Response from KeycloakApp disableUser : \n" + responseString + "\n\n");
+
 			JSONObject responseJsonObj = new JSONObject(responseString);
-	
+
 			return responseJsonObj.toMap();
-	
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new HashMap<String, Object>() {
@@ -323,7 +324,6 @@ public class KeycloakUtils {
 				}
 			};
 		}
-	
-		
+
 	}
 }
