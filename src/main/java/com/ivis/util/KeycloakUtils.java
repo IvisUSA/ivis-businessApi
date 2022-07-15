@@ -57,7 +57,9 @@ public class KeycloakUtils {
 		}
 	}
 
-	/**.
+	/**
+	 * .
+	 * 
 	 * @author Deepika
 	 * @param input
 	 * @return
@@ -129,11 +131,10 @@ public class KeycloakUtils {
 			OkHttpClient client = new OkHttpClient().newBuilder().build();
 			MediaType mediaType = MediaType.parse("application/json");
 			RequestBody body = RequestBody.create(mediaType, new Gson().toJson(bodyMap));
-			Request request = new Request.Builder().url(keycloakApi+"/updateUser")
-					.method("POST", body).addHeader("Content-Type", "application/json").build();
+			Request request = new Request.Builder().url(keycloakApi + "/updateUser").method("POST", body)
+					.addHeader("Content-Type", "application/json").build();
 			Response response = client.newCall(request).execute();
 
-			
 			String responseString = response.body().string();
 			System.out.println("Response from KeycloakApp updateUser : \n" + responseString + "\n\n");
 
@@ -152,18 +153,15 @@ public class KeycloakUtils {
 		}
 	}
 
-	public Map<String, Object> getUser(UserMgmtUserModel input, String uid) {
+	public Map<String, Object> getUser(HashMap<String, Object> input) {
 		try {
-			// KeycloakApp getUidForUser
+
+			HashMap bodyMap = input;
+
 			OkHttpClient client = new OkHttpClient().newBuilder().build();
 			MediaType mediaType = MediaType.parse("application/json");
-			HashMap bodyMap = new HashMap<>();
-
-			bodyMap.put("realmId", input.getRealm());
-			bodyMap.put("uid", uid);
-			bodyMap.put("access_token", input.getAccess_token());
 			RequestBody body = RequestBody.create(mediaType, new Gson().toJson(bodyMap));
-			Request request = new Request.Builder().url(keycloakApi + "/getUser").method("POST", body)
+			Request request = new Request.Builder().url(keycloakApi + "/getUserByUserNameOrEmail").method("POST", body)
 					.addHeader("Content-Type", "application/json").build();
 			Response response = client.newCall(request).execute();
 

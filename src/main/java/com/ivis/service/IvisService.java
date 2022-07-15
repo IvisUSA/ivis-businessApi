@@ -1499,6 +1499,19 @@ public class IvisService {
 		
 		
 	}
+	
+	public Object getuserDetails(HashMap<String, String> input) {
+		
+		HashMap bodymap = new HashMap<>();
+		bodymap.put("UserName", input.get("username"));
+		bodymap.put("Email", input.get("email"));
+		bodymap.put("calling_user_name", input.get("callingUsername"));
+		bodymap.put("access_token", input.get("accesstoken"));
+		
+		
+		return new KeycloakUtils().getUser(bodymap);
+		
+	}
 
 	public Object deleteUser(UserMgmtUserModel input) {
 		// TODO Auto-generated method stub

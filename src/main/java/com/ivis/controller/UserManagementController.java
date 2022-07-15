@@ -42,7 +42,6 @@ public class UserManagementController {
 				+ "";
 	}
 
-	
 	@PostMapping(path = "/addUser_1_0")
 	public Object addUser_1_0(@RequestBody HashMap<String, Object> input) {
 //		ArrayList<String> a = new ArrayList<String>() {
@@ -74,7 +73,7 @@ public class UserManagementController {
 				add("accesstoken");
 				add("callingUsername");
 				add("callingSystemDetail");
-				
+
 			}
 		})) {
 //			System.err.println(a.removeAll(input.keySet()));
@@ -111,14 +110,14 @@ public class UserManagementController {
 				add("username");
 				add("firstname");
 				add("lastname");
-			    add("roleList");
-			    add("realm");
-			    add("email");
-			    add("gender");
+				add("roleList");
+				add("realm");
+				add("email");
+				add("gender");
 				add("contactNumber-1");
-		
+
 			}
-		})){
+		})) {
 
 			return new HashMap<String, String>() {
 				{
@@ -128,7 +127,7 @@ public class UserManagementController {
 				}
 			};
 		}
-		
+
 		boolean accessCheck = KeycloakUtils.verifyaccesstoken(input.get("callingUsername").toString(),
 				input.get("accesstoken").toString());
 
@@ -145,12 +144,52 @@ public class UserManagementController {
 		}
 	}
 
-	@PostMapping(path = "/User/deleteUser_1_0")
-	public Object deleteUser_1_0(@RequestBody UserMgmtUserModel input) {
-		boolean accessCheck = KeycloakUtils.verifyaccesstoken(input.getCalling_user_name(), input.getAccess_token());
+	@PostMapping(path = "/getUser_1_0")
+	public Object getUser(@RequestBody HashMap<String, String> input) {
+
+		if (!input.keySet().containsAll(new ArrayList<String>() {
+			{
+				add("username");
+				add("accesstoken");
+				add("callingUsername");
+				add("callingSystemDetail");
+
+			}
+		}))
+			if (!input.keySet().containsAll(new ArrayList<String>() {
+				{
+					add("email");
+					add("accesstoken");
+					add("callingUsername");
+					add("callingSystemDetail");
+
+				}
+			}))
+				if (!input.keySet().containsAll(new ArrayList<String>() {
+					{
+						add("email");
+						add("username");
+						add("accesstoken");
+						add("callingUsername");
+						add("callingSystemDetail");
+
+					}
+				})) {
+
+					return new HashMap<String, String>() {
+						{
+							put("Status", "Failed");
+							put("Message", "Insufficient details");
+
+						}
+					};
+				}
+
+		boolean accessCheck = KeycloakUtils.verifyaccesstoken(input.get("callingUsername").toString(),
+				input.get("accesstoken").toString());
 
 		if (accessCheck)
-			return ivis.deleteUser(input);
+			return ivis.getuserDetails(input);
 		else {
 			return new HashMap<String, String>() {
 				{
@@ -160,6 +199,7 @@ public class UserManagementController {
 				}
 			};
 		}
+
 	}
 
 }
