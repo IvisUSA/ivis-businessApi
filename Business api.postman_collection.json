@@ -1,0 +1,2682 @@
+{
+	"info": {
+		"_postman_id": "3becbed4-bebf-4eef-820a-de98044758a6",
+		"name": "Business api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19746066"
+	},
+	"item": [
+		{
+			"name": "Biz login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = JSON.parse(responseBody);\r",
+							"pm.collectionVariables.set(\"username\", jsonData.UserName);\r",
+							"pm.collectionVariables.set(\"accesstoken\", jsonData.access_token);\r",
+							"pm.collectionVariables.set(\"refreshtoken\", jsonData.refresh_token);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"userName\": \"us1\",\r\n\"password\": \"us1\",\r\n\"calling_System_Detail\":\"portal\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/login/login_2_0",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"login",
+						"login_2_0"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Biz login success example",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"password\": \"us1\",\"userName\": \"us1\",\"calling_System_Detail\":\"portal\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/login/login_2_0",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"login",
+								"login_2_0"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:04:02 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Success\",\n    \"image\": \"http://\",\n    \"UserName\": \"us1\",\n    \"address\": \"address\",\n    \"Message\": \"Valid credentials\",\n    \"FirstName\": \"US1\",\n    \"Roles\": [\n        \"default-roles-ivisusa\",\n        \"adminus\"\n    ],\n    \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmdnRteDdUdkF4dlg1Z2gzUXlaUmp0SWdJVzU0ejB5M0RhRHBLcm5IQjAwIn0.eyJleHAiOjE2NTEwNDMwNDMsImlhdCI6MTY1MTAzOTQ0MywianRpIjoiZTQxMDYwYmUtNjE0NC00YTg3LTk5YTQtMDg4YzJmMjg4NWNjIiwiaXNzIjoiaHR0cDovL3VzbWdtdC5pdmlzY2xvdWQubmV0OjkxOTUvYXV0aC9yZWFsbXMvSVZJU1VTQSIsImF1ZCI6WyJyZWFsbS1tYW5hZ2VtZW50IiwiYWNjb3VudCJdLCJzdWIiOiI5NmExM2M0OS0xMGExLTRhNDYtOTFjMS0xZGRiN2U2ODY5YzMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0ZXN0aW5nIiwic2Vzc2lvbl9zdGF0ZSI6ImM0NjdlMmNhLTQ5ZDEtNGIzYS05NTZlLTY5NWZmZTgwZjNiOSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL3VzbWdtdC5pdmlzY2xvdWQubmV0OjkxOTUvL2NsaWVudHBvcnRhbHMvSVZJU1VTQSJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1pdmlzdXNhIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImFkbWludXMiXX0sInJlc291cmNlX2FjY2VzcyI6eyJyZWFsbS1tYW5hZ2VtZW50Ijp7InJvbGVzIjpbIm1hbmFnZS11c2VycyIsInZpZXctdXNlcnMiLCJxdWVyeS1ncm91cHMiLCJxdWVyeS11c2VycyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiYzQ2N2UyY2EtNDlkMS00YjNhLTk1NmUtNjk1ZmZlODBmM2I5IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiVVMxIFVTMSIsInByZWZlcnJlZF91c2VybmFtZSI6InVzMSIsImdpdmVuX25hbWUiOiJVUzEiLCJmYW1pbHlfbmFtZSI6IlVTMSIsImVtYWlsIjoic3JpbGFrc2htaS5wQGl2aXMubmV0In0.UoGMHIVtc43jqNVvyhOlZpSfkNEbYSL686MwUX3phtVYWImUEBlfzyg8aKQ4VR1o4y2XprpORRmhfVE_ZQRhBLt2O-WqikQywzYkyOEOZjZu6FCVgfzDnexAdVB9Y2PdP4kkCJu2jspgSgiGkZ_mprg168lmCSckiFA-yO3LKHelT0CIX629N9WFfdj4LSbdpRusF3h8b9-_cdZjU_sOFK0657b2IBu36ERoLAvgttLxNpbxlNriGrpfA4PLw-16sOL7pgtyXIKPLv0NWOrtDt3LKdbryf4-sA-JB7sEqPL5QU34aQpL31cH3jgzVmIyeZtCfPDDJrBng0bKFPK0Dw\",\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJjODczMWMyNS1hMzQ0LTQ5MjAtOTEzYS1hN2M2MTk5M2E0OWUifQ.eyJleHAiOjE2NTEwNDEyNDMsImlhdCI6MTY1MTAzOTQ0MywianRpIjoiMjE4MmExZTAtNGUzZS00MjY0LTljOGItOTM1OTM0ZDIwOTA4IiwiaXNzIjoiaHR0cDovL3VzbWdtdC5pdmlzY2xvdWQubmV0OjkxOTUvYXV0aC9yZWFsbXMvSVZJU1VTQSIsImF1ZCI6Imh0dHA6Ly91c21nbXQuaXZpc2Nsb3VkLm5ldDo5MTk1L2F1dGgvcmVhbG1zL0lWSVNVU0EiLCJzdWIiOiI5NmExM2M0OS0xMGExLTRhNDYtOTFjMS0xZGRiN2U2ODY5YzMiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoidGVzdGluZyIsInNlc3Npb25fc3RhdGUiOiJjNDY3ZTJjYS00OWQxLTRiM2EtOTU2ZS02OTVmZmU4MGYzYjkiLCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJzaWQiOiJjNDY3ZTJjYS00OWQxLTRiM2EtOTU2ZS02OTVmZmU4MGYzYjkifQ.gzikhgrKJCAcEYbK3C91YO0Rmzr75rS0Q1fRm3r8BEk\",\n    \"contact\": \"9999999999\",\n    \"LastName\": \"US1\",\n    \"Realm\": \"IVISUSA\",\n    \"email\": \"sridatta.g@ivis.net\"\n}"
+				}
+			]
+		},
+		{
+			"name": "biz refresh token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"\r",
+							"if(jsonData.Status==\"Success\"){\r",
+							"pm.collectionVariables.set(\"accesstoken\", jsonData.access_token);\r",
+							"pm.collectionVariables.set(\"refreshtoken\", jsonData.refresh_token);\r",
+							"}\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\r\n    \"userName\": \"{{username}}\",\r\n    \"calling_System_Detail\": \"portal\",\r\n    \"refreshToken\":\"{{refreshtoken}}\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/login/refreshtoken",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"login",
+						"refreshtoken"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "biz refresh token",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"userName\": \"{{username}}\",\r\n    \"calling_System_Detail\": \"portal\",\r\n    \"refreshToken\":\"{{refreshtoken}}\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/login/refreshtoken",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"login",
+								"refreshtoken"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:06:31 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmdnRteDdUdkF4dlg1Z2gzUXlaUmp0SWdJVzU0ejB5M0RhRHBLcm5IQjAwIn0.eyJleHAiOjE2NTEwNDMxOTMsImlhdCI6MTY1MTAzOTU5MywianRpIjoiNDdlNDBjNDktMDc4MS00NmViLTllYTYtNWVlYmUxMTQ4ODNhIiwiaXNzIjoiaHR0cDovL3VzbWdtdC5pdmlzY2xvdWQubmV0OjkxOTUvYXV0aC9yZWFsbXMvSVZJU1VTQSIsImF1ZCI6WyJyZWFsbS1tYW5hZ2VtZW50IiwiYWNjb3VudCJdLCJzdWIiOiI5NmExM2M0OS0xMGExLTRhNDYtOTFjMS0xZGRiN2U2ODY5YzMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0ZXN0aW5nIiwic2Vzc2lvbl9zdGF0ZSI6ImM0NjdlMmNhLTQ5ZDEtNGIzYS05NTZlLTY5NWZmZTgwZjNiOSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL3VzbWdtdC5pdmlzY2xvdWQubmV0OjkxOTUvL2NsaWVudHBvcnRhbHMvSVZJU1VTQSJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1pdmlzdXNhIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImFkbWludXMiXX0sInJlc291cmNlX2FjY2VzcyI6eyJyZWFsbS1tYW5hZ2VtZW50Ijp7InJvbGVzIjpbIm1hbmFnZS11c2VycyIsInZpZXctdXNlcnMiLCJxdWVyeS1ncm91cHMiLCJxdWVyeS11c2VycyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiYzQ2N2UyY2EtNDlkMS00YjNhLTk1NmUtNjk1ZmZlODBmM2I5IiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiVVMxIFVTMSIsInByZWZlcnJlZF91c2VybmFtZSI6InVzMSIsImdpdmVuX25hbWUiOiJVUzEiLCJmYW1pbHlfbmFtZSI6IlVTMSIsImVtYWlsIjoic3JpbGFrc2htaS5wQGl2aXMubmV0In0.dvmnXNHCc6ogUr4JTlcUJaOTcmRUZa2MjxNUM6rQgjIhzRv4GMrtnl6yv61dkCrd6wvnpZ-4w3_NGRislRqdERJdl-kPoE8rAvuz1o8P5zyPQ0cbTKaF_gSuAM55u1uz5Pfauht04-KHvLfLRjMr3v9LqGbWHii3jnFR8GiJ5K_XOSQ83pdorg2E4IfTq_kJSJkN-ykvHLYPTdn4rNRhFLBLJlLaT_pGNkUke6UJ645PioOFsjF26t7sYe6CDrTw4cujbnuUSiRaUYDcLfk5ch4RsSQyA_i0Xcr9zcxeKRSIcuZ9tQuWbyBIJwjxQpZrUOj06tuLksTTocWYvSoDfQ\",\n    \"Status\": \"Success\",\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJjODczMWMyNS1hMzQ0LTQ5MjAtOTEzYS1hN2M2MTk5M2E0OWUifQ.eyJleHAiOjE2NTEwNDEzOTMsImlhdCI6MTY1MTAzOTU5MywianRpIjoiNzQ1NjUwNDUtNDM1NS00Nzc5LWEyMjMtZGU4MTgwOWVjNWU2IiwiaXNzIjoiaHR0cDovL3VzbWdtdC5pdmlzY2xvdWQubmV0OjkxOTUvYXV0aC9yZWFsbXMvSVZJU1VTQSIsImF1ZCI6Imh0dHA6Ly91c21nbXQuaXZpc2Nsb3VkLm5ldDo5MTk1L2F1dGgvcmVhbG1zL0lWSVNVU0EiLCJzdWIiOiI5NmExM2M0OS0xMGExLTRhNDYtOTFjMS0xZGRiN2U2ODY5YzMiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoidGVzdGluZyIsInNlc3Npb25fc3RhdGUiOiJjNDY3ZTJjYS00OWQxLTRiM2EtOTU2ZS02OTVmZmU4MGYzYjkiLCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJzaWQiOiJjNDY3ZTJjYS00OWQxLTRiM2EtOTU2ZS02OTVmZmU4MGYzYjkifQ.NfQIWuJG3SNqcPAhXKCHg8GtVVcTUn4uSLezLGW2djE\",\n    \"UserName\": \"us1\",\n    \"Message\": \"Valid credentials\",\n    \"FirstName\": \"US1\",\n    \"contact\": \"9999999999\",\n    \"Roles\": [\n        \"default-roles-ivisusa\",\n        \"adminus\"\n    ],\n    \"LastName\": \"US1\",\n    \"Realm\": \"IVISUSA\",\n    \"email\": \"sridatta.g@ivis.net\"\n}"
+				}
+			]
+		},
+		{
+			"name": "CamStreamList",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\",\r\n\"SiteIdA\":1026\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/Cameras/CameraStreamList_1_0",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"Cameras",
+						"CameraStreamList_1_0"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "CamStreamList",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\",\r\n\"SiteId\":1011\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/Cameras/CameraStreamList_1_0",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"Cameras",
+								"CameraStreamList_1_0"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:06:48 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Success\",\n    \"Message\": \"Valid Data\",\n    \"CameraList\": [\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam1\",\n            \"displayOrder\": 1,\n            \"description\": null,\n            \"active\": \"Y\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C1\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C1\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam1\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Connected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C1\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam2\",\n            \"displayOrder\": 2,\n            \"description\": null,\n            \"active\": \"Y\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C2\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"Y\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C2\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam2\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Connected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C2\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam5\",\n            \"displayOrder\": 5,\n            \"description\": null,\n            \"active\": \"Y\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C5\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"Y\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C5\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam5\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Connected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C5\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam7\",\n            \"displayOrder\": 7,\n            \"description\": null,\n            \"active\": \"Y\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C7\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C7\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam7\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Connected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C7\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam3\",\n            \"displayOrder\": 3,\n            \"description\": null,\n            \"active\": \"Y\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C3\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"Y\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C3\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam3\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Connected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C3\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam4\",\n            \"displayOrder\": 4,\n            \"description\": null,\n            \"active\": \"Y\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C4\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C4\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam4\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Connected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C4\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam6\",\n            \"displayOrder\": 6,\n            \"description\": null,\n            \"active\": \"N\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C6\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C6\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam6\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Disconnected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C6\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam8\",\n            \"displayOrder\": 8,\n            \"description\": null,\n            \"active\": \"Y\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C8\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C8\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam8\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Connected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C8\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam9\",\n            \"displayOrder\": 10,\n            \"description\": null,\n            \"active\": \"N\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C9\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C9\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam9\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Disconnected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C9\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam10\",\n            \"displayOrder\": 11,\n            \"description\": null,\n            \"active\": \"Y\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C10\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C10\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam10\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Connected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C10\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam12\",\n            \"displayOrder\": 12,\n            \"description\": null,\n            \"active\": \"Y\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C12\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C12\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam12\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Connected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C12\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam13\",\n            \"displayOrder\": 13,\n            \"description\": null,\n            \"active\": \"N\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C13\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C13\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam13\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Disconnected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C13\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam11\",\n            \"displayOrder\": 11,\n            \"description\": null,\n            \"active\": \"Y\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C11\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C11\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam11\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Connected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C11\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam16\",\n            \"displayOrder\": 16,\n            \"description\": null,\n            \"active\": \"N\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C16\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C16\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam16\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Disconnected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C16\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam14\",\n            \"displayOrder\": 14,\n            \"description\": null,\n            \"active\": \"Y\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C14\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C14\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam14\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Connected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C14\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam15\",\n            \"displayOrder\": 15,\n            \"description\": null,\n            \"active\": \"N\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C15\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C15\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam15\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Disconnected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C15\"\n        },\n        {\n            \"refreshInterval\": 0,\n            \"displayName\": \"IVISUSAJ1002 Cam17\",\n            \"displayOrder\": 17,\n            \"description\": null,\n            \"active\": \"N\",\n            \"streamingUrl\": \"https://testvs.iviscloud.net/hls/IVISUSAJ1002C17\",\n            \"deviceInternalId\": 27558,\n            \"motionEnabled\": \"N\",\n            \"streamingType\": \"M3U8\",\n            \"rtspUrl\": \"\",\n            \"timelapseArchiveEnabled\": \"N\",\n            \"cameraId\": \"IVISUSAJ1002C17\",\n            \"hlsEnabled\": \"Y\",\n            \"ptz\": \"0\",\n            \"cameraname\": \"IVISUSAJ1002 Cam17\",\n            \"width\": 320,\n            \"id\": 0,\n            \"reportMailIds\": null,\n            \"gpsEnabled\": \"N\",\n            \"height\": 240,\n            \"thumbnailUrl\": \"\",\n            \"cameraStatus\": \"Disconnected\",\n            \"host\": \"usvs1.iviscloud.net\",\n            \"httpPort\": 7888,\n            \"snapShotUrl\": \"http://usvs1.iviscloud.net:7888/SnapShot?cameraId=IVISUSAJ1002C17\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "MonitoringHours",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\",\r\n\"SiteId\": 1011\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/Monitoring/getMonitoringDetails",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"Monitoring",
+						"getMonitoringDetails"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "MonitoringHours",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\",\r\n\"SiteId\": 1011\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/Monitoring/getMonitoringDetails",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"Monitoring",
+								"getMonitoringDetails"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:06:43 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"monitoringStatus\": \"Enabled\",\n    \"message\": \"Valid details\",\n    \"siteId\": 1022,\n    \"status\": \"Success\",\n    \"monitoringHours\": [\n        {\n            \"monitoringname\": \"Mon_Hours_US_12_AM_11_AM\",\n            \"monitoringhours\": \"00:00 AM - 11:59 AM and 00:00 PM - 00:00 PM Mon through Sun (IST)\",\n            \"additionalmonitoringhours\": \"N/A\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "sitesList_2_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\"\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/sites/sitesList_2_0",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"sites",
+						"sitesList_2_0"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "SiteList",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\"\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/sites/sitesList_2_0",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"sites",
+								"sitesList_2_0"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:06:45 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Success\",\n    \"Message\": \"Site data is valid\",\n    \"siteList\": [\n        {\n            \"phase\": \" \",\n            \"siteShortName\": \"\",\n            \"deviceInternalId\": 1027,\n            \"latitude\": \"\",\n            \"project\": \"IVISUSA\",\n            \"City\": \"\",\n            \"business_vertical\": \"None\",\n            \"deviceExternalId\": \"IVISUSAJ1004\",\n            \"zone\": \"\",\n            \"sitename\": \"Barbee Pharmacy \",\n            \"atmid\": \" \",\n            \"siteid\": 1016,\n            \"state\": \"\",\n            \"LocationType\": \"None\",\n            \"longitude\": \"\"\n        },\n        {\n            \"phase\": \" \",\n            \"siteShortName\": \"\",\n            \"deviceInternalId\": 1022,\n            \"latitude\": \"\",\n            \"project\": \"IVISUSA\",\n            \"City\": \"\",\n            \"business_vertical\": \"Project\",\n            \"deviceExternalId\": \"IVISUSAJ1002\",\n            \"zone\": \"\",\n            \"sitename\": \"Osaka Midland-IVISUSAJ1002\",\n            \"atmid\": \" \",\n            \"siteid\": 1011,\n            \"state\": \"\",\n            \"LocationType\": \"None\",\n            \"longitude\": \"\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "biAnalyticsReport_1_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{apilink}}/insights/biAnalyticsReport_1_0?SiteId=1016&fromDate=2020/03/01&toDate=2025/03/09&calling_System_Detail=IVISUSA",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"insights",
+						"biAnalyticsReport_1_0"
+					],
+					"query": [
+						{
+							"key": "SiteId",
+							"value": "1016"
+						},
+						{
+							"key": "fromDate",
+							"value": "2020/03/01"
+						},
+						{
+							"key": "toDate",
+							"value": "2025/03/09"
+						},
+						{
+							"key": "calling_System_Detail",
+							"value": "IVISUSA"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Insights",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apilink}}/insights/biAnalyticsReport_1_0?SiteId=1003&fromDate=2020/12/01&toDate=2022/12/01&calling_user_details=IVISUSA",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"insights",
+								"biAnalyticsReport_1_0"
+							],
+							"query": [
+								{
+									"key": "SiteId",
+									"value": "1003"
+								},
+								{
+									"key": "fromDate",
+									"value": "2020/12/01"
+								},
+								{
+									"key": "toDate",
+									"value": "2022/12/01"
+								},
+								{
+									"key": "calling_user_details",
+									"value": "IVISUSA"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:06:47 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "biAnalyticsReport_2_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{apilink}}/insights/biAnalyticsReport_2_0?SiteId=1016&fromDate=2020/03/01&toDate=2025/03/09&calling_System_Detail=IVISUSA",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"insights",
+						"biAnalyticsReport_2_0"
+					],
+					"query": [
+						{
+							"key": "SiteId",
+							"value": "1016"
+						},
+						{
+							"key": "fromDate",
+							"value": "2020/03/01"
+						},
+						{
+							"key": "toDate",
+							"value": "2025/03/09"
+						},
+						{
+							"key": "calling_System_Detail",
+							"value": "IVISUSA"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Insights",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apilink}}/insights/biAnalyticsReport_1_0?SiteId=1003&fromDate=2020/12/01&toDate=2022/12/01&calling_user_details=IVISUSA",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"insights",
+								"biAnalyticsReport_1_0"
+							],
+							"query": [
+								{
+									"key": "SiteId",
+									"value": "1003"
+								},
+								{
+									"key": "fromDate",
+									"value": "2020/12/01"
+								},
+								{
+									"key": "toDate",
+									"value": "2022/12/01"
+								},
+								{
+									"key": "calling_user_details",
+									"value": "IVISUSA"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:06:47 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "analyticTrends_1_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{apilink}}/insights/analyticTrends_1_0?SiteId=1016&date=2022/03/01&calling_System_Detail=IVISUSA&analyticTypeId=8",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"insights",
+						"analyticTrends_1_0"
+					],
+					"query": [
+						{
+							"key": "SiteId",
+							"value": "1016"
+						},
+						{
+							"key": "date",
+							"value": "2022/03/01"
+						},
+						{
+							"key": "calling_System_Detail",
+							"value": "IVISUSA"
+						},
+						{
+							"key": "analyticTypeId",
+							"value": "8"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Insights",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apilink}}/insights/biAnalyticsReport_1_0?SiteId=1003&fromDate=2020/12/01&toDate=2022/12/01&calling_user_details=IVISUSA",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"insights",
+								"biAnalyticsReport_1_0"
+							],
+							"query": [
+								{
+									"key": "SiteId",
+									"value": "1003"
+								},
+								{
+									"key": "fromDate",
+									"value": "2020/12/01"
+								},
+								{
+									"key": "toDate",
+									"value": "2022/12/01"
+								},
+								{
+									"key": "calling_user_details",
+									"value": "IVISUSA"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:06:47 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "analyticTrends_2_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{apilink}}/insights/analyticTrends_2_0?SiteId=1002&date=2022/03/01&calling_System_Detail=IVISUSA&analyticTypeId=8",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"insights",
+						"analyticTrends_2_0"
+					],
+					"query": [
+						{
+							"key": "SiteId",
+							"value": "1002"
+						},
+						{
+							"key": "date",
+							"value": "2022/03/01"
+						},
+						{
+							"key": "calling_System_Detail",
+							"value": "IVISUSA"
+						},
+						{
+							"key": "analyticTypeId",
+							"value": "8"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Insights",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apilink}}/insights/biAnalyticsReport_1_0?SiteId=1003&fromDate=2020/12/01&toDate=2022/12/01&calling_user_details=IVISUSA",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"insights",
+								"biAnalyticsReport_1_0"
+							],
+							"query": [
+								{
+									"key": "SiteId",
+									"value": "1003"
+								},
+								{
+									"key": "fromDate",
+									"value": "2020/12/01"
+								},
+								{
+									"key": "toDate",
+									"value": "2022/12/01"
+								},
+								{
+									"key": "calling_user_details",
+									"value": "IVISUSA"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Length",
+							"value": "0"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:06:47 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "resetPassword_1_0 with email",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"userName\":\"danny\",\r\n    \"calling_System_Detail\":\"portal\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/login/resetPassword_1_0",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"login",
+						"resetPassword_1_0"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "password reset with email",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userName\":\"{{username}}\",\r\n    \"calling_System_Detail\":\"portal\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/login/resetPassword_1_0",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"login",
+								"resetPassword_1_0"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:06:50 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Success\",\n    \"Message\": \"Email sent\"\n}"
+				}
+			]
+		},
+		{
+			"name": "getServiceReq_1_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.Status).to.eql(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\"\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/helpdesk/getServiceReq_1_0",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"helpdesk",
+						"getServiceReq_1_0"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getservicehelpdesk_1_0",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\",\r\n\"siteId\": 1007\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/helpdesk/getServiceReq_1_0",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"helpdesk",
+								"getServiceReq_1_0"
+							]
+						}
+					},
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "deleteServiceRequest_1_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"Mobile_App\",\r\n\"siteId\": 1001,\r\n\"serviceId\":70\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/helpdesk/deleteServiceRequest_1_0",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"helpdesk",
+						"deleteServiceRequest_1_0"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "deleteServiceRequest_1_0",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"Mobile_App\",\r\n\"siteId\": 1001,\r\n\"serviceId\":65\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/helpdesk/deleteServiceRequest_1_0",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"helpdesk",
+								"deleteServiceRequest_1_0"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 03 Jun 2022 09:08:33 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=20"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Failed\",\n    \"Message\": \"Request was created by different user. Created is not matching\"\n}"
+				},
+				{
+					"name": "deleteServiceRequest_1_0",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"Mobile_App\",\r\n\"siteId\": 1001,\r\n\"serviceId\":70\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/helpdesk/deleteServiceRequest_1_0",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"helpdesk",
+								"deleteServiceRequest_1_0"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 03 Jun 2022 09:09:00 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=20"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Success\",\n    \"Message\": \"Record deleted successfully\"\n}"
+				}
+			]
+		},
+		{
+			"name": "addServiceRequest_1_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "siteId",
+							"value": "1007",
+							"type": "text"
+						},
+						{
+							"key": "serviceName",
+							"value": "Live View",
+							"type": "text"
+						},
+						{
+							"key": "subServiceName",
+							"value": "Camera Position",
+							"type": "text"
+						},
+						{
+							"key": "userName",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "calling_System_Detail",
+							"value": "Mobile_App",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "priority",
+							"value": "High",
+							"type": "text"
+						},
+						{
+							"key": "accessToken",
+							"value": "{{accesstoken}}",
+							"type": "text"
+						},
+						{
+							"key": "preferredTimeToCall",
+							"value": "2022-06-01 18:20:00",
+							"type": "text",
+							"disabled": true
+						},
+						{
+							"key": "Attachements",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "{{apilink}}/helpdesk/addServiceRequest_1_0",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"helpdesk",
+						"addServiceRequest_1_0"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "addServiceRequest_1_0",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "siteId",
+									"value": "1007",
+									"type": "text"
+								},
+								{
+									"key": "serviceName",
+									"value": "Live View",
+									"type": "text"
+								},
+								{
+									"key": "subServiceName",
+									"value": "Camera Issue",
+									"type": "text"
+								},
+								{
+									"key": "userName",
+									"value": "{{username}}",
+									"type": "text"
+								},
+								{
+									"key": "calling_System_Detail",
+									"value": "Mobile_App",
+									"type": "text"
+								},
+								{
+									"key": "Attachements",
+									"type": "file",
+									"src": [
+										"/C:/Users/iv4391/Pictures/60cbd0c9816f3e2355324080_IVIS_Logo_white.png",
+										"/C:/Users/iv4391/Pictures/2061858.jpg"
+									]
+								},
+								{
+									"key": "description",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "priority",
+									"value": "High",
+									"type": "text"
+								},
+								{
+									"key": "accessToken",
+									"value": "{{accesstoken}}",
+									"type": "text"
+								},
+								{
+									"key": "preferredTimeToCall",
+									"value": "02:00:00",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apilink}}/helpdesk/addServiceRequest_1_0",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"helpdesk",
+								"addServiceRequest_1_0"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 05:58:02 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Failed\",\n    \"Message\": \"Request cannot be processed\"\n}"
+				}
+			]
+		},
+		{
+			"name": "updateServiceRequest_1_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "siteId",
+							"value": "1007",
+							"type": "text"
+						},
+						{
+							"key": "serviceName",
+							"value": "Live View",
+							"type": "text"
+						},
+						{
+							"key": "subServiceName",
+							"value": "Camera Position",
+							"type": "text"
+						},
+						{
+							"key": "userName",
+							"value": "{{username}}",
+							"type": "text"
+						},
+						{
+							"key": "calling_System_Detail",
+							"value": "Mobile_App",
+							"type": "text"
+						},
+						{
+							"key": "Attachements",
+							"type": "file",
+							"src": [
+								"/C:/Users/iv4391/Pictures/60cbd0c9816f3e2355324080_IVIS_Logo_white.png",
+								"/C:/Users/iv4391/Pictures/2061858.jpg"
+							],
+							"disabled": true
+						},
+						{
+							"key": "description",
+							"value": "test",
+							"type": "text"
+						},
+						{
+							"key": "priority",
+							"value": "High",
+							"type": "text"
+						},
+						{
+							"key": "accessToken",
+							"value": "{{accesstoken}}",
+							"type": "text"
+						},
+						{
+							"key": "preferredTimeToCall",
+							"value": "2022-06-01 18:20:00",
+							"type": "text"
+						},
+						{
+							"key": "serviceId",
+							"value": "85",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{apilink}}/helpdesk/updateServiceRequest_1_0",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"helpdesk",
+						"updateServiceRequest_1_0"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "updateServiceRequest_1_0",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "siteId",
+									"value": "1007",
+									"type": "text"
+								},
+								{
+									"key": "serviceName",
+									"value": "Live View",
+									"type": "text"
+								},
+								{
+									"key": "subServiceName",
+									"value": "Camera Issue",
+									"type": "text"
+								},
+								{
+									"key": "userName",
+									"value": "{{username}}",
+									"type": "text"
+								},
+								{
+									"key": "calling_System_Detail",
+									"value": "Mobile_App",
+									"type": "text"
+								},
+								{
+									"key": "Attachements",
+									"type": "file",
+									"src": [
+										"/C:/Users/iv4391/Pictures/60cbd0c9816f3e2355324080_IVIS_Logo_white.png",
+										"/C:/Users/iv4391/Pictures/2061858.jpg"
+									]
+								},
+								{
+									"key": "description",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "priority",
+									"value": "High",
+									"type": "text"
+								},
+								{
+									"key": "accessToken",
+									"value": "{{accesstoken}}",
+									"type": "text"
+								},
+								{
+									"key": "preferredTimeToCall",
+									"value": "02:00:00",
+									"type": "text"
+								},
+								{
+									"key": "serviceId",
+									"value": "15",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{apilink}}/helpdesk/updateServiceRequest_1_0",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"helpdesk",
+								"updateServiceRequest_1_0"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 05:58:13 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Failed\",\n    \"Message\": \"Request cannot be processed\"\n}"
+				}
+			]
+		},
+		{
+			"name": "SnapshotUrlsForSitesList_1_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\",\r\n\"sitesList\":[1001, 1002,1003,1004,1005,1006,1007,1009,1011,1012,1013,1014,1015,1016,1017,1018,1021,1022,1024,1025,1026,1027,1028,1029,1030]\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/sites/SnapshotUrlsForSitesList_1_0",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"sites",
+						"SnapshotUrlsForSitesList_1_0"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "SnapshotUrlsForSitesList_1_0",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\",\r\n\"sitesList\":[1001]\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/sites/SnapshotUrlsForSitesList_1_0",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"sites",
+								"SnapshotUrlsForSitesList_1_0"
+							]
+						}
+					},
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "ClientServices_1_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apilink}}/Client/clientServices_1_0?accountId=1003&Request_type=Services&calling_user_details=IVISUSA&startdate",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"Client",
+						"clientServices_1_0"
+					],
+					"query": [
+						{
+							"key": "accountId",
+							"value": "1003"
+						},
+						{
+							"key": "Request_type",
+							"value": "Services"
+						},
+						{
+							"key": "calling_user_details",
+							"value": "IVISUSA"
+						},
+						{
+							"key": "startdate",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ClientServices_1_0",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apilink}}/Client/clientServices_1_0?accountId=1003&Request_type=Services&calling_user_details=IVISUSA",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"Client",
+								"clientServices_1_0"
+							],
+							"query": [
+								{
+									"key": "accountId",
+									"value": "1003"
+								},
+								{
+									"key": "Request_type",
+									"value": "Services"
+								},
+								{
+									"key": "calling_user_details",
+									"value": "IVISUSA"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:05:01 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Success\",\n    \"Services\": {\n        \"alarms\": \"F\",\n        \"safety_escort\": \"T\",\n        \"LiveView\": \"T\",\n        \"advertising\": \"T\",\n        \"business_intelligence\": \"T\"\n    },\n    \"SiteId\": 1003,\n    \"Message\": \"Success\",\n    \"SiteName\": \"One Stop-Odessa\",\n    \"background\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "notWorkingDays_1_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apilink}}/Client/notWorkingDays_1_0?siteId=1002&calling_System_Detail=IVISUSA&year=2021",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"Client",
+						"notWorkingDays_1_0"
+					],
+					"query": [
+						{
+							"key": "siteId",
+							"value": "1002"
+						},
+						{
+							"key": "calling_System_Detail",
+							"value": "IVISUSA"
+						},
+						{
+							"key": "year",
+							"value": "2021"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "ClientServices_1_0",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{apilink}}/Client/clientServices_1_0?accountId=1003&Request_type=Services&calling_user_details=IVISUSA",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"Client",
+								"clientServices_1_0"
+							],
+							"query": [
+								{
+									"key": "accountId",
+									"value": "1003"
+								},
+								{
+									"key": "Request_type",
+									"value": "Services"
+								},
+								{
+									"key": "calling_user_details",
+									"value": "IVISUSA"
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 27 Apr 2022 06:05:01 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Success\",\n    \"Services\": {\n        \"alarms\": \"F\",\n        \"safety_escort\": \"T\",\n        \"LiveView\": \"T\",\n        \"advertising\": \"T\",\n        \"business_intelligence\": \"T\"\n    },\n    \"SiteId\": 1003,\n    \"Message\": \"Success\",\n    \"SiteName\": \"One Stop-Odessa\",\n    \"background\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "login/logout",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"{{username}}\",\r\n     \"AccessToken\": \"{{accesstoken}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/login/logout",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"login",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getAnalyticsListforSite_1_0",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apilink}}/insights/getAnalyticsListforSite_1_0?SiteId=1002&calling_System_Detail=IVISUSA&date=2022/03/01",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"insights",
+						"getAnalyticsListforSite_1_0"
+					],
+					"query": [
+						{
+							"key": "SiteId",
+							"value": "1002"
+						},
+						{
+							"key": "calling_System_Detail",
+							"value": "IVISUSA"
+						},
+						{
+							"key": "date",
+							"value": "2022/03/01"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "categoryList_1_0",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Body matches string\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"Success\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Your test name\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.Status).to.eql(\"Success\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\"\r\n    \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/helpdesk/categoryList_1_0",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"helpdesk",
+						"categoryList_1_0"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getservicehelpdesk_1_0",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"userName\":\"{{username}}\",\r\n\"accessToken\":\"{{accesstoken}}\",\r\n\"calling_System_Detail\":\"portal\",\r\n\"siteId\": 1007\r\n    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/helpdesk/getServiceReq_1_0",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"helpdesk",
+								"getServiceReq_1_0"
+							]
+						}
+					},
+					"_postman_previewlanguage": "Text",
+					"header": [],
+					"cookie": [],
+					"body": ""
+				}
+			]
+		},
+		{
+			"name": "createServiceCat_1_0",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"{{username}}\",\r\n    \"accessToken\": \"{{accesstoken}}\",\r\n    \"calling_System_Detail\": \"portal\",\r\n    \"catName\": \"Safety Escort\",\r\n    \"description\": \"Safety Escort\",\r\n    \"catIconPath\": \"http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/AnalyticsIcon/customer.png\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/helpdesk/createServiceCat_1_0",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"helpdesk",
+						"createServiceCat_1_0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createServiceSubcat",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userName\": \"{{username}}\",\r\n    \"accessToken\": \"{{accesstoken}}\",\r\n    \"calling_System_Detail\": \"portal\",\r\n    \"serviceSubcatName\":\"Camera Position\",\r\n    \"description\":\"Camera  Position\",\r\n    \"serviceSubcatIconPath\":\"http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/AnalyticsIcon/customer.png\",\r\n    \"serviceCatId\":\"2\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/helpdesk/createServiceSubcat",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"helpdesk",
+						"createServiceSubcat"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "insights/getPdfReport",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apilink}}/insights/getPdfReport?siteId=1003&startdate=2020-03-01&enddate=2025-03-09&calling_System_Detail=IVISUSA",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"insights",
+						"getPdfReport"
+					],
+					"query": [
+						{
+							"key": "siteId",
+							"value": "1003"
+						},
+						{
+							"key": "startdate",
+							"value": "2020-03-01"
+						},
+						{
+							"key": "enddate",
+							"value": "2025-03-09"
+						},
+						{
+							"key": "calling_System_Detail",
+							"value": "IVISUSA"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "emailPdf",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{apilink}}/insights/emailPdf?siteId=100232323&startdate=2020-03-01&enddate=2025-03-09&calling_System_Detail=IVISUSA&emailId=awdawdawd@efa.com",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"insights",
+						"emailPdf"
+					],
+					"query": [
+						{
+							"key": "siteId",
+							"value": "100232323"
+						},
+						{
+							"key": "startdate",
+							"value": "2020-03-01"
+						},
+						{
+							"key": "enddate",
+							"value": "2025-03-09"
+						},
+						{
+							"key": "calling_System_Detail",
+							"value": "IVISUSA"
+						},
+						{
+							"key": "emailId",
+							"value": "awdawdawd@efa.com"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getDeviceDetails",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"requestType\":\"Cameras\",\r\n    \"siteId\":1001,\r\n    \"calling_user_name\":\"{{username}}\",\r\n    \"accessToken\":\"{{accesstoken}}\",\r\n    \"calling_System_Detail\":\"portal\"\r\n\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}/Devices/getDeviceDetails",
+					"host": [
+						"{{apilink}}"
+					],
+					"path": [
+						"Devices",
+						"getDeviceDetails"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "getDeviceDetails",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"requestType\":\"Cameras\",\r\n    \"siteId\":2,\r\n    \"calling_user_name\":\"{{username}}\",\r\n    \"accessToken\":\"{{accesstoken}}\",\r\n    \"calling_System_Detail\":\"portal\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/Devices/getDeviceDetails",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"Devices",
+								"getDeviceDetails"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Fri, 08 Jul 2022 12:48:30 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Success\",\n    \"Message\": \"Data Retrieved Successfully\",\n    \"CentralBoxDetails\": {\n        \"noOfActiveCameras\": 2,\n        \"password\": \"xx2317xx2317\",\n        \"centralBoxId\": 28950,\n        \"unitName\": \"ALS\",\n        \"centralBoxUrl\": \"http://123456\",\n        \"description\": \"Installtion done\",\n        \"unitId\": \"IVISUSA1001\",\n        \"userName\": \"admin\",\n        \"status\": \"Installed\"\n    },\n    \"Camera\": [\n        {\n            \"cameraOrder\": 1,\n            \"cameraId\": \"1003C1\",\n            \"name\": \"LobbyCamera\",\n            \"cameraDisplayName\": \"IVIS1003C1\",\n            \"id\": 1477\n        },\n        {\n            \"cameraOrder\": 2,\n            \"cameraId\": \"1003C2\",\n            \"name\": \"Pinhole\",\n            \"cameraDisplayName\": \"IVIS1003C2\",\n            \"id\": 1478\n        }\n    ]\n}"
+				},
+				{
+					"name": "getDeviceDetails",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"requestType\":\"Devices\",\r\n    \"siteId\":1001,\r\n    \"calling_user_name\":\"{{username}}\",\r\n    \"accessToken\":\"{{accesstoken}}\",\r\n    \"calling_System_Detail\":\"portal\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{apilink}}/Devices/getDeviceDetails",
+							"host": [
+								"{{apilink}}"
+							],
+							"path": [
+								"Devices",
+								"getDeviceDetails"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sat, 09 Jul 2022 06:42:18 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"Status\": \"Success\",\n    \"Message\": \"Data Retrieved Successfully\",\n    \"devices\": [\n        [\n            {\n                \"title\": \"deviceType\",\n                \"value\": \"Audio\"\n            },\n            {\n                \"title\": \"deviceUnitId\",\n                \"value\": \"IVISUSA1001D1\"\n            },\n            {\n                \"title\": \"accessories\",\n                \"value\": {\n                    \"title\": \"accessories\",\n                    \"value\": [\n                        {\n                            \"title\": \"accessoryId\",\n                            \"value\": 211\n                        },\n                        {\n                            \"title\": \"accessoriesStatus\",\n                            \"value\": \"Installed\"\n                        },\n                        {\n                            \"title\": \"accessoryName\",\n                            \"value\": \"Screen-1\"\n                        }\n                    ]\n                }\n            },\n            {\n                \"title\": \"active\",\n                \"value\": \"T\"\n            },\n            {\n                \"title\": \"deviceId\",\n                \"value\": 12\n            },\n            {\n                \"title\": \"deviceName\",\n                \"value\": \"Barbee-video1\"\n            },\n            {\n                \"title\": \"deviceStatus\",\n                \"value\": \"Installed\"\n            }\n        ]\n    ],\n    \"CentralBoxDetails\": [\n        {\n            \"title\": \"noOfActiveCameras\",\n            \"value\": 2\n        },\n        {\n            \"title\": \"password\",\n            \"value\": \"xx2317xx2317\"\n        },\n        {\n            \"title\": \"centralBoxId\",\n            \"value\": 28950\n        },\n        {\n            \"title\": \"unitName\",\n            \"value\": \"ALS\"\n        },\n        {\n            \"title\": \"centralBoxUrl\",\n            \"value\": \"http://123456\"\n        },\n        {\n            \"title\": \"description\",\n            \"value\": \"Installtion done\"\n        },\n        {\n            \"title\": \"unitId\",\n            \"value\": \"IVISUSA1001\"\n        },\n        {\n            \"title\": \"userName\",\n            \"value\": \"admin\"\n        },\n        {\n            \"title\": \"status\",\n            \"value\": \"Installed\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "addUser_1_0",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"deepika\",\r\n    \"password\": \"Ivis@123\",\r\n    \"firstname\": \"Deepika\",\r\n    \"lastname\": \"Tamma\",\r\n    \"roleList\": [\r\n        \"default store\"\r\n    ],\r\n    \"email\": \"deepika123@gmail.com\",\r\n    \"gender\": \"F\",\r\n    \"realm\": \"IVISUSA\",\r\n    \"contactNumber-1\": \"+91 1234561231\",\r\n    \"contactNumber-2\": \"+91 2589632583\",\r\n    \"country\": \"USA\",\r\n    \"addressLine1\": \"1-10, Oxford street\",\r\n    \"addressLine2\": \"Waukesha\",\r\n    \"district\": \"Florida\",\r\n    \"state\": \"Wisconsin\",\r\n    \"city\": \"Texas\",\r\n    \"pin\": \"52142\",\r\n    \"employee\": \"F\",\r\n    \"employeeId\": \"\",\r\n    \"accesstoken\": \"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmdnRteDdUdkF4dlg1Z2gzUXlaUmp0SWdJVzU0ejB5M0RhRHBLcm5IQjAwIn0.eyJleHAiOjE2NTc4NzAyNzAsImlhdCI6MTY1Nzg2NjY3MCwianRpIjoiZmQ1NTI0M2MtYTg3OC00ZjY1LWEwMjAtYzQzZTFiMmI5MTQ5IiwiaXNzIjoiaHR0cDovL3VzbWdtdC5pdmlzY2xvdWQubmV0OjkxOTUvYXV0aC9yZWFsbXMvSVZJU1VTQSIsImF1ZCI6WyJyZWFsbS1tYW5hZ2VtZW50IiwiYWNjb3VudCJdLCJzdWIiOiI5NmExM2M0OS0xMGExLTRhNDYtOTFjMS0xZGRiN2U2ODY5YzMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0ZXN0aW5nIiwic2Vzc2lvbl9zdGF0ZSI6IjNjM2Y3OWViLTAzYTItNDAwYi05ZTlmLWRkNWFmYmE2YjcwMiIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL3VzbWdtdC5pdmlzY2xvdWQubmV0OjkxOTUvL2NsaWVudHBvcnRhbHMvSVZJU1VTQSJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1pdmlzdXNhIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImFkbWludXMiXX0sInJlc291cmNlX2FjY2VzcyI6eyJyZWFsbS1tYW5hZ2VtZW50Ijp7InJvbGVzIjpbIm1hbmFnZS11c2VycyIsInZpZXctdXNlcnMiLCJxdWVyeS1ncm91cHMiLCJxdWVyeS11c2VycyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiM2MzZjc5ZWItMDNhMi00MDBiLTllOWYtZGQ1YWZiYTZiNzAyIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiVVMxIFVTMSIsInByZWZlcnJlZF91c2VybmFtZSI6InVzMSIsImdpdmVuX25hbWUiOiJVUzEiLCJmYW1pbHlfbmFtZSI6IlVTMSIsImVtYWlsIjoic3JpbGFrc2htaS5wQGl2aXMubmV0In0.Xc7V5PnprT09ry5PE0O4O-jxcFwc2gcCx13qjGRHSCUBRO7gsThUbRXGPILPlvfkIB5orHZzY5dTAr5JzBkzSJY6kXExyHNB68wPn-MrRRA00Jk8YTBFNuq_zZl4bjQ58MnbYL13AJnxtVRH9D0GILFbNvc_ANnmlGIX9RRnyhyTci0jnFnZvvkfZUMLQ4JbaUix8LlJmyEmnUpPIQUKQAfvDb8BnSYlQcB6mXqO0QwtiyMYR9c31T8kml79IC6ZpH579VrVVEQrmK8vH43pvKLXb6mMWxntiF-mLQ7JpkT-R94KIc99ZOsAucZXuQHpNP34LgWCuFPqjjSESOciPg\",\r\n    \"callingUsername\": \"us1\",\r\n    \"callingSystemDetail\": \"admin\",\r\n    \"safetyEscort\": \"F\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/User/addUser_1_0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"User",
+						"addUser_1_0"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateUser_1_0",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"deepika\",\r\n    \"firstname\": \"Deepika\",\r\n    \"lastname\": \"Tamma\",\r\n    \"roleList\": [\r\n        \"default store\"\r\n    ],\r\n    \"email\": \"deepika123@gmail.com\",\r\n    \"gender\": \"F\",\r\n    \"realm\": \"IVISUSA\",\r\n    \"active\":\"F\",\r\n    \"contactNumber-1\": \"+91 1234561231\",\r\n    \"contactNumber-2\": \"+91 2589632583\",\r\n    \"country\": \"USA\",\r\n    \"addressLine1\": \"1-10, Oxford street\",\r\n    \"addressLine2\": \"Waukesha\",\r\n    \"district\": \"Florida\",\r\n    \"state\": \"Wisconsin\",\r\n    \"city\": \"Texas\",\r\n    \"pin\": \"52142\",\r\n    \"employee\": \"F\",\r\n    \"employeeId\": \"\",\r\n    \"accesstoken\": \"{{accesstoken}}\",\r\n    \"callingUsername\": \"{{username}}\",\r\n    \"callingSystemDetail\": \"admin\",\r\n    \"safetyEscort\": \"F\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{apilink}}User/updateUser_1_0",
+					"host": [
+						"{{apilink}}User"
+					],
+					"path": [
+						"updateUser_1_0"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.test(\"Status code is 200\", function () {",
+					"    pm.response.to.have.status(200);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "apilink",
+			"value": "localhost:8080",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"key": "apilink",
+			"value": "http://usmgmt.iviscloud.net:777/businessInterface",
+			"type": "string"
+		},
+		{
+			"key": "accesstoken",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJmdnRteDdUdkF4dlg1Z2gzUXlaUmp0SWdJVzU0ejB5M0RhRHBLcm5IQjAwIn0.eyJleHAiOjE2NTIxNzU2NzAsImlhdCI6MTY1MjE3NDAxNSwianRpIjoiMWUzMmVkMGYtYWE5OC00MjgyLWIxMGQtNGUzNWQ0MjM3ZGY2IiwiaXNzIjoiaHR0cDovL3VzbWdtdC5pdmlzY2xvdWQubmV0OjkxOTUvYXV0aC9yZWFsbXMvSVZJU1VTQSIsImF1ZCI6WyJyZWFsbS1tYW5hZ2VtZW50IiwiYWNjb3VudCJdLCJzdWIiOiI0ZTU2NzQwZi1iM2UzLTQzMWMtODM5MC03ODcwZDA3ODFhODMiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJ0ZXN0aW5nIiwic2Vzc2lvbl9zdGF0ZSI6ImU3NWFmYWE0LWE1YjAtNGRhYS1hYzdmLTVhMTNiOGQwZmFjZSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiaHR0cDovL3VzbWdtdC5pdmlzY2xvdWQubmV0OjkxOTUvL2NsaWVudHBvcnRhbHMvSVZJU1VTQSJdLCJyZWFsbV9hY2Nlc3MiOnsicm9sZXMiOlsiZGVmYXVsdC1yb2xlcy1pdmlzdXNhIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsImFkbWludXMiXX0sInJlc291cmNlX2FjY2VzcyI6eyJyZWFsbS1tYW5hZ2VtZW50Ijp7InJvbGVzIjpbIm1hbmFnZS11c2VycyIsInZpZXctdXNlcnMiLCJxdWVyeS1ncm91cHMiLCJxdWVyeS11c2VycyJdfSwiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJwcm9maWxlIGVtYWlsIiwic2lkIjoiZTc1YWZhYTQtYTViMC00ZGFhLWFjN2YtNWExM2I4ZDBmYWNlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJuYW1lIjoiSVZJUyBTRUNVUklUWSIsInByZWZlcnJlZF91c2VybmFtZSI6Iml2aXN1cyIsImdpdmVuX25hbWUiOiJJVklTIiwiZmFtaWx5X25hbWUiOiJTRUNVUklUWSJ9.BNDDdjIHB5TuD_kYkpxfQb7DeJHdi8yWu4gd6Gc5qgF9tR2RLTRL44jz67GO3QCS3fK5p4k6lv_Vs1_4ctvaFCEu65MAyjMMk-019vRC4vY3HcTXqNmwBSIV3twYw6YBnn2NWPNgeDok38bmHzR3XzLS2R0xwLeq2-KRAxz488cFc0OM2xisUzYqz4ukF2L1HAZOoRDTks24Q__gGFbw1ifOwlvVo2_ddOmi7i7oDwm-zZpdCAzuMyamFsAUc7xLbO_NM5HlvyLWjuCYgclJnnBZOHegX3JHCM7qSj9vJ8lYgzgx4ix8f95GRKy0GDb-G4TtWHebaBfS50IEhi8Aug",
+			"type": "string"
+		},
+		{
+			"key": "refreshtoken",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJjODczMWMyNS1hMzQ0LTQ5MjAtOTEzYS1hN2M2MTk5M2E0OWUifQ.eyJleHAiOjE2NTIxNzU2NzAsImlhdCI6MTY1MjE3NDAxNSwianRpIjoiY2ViZjYyODQtNWQ5ZS00NTM3LWJlOGUtZGM0NTViZWQ2ZTE5IiwiaXNzIjoiaHR0cDovL3VzbWdtdC5pdmlzY2xvdWQubmV0OjkxOTUvYXV0aC9yZWFsbXMvSVZJU1VTQSIsImF1ZCI6Imh0dHA6Ly91c21nbXQuaXZpc2Nsb3VkLm5ldDo5MTk1L2F1dGgvcmVhbG1zL0lWSVNVU0EiLCJzdWIiOiI0ZTU2NzQwZi1iM2UzLTQzMWMtODM5MC03ODcwZDA3ODFhODMiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoidGVzdGluZyIsInNlc3Npb25fc3RhdGUiOiJlNzVhZmFhNC1hNWIwLTRkYWEtYWM3Zi01YTEzYjhkMGZhY2UiLCJzY29wZSI6InByb2ZpbGUgZW1haWwiLCJzaWQiOiJlNzVhZmFhNC1hNWIwLTRkYWEtYWM3Zi01YTEzYjhkMGZhY2UifQ.rBrJel22LQaKbZJ7e8m6BzJn4XKChGYnrKvAiwFZ3MI",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "ivisus",
+			"type": "string"
+		},
+		{
+			"key": "apilink3",
+			"value": "http://smstaging.iviscloud.net:8090/businessInterface",
+			"type": "string"
+		}
+	]
+}
