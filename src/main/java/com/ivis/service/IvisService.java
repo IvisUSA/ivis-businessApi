@@ -1531,8 +1531,8 @@ public class IvisService {
 		m.put("contactNumber-1", x.get("ContactNumber-1"));
 		m.put("contactNumber-2", x.get("ContactNumber-2"));
 		m.put("country", x.get("Country"));
-		m.put("addressLine1", x.get("Address-line1"));
-		m.put("addressLine2", x.get("Address-Line2"));
+		m.put("addressLine1", x.get("Address_line1"));
+		m.put("addressLine2", x.get("Address_Line2"));
 		m.put("district", x.get("District"));
 		m.put("state", x.get("State"));
 		m.put("city", x.get("City"));
