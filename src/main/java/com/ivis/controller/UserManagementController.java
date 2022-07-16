@@ -199,7 +199,7 @@ public class UserManagementController {
 	public Object uploadImage(@RequestParam(value="clientUsername",required = false) String clientUsername,
 			@RequestParam(value="accesstoken",required = false) String accesstoken,
 			@RequestParam(value="callingSystemDetail",required = false) String callingSystemDetail,@RequestParam(value = "image",required = false) MultipartFile imageUpload) throws IOException {
-		if(clientUsername!=null && accesstoken != null && callingSystemDetail != null && !(imageUpload==null)&& !(imageUpload.getOriginalFilename().isBlank()||imageUpload.getOriginalFilename().isEmpty()) ) {
+		if(clientUsername!=null && accesstoken != null && callingSystemDetail != null && !(imageUpload==null)&& !(imageUpload.getOriginalFilename().isEmpty()) ) {
 			return new HashMap<String, String>() {
 				{
 					put("Status", "Success");
