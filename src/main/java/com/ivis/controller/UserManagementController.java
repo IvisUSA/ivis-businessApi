@@ -194,5 +194,31 @@ public class UserManagementController {
 		}
 
 	}
+	
+	@PostMapping("/UpdateProfile_1_0")
+	public Object uploadImage(@RequestParam(value="clientUsername",required = false) String clientUsername,
+			@RequestParam(value="accesstoken",required = false) String accesstoken,
+			@RequestParam(value="callingSystemDetail",required = false) String callingSystemDetail,@RequestParam(value = "image",required = false) MultipartFile imageUpload) throws IOException {
+		if(clientUsername!=null && accesstoken != null && callingSystemDetail != null && !(imageUpload==null)&& !(imageUpload.getOriginalFilename().isBlank()||imageUpload.getOriginalFilename().isEmpty()) ) {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Success");
+					put("Message", "ImageUpdated");
+
+				}
+			};
+		}
+		//ok na?? shall we test in postman
+		return new HashMap<String, String>() {
+			{
+				
+				put("Status", "Failed");
+				put("Message", "Insufficent Details");
+
+			}
+		};
+		
+		
+	}
 
 }
