@@ -262,7 +262,7 @@ public class UserManagementController {
 				{
 					put("status", "Success");
 					put("message", "ImageUpdated");
-					put("image","http://testurl/"+imageUpload.getOriginalFilename());
+					put("image","http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/profilepics/default.png");
 
 				}
 			};
