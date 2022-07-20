@@ -9,6 +9,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.json.JSONObject;
@@ -136,8 +137,63 @@ public class UserManagementController {
 			};
 		}
 	}
+	@PostMapping(path="/getUser_1_0")
+	public Object getUser1(@RequestBody HashMap<String, String> input) {
+		if (!input.keySet().containsAll(new ArrayList<String>() {
+			{
+				add("callingUsername");
+				add("accesstoken");
+				add("callingSystemDetail");
 
-	@PostMapping(path = "/getUser_1_0")
+			}
+		})) {
+
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Insufficient details");
+					
+
+				}
+			};
+		}
+		
+		boolean accessCheck = KeycloakUtils.verifyaccesstoken(input.get("callingUsername").toString(),
+				input.get("accesstoken").toString());
+		if(accessCheck) {
+		
+			if(input.get("callingSystemDetail").equals("portal") || input.get("callingSystemDetail").equals("mobile")) {	
+				return ivis.getuserDetailsPortal(input);
+			}
+			else if(input.get("username")!=null || input.get("email")!=null){
+				return ivis.getuserDetails(input);
+			}
+			else {
+				return new HashMap<String, String>() {
+					{
+						put("Status", "Failed");
+						put("Message", "Insufficient details");
+
+					}
+				};
+			}
+			
+		}
+		
+		else {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Invalid accessToken");
+
+				}
+			};
+		}
+		
+		
+	}
+
+	//@PostMapping(path = "/getUser_1_0")
 	public Object getUser(@RequestBody HashMap<String, String> input) {
 
 		if (!input.keySet().containsAll(new ArrayList<String>() {
@@ -180,7 +236,7 @@ public class UserManagementController {
 
 		boolean accessCheck = KeycloakUtils.verifyaccesstoken(input.get("callingUsername").toString(),
 				input.get("accesstoken").toString());
-
+       
 		if (accessCheck)
 			return ivis.getuserDetails(input);
 		else {
@@ -195,20 +251,23 @@ public class UserManagementController {
 
 	}
 	
-	@PostMapping("/UpdateProfile_1_0")
-	public Object uploadImage(@RequestParam(value="clientUsername",required = false) String clientUsername,
+	
+	
+	@PostMapping("/UpdateProfilePic_1_0")
+	public Object uploadImage(@RequestParam(value="callingUsername",required = false) String callingUsername,
 			@RequestParam(value="accesstoken",required = false) String accesstoken,
 			@RequestParam(value="callingSystemDetail",required = false) String callingSystemDetail,@RequestParam(value = "image",required = false) MultipartFile imageUpload) throws IOException {
-		if(clientUsername!=null && accesstoken != null && callingSystemDetail != null && !(imageUpload==null)&& !(imageUpload.getOriginalFilename().isEmpty()) ) {
-			return new HashMap<String, String>() {
+		if(callingUsername!=null && accesstoken != null && callingSystemDetail != null && !(imageUpload==null)&& !(imageUpload.getOriginalFilename().isEmpty()) ) {
+			return new LinkedHashMap<String, String>() {
 				{
-					put("Status", "Success");
-					put("Message", "ImageUpdated");
+					put("status", "Success");
+					put("message", "ImageUpdated");
+					put("image","http://testurl/"+imageUpload.getOriginalFilename());
 
 				}
 			};
 		}
-		//ok na?? shall we test in postman
+		
 		return new HashMap<String, String>() {
 			{
 				

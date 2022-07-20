@@ -157,10 +157,9 @@ public class KeycloakUtils {
 		try {
 
 			HashMap bodyMap = input;
+				
 			
-			
-			
-			OkHttpClient client = new OkHttpClient().newBuilder().build();
+	    	OkHttpClient client = new OkHttpClient().newBuilder().build();
 			MediaType mediaType = MediaType.parse("application/json");
 		
 			RequestBody body = RequestBody.create(mediaType, new Gson().toJson(bodyMap));
@@ -185,6 +184,44 @@ public class KeycloakUtils {
 			};
 		}
 	}
+	
+	
+	public Map<String, Object> getUserMaster(HashMap<String, Object> input) {
+		try {
+
+			HashMap bodyMap = input;
+				
+			OkHttpClient client = new OkHttpClient().newBuilder()
+					  .build();
+					MediaType mediaType = MediaType.parse("application/json");
+					RequestBody body = RequestBody.create(mediaType, new Gson().toJson(bodyMap));
+					Request request = new Request.Builder()
+					  .url(keycloakApi+"/getUserMaster_1_0")
+					  .method("POST", body)
+					  .addHeader("Content-Type", "application/json")
+					  .build();
+					Response response = client.newCall(request).execute();
+			
+			
+			String responseString = response.body().string();
+			
+			System.out.println("Response from KeycloakApp getUser : \n" + responseString + "\n\n");
+
+			JSONObject responseJsonObj = new JSONObject(responseString);
+
+			return responseJsonObj.toMap();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new HashMap<String, Object>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Exception occured : " + e);
+				}
+			};
+		}
+	}
+	
+	
 
 	public static boolean verifyaccesstoken(String username, String accessToken) {
 		try {

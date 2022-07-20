@@ -1495,6 +1495,21 @@ public class IvisService {
 		return new KeycloakUtils().updateUser(bodymap);
 
 	}
+	
+	/**
+	 * @author Deepika
+	 * @param input
+	 * @return
+	 */
+	public Object getuserDetailsPortal(HashMap<String, String> input) {
+	
+		HashMap bodymap = new HashMap<>();
+		
+		bodymap.put("UserName", input.get("callingUsername"));
+		return new KeycloakUtils().getUserMaster(bodymap);
+		
+	}
+	
 
 	/**
 	 * @author Deepika
@@ -1503,53 +1518,52 @@ public class IvisService {
 	 */
 
 	public Object getuserDetails(HashMap<String, String> input) {
+		
+		
+			HashMap bodymap = new HashMap<>();
+			bodymap.put("UserName", input.get("username"));
+			bodymap.put("Email", input.get("email"));
+			bodymap.put("calling_user_name", input.get("callingUsername"));
+			bodymap.put("access_token", input.get("accesstoken"));
+			
+			Map x = new KeycloakUtils().getUser(bodymap);
+			if (!(x.get("Status").equals("Success"))) 
+				return x;
+									
+			x = (Map) x.get("UserDetails");
+			LinkedHashMap m = new LinkedHashMap<>();
 
-		HashMap bodymap = new HashMap<>();
-		bodymap.put("UserName", input.get("username"));
-		bodymap.put("Email", input.get("email"));
-		bodymap.put("calling_user_name", input.get("callingUsername"));
-		bodymap.put("access_token", input.get("accesstoken"));
+			m.put("username", x.get("UserName"));
+			m.put("password", x.get("Password"));
+			m.put("firstname", x.get("FirstName"));
+			m.put("lastname", x.get("LastName"));
+			m.put("roleList", x.get("Role-List"));
+			m.put("email", x.get("Email"));
+			m.put("active", x.get("Active"));
+			m.put("gender", x.get("Gender"));
+			m.put("contactNumber-1", x.get("ContactNumber-1"));
+			m.put("contactNumber-2", x.get("ContactNumber-2"));
+			m.put("country", x.get("Country"));
+			m.put("addressLine1", x.get("Address_line1"));
+			m.put("addressLine2", x.get("Address_Line2"));
+			m.put("district", x.get("District"));
+			m.put("state", x.get("State"));
+			m.put("city", x.get("City"));
+			m.put("pin", x.get("PIN"));
+			m.put("employee", x.get("employee"));
+			m.put("employeeId", x.get("employeeId"));
+			m.put("safetyEscort", x.get("Safety_escort"));
 
-		
-		Map x = new KeycloakUtils().getUser(bodymap);
-		if (!(x.get("Status").equals("Success"))) 
-			return x;
-		
-		
-		
-		x = (Map) x.get("UserDetails");
-		LinkedHashMap m = new LinkedHashMap<>();
-
-		m.put("username", x.get("UserName"));
-		m.put("password", x.get("Password"));
-		m.put("firstname", x.get("FirstName"));
-		m.put("lastname", x.get("LastName"));
-		m.put("roleList", x.get("Role-List"));
-		m.put("email", x.get("Email"));
-		m.put("active", x.get("Active"));
-		m.put("gender", x.get("Gender"));
-		m.put("contactNumber-1", x.get("ContactNumber-1"));
-		m.put("contactNumber-2", x.get("ContactNumber-2"));
-		m.put("country", x.get("Country"));
-		m.put("addressLine1", x.get("Address_line1"));
-		m.put("addressLine2", x.get("Address_Line2"));
-		m.put("district", x.get("District"));
-		m.put("state", x.get("State"));
-		m.put("city", x.get("City"));
-		m.put("pin", x.get("PIN"));
-		m.put("employee", x.get("employee"));
-		m.put("employeeId", x.get("employeeId"));
-		m.put("safetyEscort", x.get("Safety_escort"));
-
-		
-		
-		LinkedHashMap s = new LinkedHashMap<>();
-		s.put("status", "Success");
-		s.put("message", "User information retreived");
-		s.put("userDetails",m);
-		return s;
-		
-	}
+			
+			
+			LinkedHashMap s = new LinkedHashMap<>();
+			s.put("status", "Success");
+			s.put("message", "User information retreived");
+			s.put("userDetails",m);
+			return s;
+			
+		}
+	
 
 	public Object deleteUser(UserMgmtUserModel input) {
 		// TODO Auto-generated method stub
