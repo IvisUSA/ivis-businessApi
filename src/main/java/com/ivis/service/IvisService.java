@@ -1431,8 +1431,8 @@ public class IvisService {
 		bodymap.put("Email", input.get("email"));
 		bodymap.put("Gender", input.get("gender"));
 		bodymap.put("Realm", input.get("realm"));
-		bodymap.put("ContactNumber-1", input.get("contactNumber-1"));
-		bodymap.put("ContactNumber-2", input.get("contactNumber-2"));
+		bodymap.put("ContactNumber-1", input.get("contactNumber1"));
+		bodymap.put("ContactNumber-2", input.get("contactNumber2"));
 		bodymap.put("Active", "T");
 		bodymap.put("Country", input.get("country"));
 		bodymap.put("Address_line1", input.get("addressLine1"));
@@ -1475,8 +1475,8 @@ public class IvisService {
 		bodymap.put("Email", input.get("email"));
 		bodymap.put("Gender", input.get("gender"));
 		bodymap.put("Realm", input.get("realm"));
-		bodymap.put("ContactNumber-1", input.get("contactNumber-1"));
-		bodymap.put("ContactNumber-2", input.get("contactNumber-2"));
+		bodymap.put("ContactNumber-1", input.get("contactNumber1"));
+		bodymap.put("ContactNumber-2", input.get("contactNumber2"));
 		bodymap.put("Active", input.get("active"));
 		bodymap.put("Country", input.get("country"));
 		bodymap.put("Address_line1", input.get("addressLine1"));
@@ -1541,8 +1541,8 @@ public class IvisService {
 			m.put("email", x.get("Email"));
 			m.put("active", x.get("Active"));
 			m.put("gender", x.get("Gender"));
-			m.put("contactNumber-1", x.get("ContactNumber-1"));
-			m.put("contactNumber-2", x.get("ContactNumber-2"));
+			m.put("contactNumber1", x.get("ContactNumber-1"));
+			m.put("contactNumber2", x.get("ContactNumber-2"));
 			m.put("country", x.get("Country"));
 			m.put("addressLine1", x.get("Address_line1"));
 			m.put("addressLine2", x.get("Address_Line2"));

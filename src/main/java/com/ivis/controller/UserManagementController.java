@@ -60,7 +60,7 @@ public class UserManagementController {
 				add("email");
 				add("gender");
 				add("realm");
-				add("contactNumber-1");
+				add("contactNumber1");
 				add("accesstoken");
 				add("callingUsername");
 				add("callingSystemDetail");
@@ -108,7 +108,7 @@ public class UserManagementController {
 				add("realm");
 				add("email");
 				add("gender");
-				add("contactNumber-1");
+				add("contactNumber1");
 
 			}
 		})) {
@@ -158,6 +158,8 @@ public class UserManagementController {
 			};
 		}
 		
+	
+		
 		boolean accessCheck = KeycloakUtils.verifyaccesstoken(input.get("callingUsername").toString(),
 				input.get("accesstoken").toString());
 		if(accessCheck) {
@@ -193,65 +195,7 @@ public class UserManagementController {
 		
 	}
 
-	//@PostMapping(path = "/getUser_1_0")
-	public Object getUser(@RequestBody HashMap<String, String> input) {
 
-		if (!input.keySet().containsAll(new ArrayList<String>() {
-			{
-				add("username");
-				add("accesstoken");
-				add("callingUsername");
-				add("callingSystemDetail");
-
-			}
-		}))
-			if (!input.keySet().containsAll(new ArrayList<String>() {
-				{
-					add("email");
-					add("accesstoken");
-					add("callingUsername");
-					add("callingSystemDetail");
-
-				}
-			}))
-				if (!input.keySet().containsAll(new ArrayList<String>() {
-					{
-						add("email");
-						add("username");
-						add("accesstoken");
-						add("callingUsername");
-						add("callingSystemDetail");
-
-					}
-				})) {
-
-					return new HashMap<String, String>() {
-						{
-							put("Status", "Failed");
-							put("Message", "Insufficient details");
-
-						}
-					};
-				}
-
-		boolean accessCheck = KeycloakUtils.verifyaccesstoken(input.get("callingUsername").toString(),
-				input.get("accesstoken").toString());
-       
-		if (accessCheck)
-			return ivis.getuserDetails(input);
-		else {
-			return new HashMap<String, String>() {
-				{
-					put("Status", "Failed");
-					put("Message", "Invalid accessToken");
-
-				}
-			};
-		}
-
-	}
-	
-	
 	
 	@PostMapping("/UpdateProfilePic_1_0")
 	public Object uploadImage(@RequestParam(value="callingUsername",required = false) String callingUsername,
@@ -267,6 +211,7 @@ public class UserManagementController {
 				}
 			};
 		}
+		
 		
 		return new HashMap<String, String>() {
 			{
