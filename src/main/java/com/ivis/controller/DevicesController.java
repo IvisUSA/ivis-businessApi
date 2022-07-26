@@ -44,7 +44,7 @@ public class DevicesController {
 		
 		
 		if(accessCheck)
-		return ivis.getDeviceDetailsByRequestType(Integer.parseInt(data.get("siteId")),data.get("requestType"));
+		return ivis.getDeviceDetailsByRequestType2(Integer.parseInt(data.get("siteId")),data.get("requestType"));
 		else
 		{
 			return new HashMap<String, String>() {

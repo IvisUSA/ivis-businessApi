@@ -2,10 +2,7 @@ package com.ivis.service;
 
 import java.io.*;
 import okhttp3.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -44,6 +41,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -76,11 +75,15 @@ import com.ivis.Businessentity.CamerasStreamEntity;
 import com.ivis.Businessentity.SitesEntity;
 import com.ivis.Businessentity.UserEntity;
 import com.ivis.util.BiUtils;
+import com.ivis.util.HashMapUtil;
 import com.ivis.util.KeycloakUtils;
 import com.ivis.util.MngtServerUtils;
 import com.ivis.util.ReadJson;
 import com.ivis.util.UserMgmtUtils;
 import com.ivis.util.util;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 
 @Service
 public class IvisService {
@@ -1447,8 +1450,7 @@ public class IvisService {
 		bodymap.put("calling_user_name", input.get("callingUsername"));
 		bodymap.put("Calling_system_detail", input.get("callingSystemDetail"));
 		bodymap.put("Safety_escort", input.get("safetyEscort"));
-     
-		
+
 		return new KeycloakUtils().createUser(bodymap);
 
 	}
@@ -1491,25 +1493,24 @@ public class IvisService {
 		bodymap.put("calling_user_name", input.get("callingUsername"));
 		bodymap.put("Calling_system_detail", input.get("callingSystemDetail"));
 		bodymap.put("Safety_escort", input.get("safetyEscort"));
-     
+
 		return new KeycloakUtils().updateUser(bodymap);
 
 	}
-	
+
 	/**
 	 * @author Deepika
 	 * @param input
 	 * @return
 	 */
 	public Object getuserDetailsPortal(HashMap<String, String> input) {
-	
+
 		HashMap bodymap = new HashMap<>();
-		
+
 		bodymap.put("UserName", input.get("callingUsername"));
 		return new KeycloakUtils().getUserMaster(bodymap);
-		
+
 	}
-	
 
 	/**
 	 * @author Deepika
@@ -1518,52 +1519,48 @@ public class IvisService {
 	 */
 
 	public Object getuserDetails(HashMap<String, String> input) {
-		
-		
-			HashMap bodymap = new HashMap<>();
-			bodymap.put("UserName", input.get("username"));
-			bodymap.put("Email", input.get("email"));
-			bodymap.put("calling_user_name", input.get("callingUsername"));
-			bodymap.put("access_token", input.get("accesstoken"));
-			
-			Map x = new KeycloakUtils().getUser(bodymap);
-			if (!(x.get("Status").equals("Success"))) 
-				return x;
-									
-			x = (Map) x.get("UserDetails");
-			LinkedHashMap m = new LinkedHashMap<>();
 
-			m.put("username", x.get("UserName"));
-			m.put("password", x.get("Password"));
-			m.put("firstname", x.get("FirstName"));
-			m.put("lastname", x.get("LastName"));
-			m.put("roleList", x.get("Role-List"));
-			m.put("email", x.get("Email"));
-			m.put("active", x.get("Active"));
-			m.put("gender", x.get("Gender"));
-			m.put("contactNumber1", x.get("ContactNumber-1"));
-			m.put("contactNumber2", x.get("ContactNumber-2"));
-			m.put("country", x.get("Country"));
-			m.put("addressLine1", x.get("Address_line1"));
-			m.put("addressLine2", x.get("Address_Line2"));
-			m.put("district", x.get("District"));
-			m.put("state", x.get("State"));
-			m.put("city", x.get("City"));
-			m.put("pin", x.get("PIN"));
-			m.put("employee", x.get("employee"));
-			m.put("employeeId", x.get("employeeId"));
-			m.put("safetyEscort", x.get("Safety_escort"));
+		HashMap bodymap = new HashMap<>();
+		bodymap.put("UserName", input.get("username"));
+		bodymap.put("Email", input.get("email"));
+		bodymap.put("calling_user_name", input.get("callingUsername"));
+		bodymap.put("access_token", input.get("accesstoken"));
 
-			
-			
-			LinkedHashMap s = new LinkedHashMap<>();
-			s.put("status", "Success");
-			s.put("message", "User information retreived");
-			s.put("userDetails",m);
-			return s;
-			
-		}
-	
+		Map x = new KeycloakUtils().getUser(bodymap);
+		if (!(x.get("Status").equals("Success")))
+			return x;
+
+		x = (Map) x.get("UserDetails");
+		LinkedHashMap m = new LinkedHashMap<>();
+
+		m.put("username", x.get("UserName"));
+		m.put("password", x.get("Password"));
+		m.put("firstname", x.get("FirstName"));
+		m.put("lastname", x.get("LastName"));
+		m.put("roleList", x.get("Role-List"));
+		m.put("email", x.get("Email"));
+		m.put("active", x.get("Active"));
+		m.put("gender", x.get("Gender"));
+		m.put("contactNumber1", x.get("ContactNumber-1"));
+		m.put("contactNumber2", x.get("ContactNumber-2"));
+		m.put("country", x.get("Country"));
+		m.put("addressLine1", x.get("Address_line1"));
+		m.put("addressLine2", x.get("Address_Line2"));
+		m.put("district", x.get("District"));
+		m.put("state", x.get("State"));
+		m.put("city", x.get("City"));
+		m.put("pin", x.get("PIN"));
+		m.put("employee", x.get("employee"));
+		m.put("employeeId", x.get("employeeId"));
+		m.put("safetyEscort", x.get("Safety_escort"));
+
+		LinkedHashMap s = new LinkedHashMap<>();
+		s.put("Status", "Success");
+		s.put("Message", "User information retreived");
+		s.put("userDetails", m);
+		return s;
+
+	}
 
 	public Object deleteUser(UserMgmtUserModel input) {
 		// TODO Auto-generated method stub
@@ -1649,6 +1646,7 @@ public class IvisService {
 				JSONObject tempObj = new JSONObject(i.toString());
 				JSONArray tempArray = new JSONArray();
 				for (String j : tempObj.keySet()) {
+					System.out.println("j.." + j);
 					if (j.equals("accessories")) {
 
 						JSONObject tempObj2 = new JSONObject();
@@ -1659,20 +1657,26 @@ public class IvisService {
 							JSONArray ktempArray = new JSONArray();
 
 							for (String l : kobj.keySet()) {
-								System.out.println(l);
+								// System.out.println("titl1............"+l);
+								// System.out.println("value1............"+kobj.get(l));
 								JSONObject ltempObj = new JSONObject();
 								ltempObj.put("title", l);
 								ltempObj.put("value", kobj.get(l));
 								ktempArray.put(ltempObj);
 							}
+
 							ktempobj.put("title", j);
 							ktempobj.put("value", ktempArray);
+						
 						}
-
+						System.out.println("title for............" + j);
+						System.out.println("value for............" + ktempobj);
 						tempObj2.put("title", j);
 						tempObj2.put("value", ktempobj);
 						tempArray.put(tempObj2);
 					} else {
+						// System.out.println("title.. else............"+j);
+						// System.out.println("value..else............"+tempObj.get(j));
 						JSONObject tempObj2 = new JSONObject();
 						tempObj2.put("title", j);
 						tempObj2.put("value", tempObj.get(j));
@@ -1694,5 +1698,144 @@ public class IvisService {
 		}
 
 	}
+
+	/**
+	 * 
+	 * @param siteId
+	 * @param requestType
+	 * @return
+	 */
+	public Object getDeviceDetailsByRequestType2(int siteId, String requestType) {
+
+		switch (requestType) {
+		case "Cameras":
+
+			JSONObject response = new MngtServerUtils().getCentralUnitDetails_1_0(siteId);
+			if (response.getString("Status").equals("Failed")) {
+				return response.toMap();
+			}
+			response.remove("siteId");
+
+			JSONObject centralBoxDetails = response.getJSONObject("CentralBoxDetails");
+
+			JSONArray centralBoxDetailsList = new HashMapUtil().hashmapToList(centralBoxDetails);
+
+			response.put("CentralBoxDetails", centralBoxDetailsList);
+
+			JSONArray cameraList = response.getJSONArray("Camera");
+			JSONArray cameraListOfLists = new JSONArray();
+			for (Object i : cameraList) {
+				JSONObject cameraJsonObj = new JSONObject(i.toString());
+				JSONArray cameraListTemp = new HashMapUtil().hashmapToList(cameraJsonObj);
+				cameraListOfLists.put(cameraListTemp);
+			}
+			response.put("Camera", cameraListOfLists);
+
+			return response.toMap();
+
+		case "Devices":
+			response = new MngtServerUtils().getCentralUnitDetails_1_0(siteId);
+			if (response.getString("Status").equals("Failed")) {
+				return response.toMap();
+			}
+			JSONObject response1 = new MngtServerUtils().getDeviceDetailsForSite_1_0(siteId);
+			if (response1.getString("Status").equals("Failed")) {
+				return response1.toMap();
+			}
+			response1.remove("siteId");
+
+			response1.put("CentralBoxDetails", response.get("CentralBoxDetails"));
+			JSONObject centralBoxDetails1 = response1.getJSONObject("CentralBoxDetails");
+
+			JSONArray centralBoxDetailsList1 = new HashMapUtil().hashmapToList(centralBoxDetails1);
+			response1.put("CentralBoxDetails", centralBoxDetailsList1);
+
+			JSONArray devicesDataList = response1.getJSONArray("devices");
+			JSONArray devicesListOfList = new JSONArray();
+			for (Object i : devicesDataList) {
+				JSONObject tempObj = new JSONObject(i.toString());
+				JSONArray tempArray = new JSONArray();
+				for (String j : tempObj.keySet()) {
+
+					if (j.equals("accessories")) {
+
+						JSONObject tempObj2 = new JSONObject();
+						JSONArray tempArr2 = tempObj.getJSONArray(j);
+						JSONObject ktempobj = new JSONObject();
+						for (Object k : tempArr2) {
+							JSONObject kobj = new JSONObject(k.toString());
+							JSONArray ktempArray = new HashMapUtil().hashmapToList(kobj);
+							System.out.println("title for1............" + j);
+							System.out.println("value for1............" + ktempArray);
+//							ktempobj.put("title", j);
+//							ktempobj.put("value", ktempArray);
+							
+							
+							
+							
+							tempArray.put(new JSONObject() {{
+								put("title","accessories" );
+								put("value",ktempArray);
+							}});
+						}
+						
+//						System.out.println("title for2............" + j);
+//						System.out.println("value for2............" + ktempobj);
+//						tempObj2.put("title", j);
+//						tempObj2.put("value", ktempobj);
+//						tempArray.put(tempObj2);
+					} else {
+						
+						JSONObject tempObj2 = new JSONObject();
+						tempObj2.put("title", j);
+						tempObj2.put("value", tempObj.get(j));
+						tempArray.put(tempObj2);
+					}
+				}
+				devicesListOfList.put(tempArray);
+			}
+			response1.put("devices", devicesListOfList);
+
+			return response1.toMap();
+		default:
+			return new HashMap<String, Object>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Please send request type either Cameras or Devices");
+				}
+			};
+		}
+
+	}
+
+	// public Object getTermsAndConditions() throws IOException{
+//		//Loading an existing document
+//	      File file = new File("C:/Users/IVIS/Downloads/Terms&Conditions.pdf");
+//	      PDDocument document = PDDocument.load(file);
+//	      //Instantiate PDFTextStripper class
+//	      PDFTextStripper pdfStripper = new PDFTextStripper();
+//	      //Retrieving text from PDF document
+//	      String text = pdfStripper.getText(document);
+//	      System.out.println(text);
+//	      //Closing the document
+//	      document.close();
+//		return text;
+//}
+
+//		    public ResponseEntity<InputStreamResource> citiesReport() {
+//
+//		    	File file = new File("C:/Users/IVIS/Downloads/Terms&Conditions.pdf");
+//
+//		        InputStream bis = file;
+//
+//		        var headers = new HttpHeaders();
+//		        headers.add("Content-Disposition", "inline; filename=citiesreport.pdf");
+//
+//		        return ResponseEntity
+//		                .ok()
+//		                .headers(headers)
+//		                .contentType(MediaType.APPLICATION_PDF)
+//		                .body(new InputStreamResource(bis));
+//		    }
 
 }

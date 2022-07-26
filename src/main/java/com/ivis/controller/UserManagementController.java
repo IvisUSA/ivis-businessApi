@@ -204,8 +204,8 @@ public class UserManagementController {
 		if(callingUsername!=null && accesstoken != null && callingSystemDetail != null && !(imageUpload==null)&& !(imageUpload.getOriginalFilename().isEmpty()) ) {
 			return new LinkedHashMap<String, String>() {
 				{
-					put("status", "Success");
-					put("message", "ImageUpdated");
+					put("Status", "Success");
+					put("Message", "ImageUpdated");
 					put("image","http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/profilepics/default.png");
 
 				}
@@ -224,5 +224,25 @@ public class UserManagementController {
 		
 		
 	}
+	
+//	@GetMapping("/getPDF_1_0")
+//	public Object getPdf(@RequestParam(value="callingUsername",required = false) String callingUsername,
+//			@RequestParam(value="accesstoken",required = false) String accesstoken,
+//			@RequestParam(value="callingSystemDetail",required = false) String callingSystemDetail) throws IOException {
+//		
+//		if(callingUsername!=null && accesstoken != null && callingSystemDetail != null ) {
+//			return ivis.getTermsAndConditions();
+//		}
+//		
+//		
+//		return new HashMap<String, String>() {
+//			{
+//				
+//				put("Status", "Failed");
+//				put("Message", "Insufficent Details1");
+//
+//			}
+//		};
+//	}
 
 }
