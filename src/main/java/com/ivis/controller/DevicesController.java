@@ -58,5 +58,6 @@ public class DevicesController {
 	}
 	
 	
+	
 //	new MngtServerUtils().getDeviceDetailsForSite_1_0(1001).get("Status").equals("Success");
 }

@@ -1,5 +1,8 @@
 package com.ivis.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,6 +17,12 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +50,9 @@ public class UserManagementController {
 
 	@Autowired
 	IvisService ivis;
+	
+	@Autowired
+	ResourceLoader resourceLoader;
 
 	@GetMapping(path = "")
 	public String test() {
@@ -225,24 +237,32 @@ public class UserManagementController {
 		
 	}
 	
-//	@GetMapping("/getPDF_1_0")
-//	public Object getPdf(@RequestParam(value="callingUsername",required = false) String callingUsername,
-//			@RequestParam(value="accesstoken",required = false) String accesstoken,
-//			@RequestParam(value="callingSystemDetail",required = false) String callingSystemDetail) throws IOException {
-//		
-//		if(callingUsername!=null && accesstoken != null && callingSystemDetail != null ) {
-//			return ivis.getTermsAndConditions();
-//		}
-//		
-//		
-//		return new HashMap<String, String>() {
-//			{
-//				
-//				put("Status", "Failed");
-//				put("Message", "Insufficent Details1");
-//
-//			}
-//		};
-//	}
+
+		@PostMapping(value = "/getTandC_1_0")
+	    public Object getTermsConditions(@RequestParam(value="callingUsername",required = false) String callingUsername,
+				@RequestParam(value="accesstoken",required = false) String accesstoken,
+				@RequestParam(value="callingSystemDetail",required = false) String callingSystemDetail) throws IOException {
+			if(callingUsername!=null && accesstoken != null && callingSystemDetail != null ) {
+				
+	        return new LinkedHashMap<String, String>() {
+				{
+					put("Status", "Success");
+					put("Message", "Data Retrieved Successfully");
+					put("TandCpdf","http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/Terms&Conditions/Terms-and-Conditions.pdf");
+
+				}
+			};
+	        
+	    }
+			return new HashMap<String, String>() {
+				{
+					
+					put("Status", "Failed");
+					put("Message", "Insufficent Details");
+
+				}
+			};
+		}
+		
 
 }

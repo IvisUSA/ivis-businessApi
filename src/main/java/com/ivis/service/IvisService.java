@@ -1765,13 +1765,11 @@ public class IvisService {
 						for (Object k : tempArr2) {
 							JSONObject kobj = new JSONObject(k.toString());
 							JSONArray ktempArray = new HashMapUtil().hashmapToList(kobj);
-							System.out.println("title for1............" + j);
-							System.out.println("value for1............" + ktempArray);
+							
 //							ktempobj.put("title", j);
 //							ktempobj.put("value", ktempArray);
 							
-							
-							
+														
 							
 							tempArray.put(new JSONObject() {{
 								put("title","accessories" );
@@ -1808,34 +1806,6 @@ public class IvisService {
 
 	}
 
-	// public Object getTermsAndConditions() throws IOException{
-//		//Loading an existing document
-//	      File file = new File("C:/Users/IVIS/Downloads/Terms&Conditions.pdf");
-//	      PDDocument document = PDDocument.load(file);
-//	      //Instantiate PDFTextStripper class
-//	      PDFTextStripper pdfStripper = new PDFTextStripper();
-//	      //Retrieving text from PDF document
-//	      String text = pdfStripper.getText(document);
-//	      System.out.println(text);
-//	      //Closing the document
-//	      document.close();
-//		return text;
-//}
 
-//		    public ResponseEntity<InputStreamResource> citiesReport() {
-//
-//		    	File file = new File("C:/Users/IVIS/Downloads/Terms&Conditions.pdf");
-//
-//		        InputStream bis = file;
-//
-//		        var headers = new HttpHeaders();
-//		        headers.add("Content-Disposition", "inline; filename=citiesreport.pdf");
-//
-//		        return ResponseEntity
-//		                .ok()
-//		                .headers(headers)
-//		                .contentType(MediaType.APPLICATION_PDF)
-//		                .body(new InputStreamResource(bis));
-//		    }
 
 }
