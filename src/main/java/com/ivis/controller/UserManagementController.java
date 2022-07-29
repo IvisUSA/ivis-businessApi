@@ -26,16 +26,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.ByteArrayResource;
 
 import com.google.gson.Gson;
 import com.ivis.ApplicationModels.UserLogin;
 import com.ivis.ApplicationModels.UserMgmtUserModel;
+import com.ivis.service.AWSS3Service;
 import com.ivis.service.IvisService;
 import com.ivis.service.ServerConfig;
 import com.ivis.util.KeycloakUtils;
@@ -248,7 +251,7 @@ public class UserManagementController {
 				{
 					put("Status", "Success");
 					put("Message", "Data Retrieved Successfully");
-					put("TandCpdf","http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/Terms&Conditions/Terms-and-Conditions.pdf");
+					put("url","http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/Terms&Conditions/Terms-and-Conditions.pdf");
 
 				}
 			};
@@ -295,5 +298,49 @@ public class UserManagementController {
 			};
 		}
 		
+		
+		@PostMapping(value = "/getTandC_2_0")
+	    public Object getTermsConditions1(@RequestParam(value="callingUsername",required = false) String callingUsername,
+				@RequestParam(value="accesstoken",required = false) String accesstoken,
+				@RequestParam(value="callingSystemDetail",required = false) String callingSystemDetail) throws IOException {
+			if(callingUsername!=null && accesstoken != null && callingSystemDetail != null ) {
+				if(callingSystemDetail.equals("mobile")) {
+					String pdf = "http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/Terms&Conditions/Terms-and-Conditions.pdf";
+					return pdf;
+					 
+				}
+				else return new LinkedHashMap<String, String>() {
+				{
+					put("Status", "Success");
+					put("Message", "Data Retrieved Successfully");
+					put("TandCpdf","http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/Terms&Conditions/Terms-and-Conditions.pdf");
+
+				}
+			};
+	        
+	    }
+			return new HashMap<String, String>() {
+				{
+					
+					put("Status", "Failed");
+					put("Message", "Insufficent Details");
+
+				}
+			};
+		}
+		@Autowired
+		AWSS3Service awsS3service;
+		
+		@GetMapping("/download/{fileName}")
+		  public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName) {
+		    byte[] data = awsS3service.downloadFileFromS3(fileName);
+		    ByteArrayResource resource = new ByteArrayResource(data);
+		    return ResponseEntity
+		        .ok()
+		        .contentLength(data.length)
+		        .header("Content-type", "application/octet-stream")
+		        .header("Content-disposition", "attachment; filename=\"" + fileName + "\"")
+		        .body(resource);
+		  }
 		
 }

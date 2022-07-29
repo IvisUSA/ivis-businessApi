@@ -129,7 +129,6 @@ public class BusinessInsightController {
 		else return null;
 
 	
-		
 	}
 	
 	
