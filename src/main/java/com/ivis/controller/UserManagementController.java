@@ -267,8 +267,33 @@ public class UserManagementController {
 			};
 		}
 		
+		@PostMapping(value = "/getTermsandCond_1_0")
+	    public Object getTermsCond(@RequestParam(value="callingUsername",required = false) String callingUsername,
+				@RequestParam(value="accesstoken",required = false) String accesstoken,
+				@RequestParam(value="callingSystemDetail",required = false) String callingSystemDetail) throws IOException {
+			if(callingUsername!=null && accesstoken != null && callingSystemDetail != null ) {
+				
+	         
+	            File pdfFile = new File(resourceLoader.getResource("classpath:pdf").getFile(), "Terms&Conditions.pdf");
+	      
+	            HttpHeaders headers = new HttpHeaders();      
+	            headers.add("content-disposition", "inline;filename=" +pdfFile);
+	            
+	            InputStreamResource resource = new InputStreamResource(new FileInputStream(pdfFile));
+	
+	            return ResponseEntity.ok()
+	                    .headers(headers)
+	                    .contentLength(pdfFile.length())
+	                    .contentType(MediaType.parseMediaType("application/pdf"))
+	                    .body(resource);
+	        
+	    }
+			return new HashMap<String, String>() {
+				{
+					
+					put("Status", "Failed");
+					put("Message", "Insufficent Details");
 
-<<<<<<< HEAD
 				}
 			};
 		}
@@ -318,6 +343,4 @@ public class UserManagementController {
 		        .body(resource);
 		  }
 		
-=======
->>>>>>> parent of d8f18ec ( getTermsandCond_1_0 has been added)
 }
