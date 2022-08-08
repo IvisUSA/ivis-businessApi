@@ -1,15 +1,9 @@
 package com.ivis.controller;
 
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ivis.ApplicationModels.CamStreamListModel;
 import com.ivis.ApplicationModels.CamStreamListModelWithActiveCams;
 import com.ivis.Businessentity.BusinessCamesStreamEntity;
 import com.ivis.service.IvisService;
