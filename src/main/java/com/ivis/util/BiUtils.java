@@ -142,6 +142,7 @@ public class BiUtils {
 		  .build();
 		
 		
+	
 		Response response = client.newCall(request).execute();
 		
 		InputStream in = response.body().byteStream();
@@ -155,11 +156,19 @@ public class BiUtils {
 		}
 
 		String header = response.header("Content-Disposition");
+	
+		if(header== null) {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");	
+					put("Message", "Insight Report Not Available");
+				}
+			};
+		}
 		String filename = header.substring(header.indexOf("\"")+1, header.lastIndexOf("\""));
 		
-		
 		Resource resource = new ByteArrayResource(buffer.toByteArray());
-
+      
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.add(HttpHeaders.CONTENT_DISPOSITION,  "attachment; filename=" +filename);
 		return ResponseEntity.ok()
@@ -172,12 +181,7 @@ public class BiUtils {
 		{
 			System.out.println(e);
 			e.printStackTrace();
-			return new HashMap<String, String>() {
-				{
-					put("Status", "Failed");
-					put("Message", "Failed processing request");
-				}
-			};
+			return null;
 		}
 	}
 }

@@ -1268,7 +1268,7 @@ public class IvisService {
 			bodyMap.put("serviceId", serviceId);
 			bodyMap.put("userName", userName);
 			bodyMap.put("remarks", remarks);
-
+			
 			RequestBody body = RequestBody.create(mediaType, new Gson().toJson(bodyMap));
 
 			// RequestBody body = RequestBody.create(mediaType, "{\r\n \"accountId\" :

@@ -1,15 +1,18 @@
 package com.ivis.controller;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -17,7 +20,10 @@ import java.util.Map;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -34,11 +40,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.ClassPathResource;
+
+
 
 import com.google.gson.Gson;
 import com.ivis.ApplicationModels.UserLogin;
 import com.ivis.ApplicationModels.UserMgmtUserModel;
-import com.ivis.service.AWSS3Service;
+
 import com.ivis.service.IvisService;
 import com.ivis.service.ServerConfig;
 import com.ivis.util.KeycloakUtils;
@@ -299,48 +308,6 @@ public class UserManagementController {
 		}
 		
 		
-		@PostMapping(value = "/getTandC_2_0")
-	    public Object getTermsConditions1(@RequestParam(value="callingUsername",required = false) String callingUsername,
-				@RequestParam(value="accesstoken",required = false) String accesstoken,
-				@RequestParam(value="callingSystemDetail",required = false) String callingSystemDetail) throws IOException {
-			if(callingUsername!=null && accesstoken != null && callingSystemDetail != null ) {
-				if(callingSystemDetail.equals("mobile")) {
-					String pdf = "http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/Terms&Conditions/Terms-and-Conditions.pdf";
-					return pdf;
-					 
-				}
-				else return new LinkedHashMap<String, String>() {
-				{
-					put("Status", "Success");
-					put("Message", "Data Retrieved Successfully");
-					put("TandCpdf","http://usmgmt.iviscloud.net:444/ivis-us-allsiteimages/Terms&Conditions/Terms-and-Conditions.pdf");
-
-				}
-			};
-	        
-	    }
-			return new HashMap<String, String>() {
-				{
-					
-					put("Status", "Failed");
-					put("Message", "Insufficent Details");
-
-				}
-			};
-		}
-		@Autowired
-		AWSS3Service awsS3service;
-		
-		@GetMapping("/download/{fileName}")
-		  public ResponseEntity<ByteArrayResource> downloadFile(@PathVariable String fileName) {
-		    byte[] data = awsS3service.downloadFileFromS3(fileName);
-		    ByteArrayResource resource = new ByteArrayResource(data);
-		    return ResponseEntity
-		        .ok()
-		        .contentLength(data.length)
-		        .header("Content-type", "application/octet-stream")
-		        .header("Content-disposition", "attachment; filename=\"" + fileName + "\"")
-		        .body(resource);
-		  }
+	
 		
 }
