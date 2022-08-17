@@ -68,6 +68,29 @@ public class MngtServerUtils {
 		}
 	}
 
+	public JSONObject getVerticalCounts_1_0() {
+		try {
+			OkHttpClient client = new OkHttpClient().newBuilder().build();
+			MediaType mediaType = MediaType.parse("text/plain");
+			Request request = new Request.Builder().url(
+					mngtServer+"/General/getCounts_1_0")
+					.method("GET", null).build();
+
+			Response response = client.newCall(request).execute();
+			String responseString = response.body().string();
+			return new JSONObject(responseString);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return new JSONObject() {
+				{
+					put("Status", "Failed");
+					put("Message", "Exception occured : " + e);
+				}
+			};
+		}
+	}
+	
+	
 	public static void main(String [] args)
 	{
 		System.out.println(new MngtServerUtils().getDeviceDetailsForSite_1_0(1016).get("Status").equals("Success"));

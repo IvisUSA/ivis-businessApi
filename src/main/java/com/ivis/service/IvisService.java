@@ -1806,6 +1806,12 @@ public class IvisService {
 
 	}
 
+	public Object getVerticalsCount() {
+		// TODO Auto-generated method stub
+		
+		return new MngtServerUtils().getVerticalCounts_1_0().toMap();
+	}
+
 
 
 }
