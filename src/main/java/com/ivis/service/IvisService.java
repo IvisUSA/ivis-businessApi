@@ -1812,6 +1812,11 @@ public class IvisService {
 		return new MngtServerUtils().getVerticalCounts_1_0().toMap();
 	}
 
+	public Object customersList_1_0() {
+		// TODO Auto-generated method stub
+		return new MngtServerUtils().listCustomers_1_0().toMap();
+	}
+
 
 
 }
