@@ -1807,14 +1807,21 @@ public class IvisService {
 	}
 
 	public Object getVerticalsCount() {
-		// TODO Auto-generated method stub
 		
 		return new MngtServerUtils().getVerticalCounts_1_0().toMap();
 	}
 
 	public Object customersList_1_0() {
-		// TODO Auto-generated method stub
 		return new MngtServerUtils().listCustomers_1_0().toMap();
+	}
+
+	public Object sitesList_1_0() {
+		return new MngtServerUtils().listSites_1_0().toMap();
+	}
+
+	public Object createCustomer_1_0(HashMap<String, Object> data) {
+		// TODO Auto-generated method stub
+		return new MngtServerUtils().createCustomer_1_0(data).toMap();
 	}
 
 

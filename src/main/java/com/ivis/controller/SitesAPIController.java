@@ -16,119 +16,136 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ivis.Businessentity.UserEntity;
 import com.ivis.service.IvisService;
 import com.ivis.util.KeycloakUtils;
+
 @CrossOrigin
 @Controller
 @RestController
 @RequestMapping("/sites")
 public class SitesAPIController {
-	@Autowired 
-	IvisService  ivis;
-	
-	
+	@Autowired
+	IvisService ivis;
+
 	@GetMapping("/hi")
 	String hello() {
 		return "hello";
-		}
-	@GetMapping("/sitesList_1_0")
-	public UserEntity  getSitesdata(@RequestParam("uId") String uId,@RequestParam("calling_user_details") String calling_user_details)
-	{
-		if(calling_user_details.equals("IVISUSA")) {
-		UserEntity  userlist = ivis.getImMatrixAvailability(uId);
-		return userlist;
-		}
-		else
-			return null;
-		
 	}
-//	@GetMapping("/CamesList")
-//	public List<BusinessCamesEntity> getCamesdata(@RequestParam("uId") String uId,@RequestParam(value="accountId", required=false) String  accountId)
-//	{
-//		List<BusinessCamesEntity>camesList =null;
-//		
-//		camesList = ivis.getCamerasList(uId,accountId);
-//		return camesList;
-//	}
-	
+
 	@PostMapping("/sitesList_2_0")
-	public Object  getSitesdata(@RequestBody HashMap<String, String> inputData)
-	{
-		
-		if(!inputData.keySet().containsAll(new ArrayList<String>() {{add("userName");add("accessToken");add("calling_System_Detail");}} ))
-		{
-			return new HashMap<String,String>() {{
-				put("Status","Failed");
-				put("Message","Insufficient details");
-				
-			}};
+	public Object getSitesdata(@RequestBody HashMap<String, String> inputData) {
+
+		if (!inputData.keySet().containsAll(new ArrayList<String>() {
+			{
+				add("userName");
+				add("accessToken");
+				add("calling_System_Detail");
+			}
+		})) {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Insufficient details");
+
+				}
+			};
 		}
-		
-		
+
 		String userName = inputData.get("userName");
 		String accesstoken = inputData.get("accessToken");
 		String callingSystemDetail = inputData.get("calling_System_Detail");
 
-		
 		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accesstoken);
 		System.out.println(accessCheck);
-		if(accessCheck) {
+		if (accessCheck) {
 
-			
 			return ivis.getSiteListByUserName(userName);
-		
-		
-		}
-		else 
-			return new HashMap<String,String>() {{
-				put("Status","Failed");
-				put("Message","Invalid user details");
-				
-			}};
-		
-		
+
+		} else
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Invalid user details");
+
+				}
+			};
+
 	}
+
 	@PostMapping("/SnapshotUrlsForSitesList_1_0")
-	public Object snapshotUrlsForSitesList_1_0(@RequestBody HashMap<String, Object> data)
-	{
-		if(!data.keySet().containsAll(new ArrayList<String>() {{add("sitesList");add("accessToken");add("calling_System_Detail");add("userName");}} ))
-		{
-			return new HashMap<String,String>() {{
-				put("Status","Failed");
-				put("Message","Insufficient details");
-				
-			}};
+	public Object snapshotUrlsForSitesList_1_0(@RequestBody HashMap<String, Object> data) {
+		if (!data.keySet().containsAll(new ArrayList<String>() {
+			{
+				add("sitesList");
+				add("accessToken");
+				add("calling_System_Detail");
+				add("userName");
+			}
+		})) {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Insufficient details");
+
+				}
+			};
 		}
-		try
-		{
+		try {
 			ArrayList siteList = (ArrayList) data.get("sitesList");
-		}
-		catch(Exception e)
-		{
-			return new HashMap<String,String>() {{
-				put("Status","Failed");
-				put("Message","Invalid details");
-				
-			}};
+		} catch (Exception e) {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Invalid details");
+
+				}
+			};
 		}
 		String userName = (String) data.get("userName");
 		String accessToken = (String) data.get("accessToken");
 		boolean accessCheck = KeycloakUtils.verifyaccesstoken(userName, accessToken);
-		
+
 		ArrayList siteList = (ArrayList) data.get("sitesList");
-		
-		//TODO
-		if(accessCheck) {
-			
+
+		// TODO
+		if (accessCheck) {
+
 			return ivis.getsnapshotUrlsForSitesList_1_0(siteList);
-		}
-		 else
-				return new HashMap<String, String>() {
-					{
-						put("Status", "Failed");
-						put("Message", "Invalid user details");
+		} else
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Invalid user details");
 
-					}
-				};
+				}
+			};
 	}
-	
 
+	
+	@PostMapping(path = "/sitesList_1_0")
+	public Object sitesList_1_0(@RequestBody HashMap<String, String> data) {
+		if (!data.keySet().containsAll(new ArrayList<String>() {
+			{
+				add("userName");
+				add("accessToken");
+				add("calling_System_Detail");
+			}
+		})) {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Insufficient details");
+				}
+			};
+		}
+		boolean accessCheck = KeycloakUtils.verifyaccesstoken(data.get("userName"), data.get("accessToken"));
+		if (accessCheck)
+			return ivis.sitesList_1_0();
+		else {
+			return new HashMap<String, String>() {
+				{
+					put("Status", "Failed");
+					put("Message", "Invalid accessToken");
+				}
+			};
+		}
+	}
 }
