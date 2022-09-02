@@ -818,6 +818,7 @@ public class IvisService {
 				sb.append((char) ch);
 			}
 			json = new JSONArray(sb.toString());
+//			System.out.println(json);
 			http.disconnect();
 			ArrayList<CamStreamListModelWithActiveCams> camsData2 = new ArrayList<>();
 			for (Object i : json) {
@@ -829,15 +830,23 @@ public class IvisService {
 						+ "/Command?action=status&cameraId=" + camstream.getCameraId());
 				url = new URL("http://" + camstream.getHost() + ":" + camstream.getHttpPort()
 						+ "/Command?action=status&cameraId=" + camstream.getCameraId());
+				sb = new StringBuilder();
+				try {
 				http = (HttpURLConnection) url.openConnection();
 				resp = http.getInputStream();
-				sb = new StringBuilder();
+				
 				for (int ch; (ch = resp.read()) != -1;) {
 					sb.append((char) ch);
 				}
-				json = new JSONArray(sb.toString());
+				JSONArray json1 = new JSONArray(sb.toString());
 				http.disconnect();
-				camstream.setCameraStatus(json.getJSONObject(0).get("status").toString());
+				
+				camstream.setCameraStatus(json1.getJSONObject(0).get("status").toString());
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+					camstream.setCameraStatus("Disconnected");
+				}
 				camstream.setDeviceInternalId(datajson.getJSONObject("map").getInt("potentialId"));
 				camstream.setCameraname(datajson.getJSONObject("map").getString("name"));
 				camstream.setSnapShotUrl("http://" + camstream.getHost() + ":" + camstream.getHttpPort()
@@ -847,8 +856,9 @@ public class IvisService {
 			return camsData2;
 		} catch (IOException e) {
 			e.printStackTrace();
+			return null;
 		}
-		return null;
+		
 	}
 
 	public List<BusinessCamesStreamEntity> getCamerasStreamList(String uId, String accountId) {
