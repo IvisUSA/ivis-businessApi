@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,6 +36,23 @@ public class ReadJson {
 	      String Text = Read(re);         // Handy Method To Read Data From BufferReader
 	      JSONObject json = new JSONObject(Text);    //Creating A JSON 
 	      return json;    // Returning JSON
+	    } catch (Exception e) {
+	      return null;
+	    } finally {
+	      input.close();
+	    }
+	}
+	public JSONArray readJsonArrayFromUrl(String link) throws IOException, JSONException {
+	    InputStream input = new URL(link)
+	    		.openStream();
+	    // Input Stream Object To Start Streaming.
+	    try {
+	      BufferedReader re = new BufferedReader(new InputStreamReader(input, Charset.forName("UTF-8")));  
+	    // Buffer Reading In UTF-8  
+	      
+	      String Text = Read(re);         
+	      JSONArray json = new JSONArray(Text);
+	      return json;
 	    } catch (Exception e) {
 	      return null;
 	    } finally {

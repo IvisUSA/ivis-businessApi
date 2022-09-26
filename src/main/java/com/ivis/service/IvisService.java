@@ -42,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.format.datetime.joda.MillisecondInstantPrinter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -799,6 +800,14 @@ public class IvisService {
 	}
 
 	public ArrayList<CamStreamListModelWithActiveCams> getCamerasStreamList2(String userName, String accountId) {
+
+		// Read cpus api camstreamlist
+		// get video servers list and add cameras list to the videoserverCameraList
+		// Hashmap
+		// ArrayList<CamStreamListModelWithActiveCams> camsData2 = new ArrayList<>();
+
+		long starttime = System.currentTimeMillis();
+
 		JSONArray json = new JSONArray();
 
 		Gson gson = new Gson();
@@ -818,35 +827,59 @@ public class IvisService {
 				sb.append((char) ch);
 			}
 			json = new JSONArray(sb.toString());
-//			System.out.println(json);
 			http.disconnect();
 			ArrayList<CamStreamListModelWithActiveCams> camsData2 = new ArrayList<>();
+			HashMap<String, List<String>> cameraVideoServerMap = new HashMap<String, List<String>>();
+
+			for (Object i : json) {
+				List<String> cameraList = new ArrayList<String>();
+
+				CamStreamListModelWithActiveCams camstream = gson.fromJson(i.toString(),
+						CamStreamListModelWithActiveCams.class);
+				String videoServer = "http://" + camstream.getHost() + ":" + camstream.getHttpPort()
+						+ "/Command?action=status";
+				if (cameraVideoServerMap.containsKey(videoServer)) {
+					cameraList = cameraVideoServerMap.get(videoServer);
+					if (!cameraList.contains(camstream.getCameraId()))
+						cameraList.add(camstream.getCameraId());
+				} else {
+					if (!cameraList.contains(camstream.getCameraId()))
+						cameraList.add(camstream.getCameraId());
+				}
+				cameraVideoServerMap.put(videoServer, cameraList);
+			}
+			HashMap<String, String> cameraStatusMap = new HashMap<String, String>();
+
+			for (String i : cameraVideoServerMap.keySet()) {
+
+				JSONArray listOfcameraStatus = new JSONArray();
+				try {
+					listOfcameraStatus = new ReadJson().readJsonArrayFromUrl(i);
+
+				} catch (Exception exception) {
+
+				}
+				for (Object j : listOfcameraStatus) {
+
+					JSONObject cam = new JSONObject(j.toString());
+					cameraStatusMap.put(cam.getString("cameraId"), cam.getString("status"));
+				}
+				long endtime = System.currentTimeMillis();
+				System.out.println(i);
+				System.out.println("Time spent = " + (endtime - starttime));
+
+			}
+			
 			for (Object i : json) {
 				String dataString = gson.toJson(i);
 				JSONObject datajson = new JSONObject(dataString);
 				CamStreamListModelWithActiveCams camstream = gson.fromJson(i.toString(),
 						CamStreamListModelWithActiveCams.class);
-				System.out.println("http://" + camstream.getHost() + ":" + camstream.getHttpPort()
-						+ "/Command?action=status&cameraId=" + camstream.getCameraId());
-				url = new URL("http://" + camstream.getHost() + ":" + camstream.getHttpPort()
-						+ "/Command?action=status&cameraId=" + camstream.getCameraId());
-				sb = new StringBuilder();
-				try {
-				http = (HttpURLConnection) url.openConnection();
-				resp = http.getInputStream();
-				
-				for (int ch; (ch = resp.read()) != -1;) {
-					sb.append((char) ch);
-				}
-				JSONArray json1 = new JSONArray(sb.toString());
-				http.disconnect();
-				
-				camstream.setCameraStatus(json1.getJSONObject(0).get("status").toString());
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-					camstream.setCameraStatus("Disconnected");
-				}
+				if (cameraStatusMap.containsKey(camstream.getCameraId()))
+					camstream.setCameraStatus(cameraStatusMap.get(camstream.getCameraId()));
+				else
+					camstream.setCameraStatus("unknown");
+
 				camstream.setDeviceInternalId(datajson.getJSONObject("map").getInt("potentialId"));
 				camstream.setCameraname(datajson.getJSONObject("map").getString("name"));
 				camstream.setSnapShotUrl("http://" + camstream.getHost() + ":" + camstream.getHttpPort()
@@ -858,7 +891,7 @@ public class IvisService {
 			e.printStackTrace();
 			return null;
 		}
-		
+
 	}
 
 	public List<BusinessCamesStreamEntity> getCamerasStreamList(String uId, String accountId) {
@@ -1278,7 +1311,7 @@ public class IvisService {
 			bodyMap.put("serviceId", serviceId);
 			bodyMap.put("userName", userName);
 			bodyMap.put("remarks", remarks);
-			
+
 			RequestBody body = RequestBody.create(mediaType, new Gson().toJson(bodyMap));
 
 			// RequestBody body = RequestBody.create(mediaType, "{\r\n \"accountId\" :
@@ -1677,7 +1710,7 @@ public class IvisService {
 
 							ktempobj.put("title", j);
 							ktempobj.put("value", ktempArray);
-						
+
 						}
 						System.out.println("title for............" + j);
 						System.out.println("value for............" + ktempobj);
@@ -1775,25 +1808,25 @@ public class IvisService {
 						for (Object k : tempArr2) {
 							JSONObject kobj = new JSONObject(k.toString());
 							JSONArray ktempArray = new HashMapUtil().hashmapToList(kobj);
-							
+
 //							ktempobj.put("title", j);
 //							ktempobj.put("value", ktempArray);
-							
-														
-							
-							tempArray.put(new JSONObject() {{
-								put("title","accessories" );
-								put("value",ktempArray);
-							}});
+
+							tempArray.put(new JSONObject() {
+								{
+									put("title", "accessories");
+									put("value", ktempArray);
+								}
+							});
 						}
-						
+
 //						System.out.println("title for2............" + j);
 //						System.out.println("value for2............" + ktempobj);
 //						tempObj2.put("title", j);
 //						tempObj2.put("value", ktempobj);
 //						tempArray.put(tempObj2);
 					} else {
-						
+
 						JSONObject tempObj2 = new JSONObject();
 						tempObj2.put("title", j);
 						tempObj2.put("value", tempObj.get(j));
@@ -1817,7 +1850,7 @@ public class IvisService {
 	}
 
 	public Object getVerticalsCount() {
-		
+
 		return new MngtServerUtils().getVerticalCounts_1_0().toMap();
 	}
 
@@ -1833,7 +1866,5 @@ public class IvisService {
 		// TODO Auto-generated method stub
 		return new MngtServerUtils().createCustomer_1_0(data).toMap();
 	}
-
-
 
 }
