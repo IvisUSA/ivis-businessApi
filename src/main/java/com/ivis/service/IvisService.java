@@ -26,6 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -849,7 +850,7 @@ public class IvisService {
 				cameraVideoServerMap.put(videoServer, cameraList);
 			}
 			HashMap<String, String> cameraStatusMap = new HashMap<String, String>();
-
+			System.out.println(cameraVideoServerMap.keySet());
 			for (String i : cameraVideoServerMap.keySet()) {
 
 				JSONArray listOfcameraStatus = new JSONArray();
@@ -878,7 +879,7 @@ public class IvisService {
 				if (cameraStatusMap.containsKey(camstream.getCameraId()))
 					camstream.setCameraStatus(cameraStatusMap.get(camstream.getCameraId()));
 				else
-					camstream.setCameraStatus("unknown");
+					camstream.setCameraStatus("Disconnected");
 
 				camstream.setDeviceInternalId(datajson.getJSONObject("map").getInt("potentialId"));
 				camstream.setCameraname(datajson.getJSONObject("map").getString("name"));

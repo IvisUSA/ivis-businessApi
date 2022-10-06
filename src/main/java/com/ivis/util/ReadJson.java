@@ -3,10 +3,23 @@ package com.ivis.util;
 import java.io.*;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.google.gson.Gson;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 
@@ -43,20 +56,25 @@ public class ReadJson {
 	    }
 	}
 	public JSONArray readJsonArrayFromUrl(String link) throws IOException, JSONException {
-	    InputStream input = new URL(link)
-	    		.openStream();
-	    // Input Stream Object To Start Streaming.
-	    try {
-	      BufferedReader re = new BufferedReader(new InputStreamReader(input, Charset.forName("UTF-8")));  
-	    // Buffer Reading In UTF-8  
-	      
-	      String Text = Read(re);         
-	      JSONArray json = new JSONArray(Text);
-	      return json;
-	    } catch (Exception e) {
-	      return null;
-	    } finally {
-	      input.close();
-	    }
+		try {
+			OkHttpClient client = new OkHttpClient().newBuilder().connectTimeout(5, TimeUnit.SECONDS)
+					  .build();
+					Request request = new Request.Builder()
+					  .url(link)
+					  .method("GET", null)
+					  .build();
+					Response response = client.newCall(request).execute();
+			String responseString = response.body().string();
+			
+			JSONArray responseJson = new JSONArray(responseString);
+			
+
+			
+			return responseJson;
+		} catch (Exception e) {
+			System.out.println(e);
+			e.printStackTrace();
+			return new JSONArray();
+		}
 	}
 }
